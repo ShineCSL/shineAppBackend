@@ -1,0 +1,19 @@
+{
+  "name": "shine-app-backend",
+  "version": "0.0.0",
+  "description": "Description for shineAppBackend",
+  "private": true,
+  "license": "UNLICENSED",
+  "cacheDirectories": [
+    "node_modules"
+  ],
+  "devDependencies": {
+    "generator-jhipster-db-helper": "1.1.0",
+    "generator-jhipster-pages": "2.0.4",
+    "generator-jhipster-ionic": "3.2.0",
+    "generator-jhipster": "4.14.4"
+  },
+  "engines": {
+    "node": ">=6.9.0"
+  }
+}

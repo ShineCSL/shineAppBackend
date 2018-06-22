@@ -1,0 +1,51 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "com.shine.shineappback",
+      "nativeLanguage": "en"
+    },
+    "jhipsterVersion": "4.14.4",
+    "baseName": "shineAppBackend",
+    "packageName": "com.shine.shineappback",
+    "packageFolder": "com/shine/shineappback",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "cacheProvider": "no",
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "mysql",
+    "prodDatabaseType": "mysql",
+    "searchEngine": false,
+    "messageBroker": false,
+    "serviceDiscoveryType": false,
+    "buildTool": "maven",
+    "enableSocialSignIn": false,
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "8cc2d1d14bc960f5182236635127cc19acd85210",
+    "enableTranslation": true,
+    "applicationType": "monolith",
+    "testFrameworks": [],
+    "jhiPrefix": "jhi",
+    "otherModules": [
+      {
+        "name": "generator-jhipster-db-helper",
+        "version": "1.1.0"
+      },
+      {
+        "name": "generator-jhipster-pages",
+        "version": "2.0.4"
+      },
+      {
+        "name": "generator-jhipster-ionic",
+        "version": "3.2.0"
+      }
+    ],
+    "nativeLanguage": "en",
+    "languages": [
+      "en",
+      "fr"
+    ],
+    "clientPackageManager": "yarn",
+    "skipClient": true
+  }
+}

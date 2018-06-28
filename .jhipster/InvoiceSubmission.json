@@ -1,0 +1,56 @@
+{
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "relationships": [
+        {
+            "relationshipName": "invoice",
+            "otherEntityName": "invoice",
+            "relationshipType": "one-to-one",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "invoiceSubmission"
+        },
+        {
+            "relationshipName": "userCreation",
+            "otherEntityName": "user",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "login",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "invoiceSubmission"
+        },
+        {
+            "relationshipName": "userModification",
+            "otherEntityName": "user",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "login",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "invoiceSubmission"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "submitted",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "dateCreation",
+            "fieldType": "ZonedDateTime",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "dateModification",
+            "fieldType": "ZonedDateTime"
+        }
+    ],
+    "changelogDate": "20180627103339",
+    "dto": "mapstruct",
+    "searchEngine": false,
+    "service": "serviceClass",
+    "entityTableName": "invoice_submission",
+    "jpaMetamodelFiltering": false,
+    "pagination": "pagination"
+}

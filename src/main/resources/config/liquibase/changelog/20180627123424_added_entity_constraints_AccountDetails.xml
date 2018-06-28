@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <!--
+        Added the constraints for entity AccountDetails.
+    -->
+    <changeSet id="20180627123424-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="client_id"
+                                 baseTableName="account_details"
+                                 constraintName="fk_account_details_client_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="client"/>
+
+        <addForeignKeyConstraint baseColumnNames="user_creation_id"
+                                 baseTableName="account_details"
+                                 constraintName="fk_account_details_user_creation_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="jhi_user"/>
+
+        <addForeignKeyConstraint baseColumnNames="user_modfication_id"
+                                 baseTableName="account_details"
+                                 constraintName="fk_account_details_user_modfication_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="jhi_user"/>
+
+        <addForeignKeyConstraint baseColumnNames="invoice_id"
+                                 baseTableName="account_details"
+                                 constraintName="fk_account_details_invoice_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="invoice"/>
+
+        <addForeignKeyConstraint baseColumnNames="currency_id"
+                                 baseTableName="account_details"
+                                 constraintName="fk_account_details_currency_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="currency"/>
+
+    </changeSet>
+</databaseChangeLog>

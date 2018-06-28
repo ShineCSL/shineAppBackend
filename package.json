@@ -11,9 +11,9 @@
     "generator-jhipster-db-helper": "1.1.0",
     "generator-jhipster-pages": "2.0.4",
     "generator-jhipster-ionic": "3.2.0",
-    "generator-jhipster": "4.14.4"
+    "generator-jhipster": "5.0.1"
   },
   "engines": {
-    "node": ">=6.9.0"
+    "node": ">=8.9.0"
   }
 }

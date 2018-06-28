@@ -5,6 +5,42 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
     <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180626101508_added_entity_Task.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180626113418_added_entity_Leaves.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180626121550_added_entity_LeavesSubmission.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180626123157_added_entity_LeavesValidation.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627093752_added_entity_LeavesRejection.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627095159_added_entity_TypeInvoice.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627103339_added_entity_InvoiceSubmission.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627103931_added_entity_InvoiceValidation.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627104521_added_entity_InvoiceRejection.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627105634_added_entity_Invoice.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627110908_added_entity_Currency.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627113240_added_entity_ActivitySubmission.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627113908_added_entity_ActivityValidation.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627114527_added_entity_ActivityRejection.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627115804_added_entity_Activity.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627123424_added_entity_AccountDetails.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627132623_added_entity_Client.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627133031_added_entity_LeaveConfig.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
+    <include file="config/liquibase/changelog/20180626101508_added_entity_constraints_Task.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180626113418_added_entity_constraints_Leaves.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180626121550_added_entity_constraints_LeavesSubmission.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180626123157_added_entity_constraints_LeavesValidation.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627095159_added_entity_constraints_TypeInvoice.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627093752_added_entity_constraints_LeavesRejection.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627103339_added_entity_constraints_InvoiceSubmission.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627103931_added_entity_constraints_InvoiceValidation.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627104521_added_entity_constraints_InvoiceRejection.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627105634_added_entity_constraints_Invoice.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627110908_added_entity_constraints_Currency.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627113240_added_entity_constraints_ActivitySubmission.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627113908_added_entity_constraints_ActivityValidation.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627114527_added_entity_constraints_ActivityRejection.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627115804_added_entity_constraints_Activity.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627123424_added_entity_constraints_AccountDetails.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627132623_added_entity_constraints_Client.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180627133031_added_entity_constraints_LeaveConfig.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

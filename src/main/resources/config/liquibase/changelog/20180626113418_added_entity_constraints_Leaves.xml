@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <!--
+        Added the constraints for entity Leaves.
+    -->
+    <changeSet id="20180626113418-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="leaves"
+                                 constraintName="fk_leaves_user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="jhi_user"/>
+
+        <addForeignKeyConstraint baseColumnNames="leaves_submission_id"
+                                 baseTableName="leaves"
+                                 constraintName="fk_leaves_leaves_submission_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="leaves_submission"/>
+
+        <addForeignKeyConstraint baseColumnNames="leaves_validation_id"
+                                 baseTableName="leaves"
+                                 constraintName="fk_leaves_leaves_validation_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="leaves_validation"/>
+
+        <addForeignKeyConstraint baseColumnNames="leaves_rejection_id"
+                                 baseTableName="leaves"
+                                 constraintName="fk_leaves_leaves_rejection_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="leaves_rejection"/>
+
+        <addForeignKeyConstraint baseColumnNames="task_id"
+                                 baseTableName="leaves"
+                                 constraintName="fk_leaves_task_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="task"/>
+
+    </changeSet>
+</databaseChangeLog>

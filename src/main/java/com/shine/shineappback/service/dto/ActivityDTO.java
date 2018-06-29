@@ -41,10 +41,6 @@ public class ActivityDTO implements Serializable {
 
     private String userLogin;
 
-    private Long clientId;
-
-    private String clientCode;
-
     private Long activitySubmissionId;
 
     private Long activityValidationId;
@@ -58,6 +54,10 @@ public class ActivityDTO implements Serializable {
     private Long userModificationId;
 
     private String userModificationLogin;
+
+    private Long missionId;
+
+    private String missionCode;
 
     public Long getId() {
         return id;
@@ -155,22 +155,6 @@ public class ActivityDTO implements Serializable {
         this.userLogin = userLogin;
     }
 
-    public Long getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(Long clientId) {
-        this.clientId = clientId;
-    }
-
-    public String getClientCode() {
-        return clientCode;
-    }
-
-    public void setClientCode(String clientCode) {
-        this.clientCode = clientCode;
-    }
-
     public Long getActivitySubmissionId() {
         return activitySubmissionId;
     }
@@ -227,6 +211,22 @@ public class ActivityDTO implements Serializable {
         this.userModificationLogin = userLogin;
     }
 
+    public Long getMissionId() {
+        return missionId;
+    }
+
+    public void setMissionId(Long missionId) {
+        this.missionId = missionId;
+    }
+
+    public String getMissionCode() {
+        return missionCode;
+    }
+
+    public void setMissionCode(String missionCode) {
+        this.missionCode = missionCode;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -263,8 +263,6 @@ public class ActivityDTO implements Serializable {
             ", task='" + getTaskCode() + "'" +
             ", user=" + getUserId() +
             ", user='" + getUserLogin() + "'" +
-            ", client=" + getClientId() +
-            ", client='" + getClientCode() + "'" +
             ", activitySubmission=" + getActivitySubmissionId() +
             ", activityValidation=" + getActivityValidationId() +
             ", activityRejection=" + getActivityRejectionId() +
@@ -272,6 +270,8 @@ public class ActivityDTO implements Serializable {
             ", userCreation='" + getUserCreationLogin() + "'" +
             ", userModification=" + getUserModificationId() +
             ", userModification='" + getUserModificationLogin() + "'" +
+            ", mission=" + getMissionId() +
+            ", mission='" + getMissionCode() + "'" +
             "}";
     }
 }

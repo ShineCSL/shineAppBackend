@@ -5,8 +5,8 @@ import com.shine.shineappback.ShineAppBackendApp;
 import com.shine.shineappback.domain.Activity;
 import com.shine.shineappback.domain.Task;
 import com.shine.shineappback.domain.User;
-import com.shine.shineappback.domain.Client;
 import com.shine.shineappback.domain.User;
+import com.shine.shineappback.domain.Mission;
 import com.shine.shineappback.repository.ActivityRepository;
 import com.shine.shineappback.service.ActivityService;
 import com.shine.shineappback.service.dto.ActivityDTO;
@@ -137,12 +137,12 @@ public class ActivityResourceIntTest {
         em.flush();
         activity.setUser(user);
         // Add required entity
-        Client client = ClientResourceIntTest.createEntity(em);
-        em.persist(client);
-        em.flush();
-        activity.setClient(client);
-        // Add required entity
         activity.setUserCreation(user);
+        // Add required entity
+        Mission mission = MissionResourceIntTest.createEntity(em);
+        em.persist(mission);
+        em.flush();
+        activity.setMission(mission);
         return activity;
     }
 

@@ -23,15 +23,6 @@
             "otherEntityRelationshipName": "activity"
         },
         {
-            "relationshipName": "client",
-            "otherEntityName": "client",
-            "relationshipType": "many-to-one",
-            "relationshipValidateRules": [
-                "required"
-            ],
-            "otherEntityField": "code"
-        },
-        {
             "relationshipName": "activitySubmission",
             "otherEntityName": "activitySubmission",
             "relationshipType": "many-to-one",
@@ -67,6 +58,15 @@
             "otherEntityField": "login",
             "ownerSide": true,
             "otherEntityRelationshipName": "activity"
+        },
+        {
+            "relationshipName": "mission",
+            "otherEntityName": "mission",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "code"
         }
     ],
     "fields": [

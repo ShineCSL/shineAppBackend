@@ -15,31 +15,19 @@
     <property name="floatType" value="float" dbms="mysql, oracle, mssql"/>
 
     <!--
-        Added the entity Activity.
+        Added the entity Mission.
     -->
-    <changeSet id="20180627115804-1" author="jhipster">
-        <createTable tableName="activity">
+    <changeSet id="20180629094716-1" author="jhipster">
+        <createTable tableName="mission">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="activity_date" type="date">
+            <column name="code" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
 
-            <column name="nb_of_hours" type="double">
-                <constraints nullable="false" />
-            </column>
-
-            <column name="day" type="integer">
-                <constraints nullable="false" />
-            </column>
-
-            <column name="week_number" type="integer">
-                <constraints nullable="false" />
-            </column>
-
-            <column name="jhi_year" type="integer">
-                <constraints nullable="false" />
+            <column name="jhi_label" type="varchar(255)">
+                <constraints nullable="true" />
             </column>
 
             <column name="date_creation" type="datetime">
@@ -50,24 +38,8 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="task_id" type="bigint">
+            <column name="client_id" type="bigint">
                 <constraints nullable="false" />
-            </column>
-
-            <column name="user_id" type="bigint">
-                <constraints nullable="false" />
-            </column>
-
-            <column name="activity_submission_id" type="bigint">
-                <constraints nullable="true" />
-            </column>
-
-            <column name="activity_validation_id" type="bigint">
-                <constraints nullable="true" />
-            </column>
-
-            <column name="activity_rejection_id" type="bigint">
-                <constraints nullable="true" />
             </column>
 
             <column name="user_creation_id" type="bigint">
@@ -78,14 +50,10 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="mission_id" type="bigint">
-                <constraints nullable="false" />
-            </column>
-
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-        <dropDefaultValue tableName="activity" columnName="date_creation" columnDataType="datetime"/>
-        <dropDefaultValue tableName="activity" columnName="date_modification" columnDataType="datetime"/>
+        <dropDefaultValue tableName="mission" columnName="date_creation" columnDataType="datetime"/>
+        <dropDefaultValue tableName="mission" columnName="date_modification" columnDataType="datetime"/>
         
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->

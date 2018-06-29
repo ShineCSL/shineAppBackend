@@ -20,12 +20,6 @@
                                  referencedColumnNames="id"
                                  referencedTableName="jhi_user"/>
 
-        <addForeignKeyConstraint baseColumnNames="client_id"
-                                 baseTableName="activity"
-                                 constraintName="fk_activity_client_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="client"/>
-
         <addForeignKeyConstraint baseColumnNames="activity_submission_id"
                                  baseTableName="activity"
                                  constraintName="fk_activity_activity_submission_id"
@@ -55,6 +49,12 @@
                                  constraintName="fk_activity_user_modification_id"
                                  referencedColumnNames="id"
                                  referencedTableName="jhi_user"/>
+
+        <addForeignKeyConstraint baseColumnNames="mission_id"
+                                 baseTableName="activity"
+                                 constraintName="fk_activity_mission_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="mission"/>
 
     </changeSet>
 </databaseChangeLog>

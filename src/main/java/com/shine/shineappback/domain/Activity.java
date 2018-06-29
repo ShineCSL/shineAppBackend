@@ -60,11 +60,6 @@ public class Activity implements Serializable {
     @JsonIgnoreProperties("")
     private User user;
 
-    @ManyToOne(optional = false)
-    @NotNull
-    @JsonIgnoreProperties("")
-    private Client client;
-
     @ManyToOne
     @JsonIgnoreProperties("")
     private ActivitySubmission activitySubmission;
@@ -85,6 +80,11 @@ public class Activity implements Serializable {
     @ManyToOne
     @JsonIgnoreProperties("")
     private User userModification;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    @JsonIgnoreProperties("")
+    private Mission mission;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -212,19 +212,6 @@ public class Activity implements Serializable {
         this.user = user;
     }
 
-    public Client getClient() {
-        return client;
-    }
-
-    public Activity client(Client client) {
-        this.client = client;
-        return this;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
-    }
-
     public ActivitySubmission getActivitySubmission() {
         return activitySubmission;
     }
@@ -288,6 +275,19 @@ public class Activity implements Serializable {
 
     public void setUserModification(User user) {
         this.userModification = user;
+    }
+
+    public Mission getMission() {
+        return mission;
+    }
+
+    public Activity mission(Mission mission) {
+        this.mission = mission;
+        return this;
+    }
+
+    public void setMission(Mission mission) {
+        this.mission = mission;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

@@ -1,6 +1,5 @@
 package com.shine.shineappback.service.dto;
 
-import java.time.ZonedDateTime;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -8,36 +7,24 @@ import java.util.Objects;
 /**
  * A DTO for the AccountDetails entity.
  */
-public class AccountDetailsDTO implements Serializable {
+public class AccountDetailsDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
 
     @NotNull
-    @Pattern(regexp = "^[A-Z0-9()[\\\\]+-_*/%]*$")
-    private String code;
-
-    @NotNull
     private Double amount;
-
-    @NotNull
-    private String type;
 
     private Double rate;
 
     @NotNull
-    private ZonedDateTime dateCreation;
+    private String label;
 
-    private ZonedDateTime dateModification;
+    private String description;
+
+    @NotNull
+    private String type;
 
     private Long clientId;
-
-    private Long userCreationId;
-
-    private String userCreationLogin;
-
-    private Long userModficationId;
-
-    private String userModficationLogin;
 
     private Long invoiceId;
 
@@ -55,28 +42,12 @@ public class AccountDetailsDTO implements Serializable {
         this.id = id;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
     public Double getAmount() {
         return amount;
     }
 
     public void setAmount(Double amount) {
         this.amount = amount;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public Double getRate() {
@@ -87,20 +58,28 @@ public class AccountDetailsDTO implements Serializable {
         this.rate = rate;
     }
 
-    public ZonedDateTime getDateCreation() {
-        return dateCreation;
+    public String getLabel() {
+        return label;
     }
 
-    public void setDateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
-    public ZonedDateTime getDateModification() {
-        return dateModification;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public Long getClientId() {
@@ -109,38 +88,6 @@ public class AccountDetailsDTO implements Serializable {
 
     public void setClientId(Long clientId) {
         this.clientId = clientId;
-    }
-
-    public Long getUserCreationId() {
-        return userCreationId;
-    }
-
-    public void setUserCreationId(Long userId) {
-        this.userCreationId = userId;
-    }
-
-    public String getUserCreationLogin() {
-        return userCreationLogin;
-    }
-
-    public void setUserCreationLogin(String userLogin) {
-        this.userCreationLogin = userLogin;
-    }
-
-    public Long getUserModficationId() {
-        return userModficationId;
-    }
-
-    public void setUserModficationId(Long userId) {
-        this.userModficationId = userId;
-    }
-
-    public String getUserModficationLogin() {
-        return userModficationLogin;
-    }
-
-    public void setUserModficationLogin(String userLogin) {
-        this.userModficationLogin = userLogin;
     }
 
     public Long getInvoiceId() {
@@ -200,17 +147,12 @@ public class AccountDetailsDTO implements Serializable {
     public String toString() {
         return "AccountDetailsDTO{" +
             "id=" + getId() +
-            ", code='" + getCode() + "'" +
             ", amount=" + getAmount() +
-            ", type='" + getType() + "'" +
             ", rate=" + getRate() +
-            ", dateCreation='" + getDateCreation() + "'" +
-            ", dateModification='" + getDateModification() + "'" +
+            ", label='" + getLabel() + "'" +
+            ", description='" + getDescription() + "'" +
+            ", type='" + getType() + "'" +
             ", client=" + getClientId() +
-            ", userCreation=" + getUserCreationId() +
-            ", userCreation='" + getUserCreationLogin() + "'" +
-            ", userModfication=" + getUserModficationId() +
-            ", userModfication='" + getUserModficationLogin() + "'" +
             ", invoice=" + getInvoiceId() +
             ", invoice='" + getInvoiceLabel() + "'" +
             ", currency=" + getCurrencyId() +

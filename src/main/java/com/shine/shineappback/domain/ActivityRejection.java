@@ -1,12 +1,10 @@
 package com.shine.shineappback.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -14,7 +12,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "activity_rejection")
-public class ActivityRejection implements Serializable {
+public class ActivityRejection extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -26,20 +24,12 @@ public class ActivityRejection implements Serializable {
     private Boolean rejected;
 
     @NotNull
-    @Column(name = "date_creation", nullable = false)
-    private ZonedDateTime dateCreation;
+    @Column(name = "week_number", nullable = false)
+    private Integer weekNumber;
 
-    @Column(name = "date_modification")
-    private ZonedDateTime dateModification;
-
-    @ManyToOne(optional = false)
     @NotNull
-    @JsonIgnoreProperties("")
-    private User userCreation;
-
-    @ManyToOne
-    @JsonIgnoreProperties("")
-    private User userModification;
+    @Column(name = "jhi_year", nullable = false)
+    private Integer year;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -63,56 +53,30 @@ public class ActivityRejection implements Serializable {
         this.rejected = rejected;
     }
 
-    public ZonedDateTime getDateCreation() {
-        return dateCreation;
+    public Integer getWeekNumber() {
+        return weekNumber;
     }
 
-    public ActivityRejection dateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
+    public ActivityRejection weekNumber(Integer weekNumber) {
+        this.weekNumber = weekNumber;
         return this;
     }
 
-    public void setDateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
+    public void setWeekNumber(Integer weekNumber) {
+        this.weekNumber = weekNumber;
     }
 
-    public ZonedDateTime getDateModification() {
-        return dateModification;
+    public Integer getYear() {
+        return year;
     }
 
-    public ActivityRejection dateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
+    public ActivityRejection year(Integer year) {
+        this.year = year;
         return this;
     }
 
-    public void setDateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-    }
-
-    public User getUserCreation() {
-        return userCreation;
-    }
-
-    public ActivityRejection userCreation(User user) {
-        this.userCreation = user;
-        return this;
-    }
-
-    public void setUserCreation(User user) {
-        this.userCreation = user;
-    }
-
-    public User getUserModification() {
-        return userModification;
-    }
-
-    public ActivityRejection userModification(User user) {
-        this.userModification = user;
-        return this;
-    }
-
-    public void setUserModification(User user) {
-        this.userModification = user;
+    public void setYear(Integer year) {
+        this.year = year;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -141,8 +105,8 @@ public class ActivityRejection implements Serializable {
         return "ActivityRejection{" +
             "id=" + getId() +
             ", rejected='" + isRejected() + "'" +
-            ", dateCreation='" + getDateCreation() + "'" +
-            ", dateModification='" + getDateModification() + "'" +
+            ", weekNumber=" + getWeekNumber() +
+            ", year=" + getYear() +
             "}";
     }
 }

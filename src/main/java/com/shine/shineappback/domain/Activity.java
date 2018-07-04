@@ -7,7 +7,6 @@ import javax.validation.constraints.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -15,7 +14,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "activity")
-public class Activity implements Serializable {
+public class Activity extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -43,13 +42,6 @@ public class Activity implements Serializable {
     @Column(name = "jhi_year", nullable = false)
     private Integer year;
 
-    @NotNull
-    @Column(name = "date_creation", nullable = false)
-    private ZonedDateTime dateCreation;
-
-    @Column(name = "date_modification")
-    private ZonedDateTime dateModification;
-
     @ManyToOne(optional = false)
     @NotNull
     @JsonIgnoreProperties("")
@@ -60,6 +52,15 @@ public class Activity implements Serializable {
     @JsonIgnoreProperties("")
     private User user;
 
+    @ManyToOne(optional = false)
+    @NotNull
+    @JsonIgnoreProperties("")
+    private Mission mission;
+
+    @ManyToOne
+    @JsonIgnoreProperties("")
+    private ActivityRejection activityRejection;
+
     @ManyToOne
     @JsonIgnoreProperties("")
     private ActivitySubmission activitySubmission;
@@ -67,24 +68,6 @@ public class Activity implements Serializable {
     @ManyToOne
     @JsonIgnoreProperties("")
     private ActivityValidation activityValidation;
-
-    @ManyToOne
-    @JsonIgnoreProperties("")
-    private ActivityRejection activityRejection;
-
-    @ManyToOne(optional = false)
-    @NotNull
-    @JsonIgnoreProperties("")
-    private User userCreation;
-
-    @ManyToOne
-    @JsonIgnoreProperties("")
-    private User userModification;
-
-    @ManyToOne(optional = false)
-    @NotNull
-    @JsonIgnoreProperties("")
-    private Mission mission;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -160,32 +143,6 @@ public class Activity implements Serializable {
         this.year = year;
     }
 
-    public ZonedDateTime getDateCreation() {
-        return dateCreation;
-    }
-
-    public Activity dateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-        return this;
-    }
-
-    public void setDateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-    }
-
-    public ZonedDateTime getDateModification() {
-        return dateModification;
-    }
-
-    public Activity dateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-        return this;
-    }
-
-    public void setDateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-    }
-
     public Task getTask() {
         return task;
     }
@@ -212,6 +169,32 @@ public class Activity implements Serializable {
         this.user = user;
     }
 
+    public Mission getMission() {
+        return mission;
+    }
+
+    public Activity mission(Mission mission) {
+        this.mission = mission;
+        return this;
+    }
+
+    public void setMission(Mission mission) {
+        this.mission = mission;
+    }
+
+    public ActivityRejection getActivityRejection() {
+        return activityRejection;
+    }
+
+    public Activity activityRejection(ActivityRejection activityRejection) {
+        this.activityRejection = activityRejection;
+        return this;
+    }
+
+    public void setActivityRejection(ActivityRejection activityRejection) {
+        this.activityRejection = activityRejection;
+    }
+
     public ActivitySubmission getActivitySubmission() {
         return activitySubmission;
     }
@@ -236,58 +219,6 @@ public class Activity implements Serializable {
 
     public void setActivityValidation(ActivityValidation activityValidation) {
         this.activityValidation = activityValidation;
-    }
-
-    public ActivityRejection getActivityRejection() {
-        return activityRejection;
-    }
-
-    public Activity activityRejection(ActivityRejection activityRejection) {
-        this.activityRejection = activityRejection;
-        return this;
-    }
-
-    public void setActivityRejection(ActivityRejection activityRejection) {
-        this.activityRejection = activityRejection;
-    }
-
-    public User getUserCreation() {
-        return userCreation;
-    }
-
-    public Activity userCreation(User user) {
-        this.userCreation = user;
-        return this;
-    }
-
-    public void setUserCreation(User user) {
-        this.userCreation = user;
-    }
-
-    public User getUserModification() {
-        return userModification;
-    }
-
-    public Activity userModification(User user) {
-        this.userModification = user;
-        return this;
-    }
-
-    public void setUserModification(User user) {
-        this.userModification = user;
-    }
-
-    public Mission getMission() {
-        return mission;
-    }
-
-    public Activity mission(Mission mission) {
-        this.mission = mission;
-        return this;
-    }
-
-    public void setMission(Mission mission) {
-        this.mission = mission;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -320,8 +251,6 @@ public class Activity implements Serializable {
             ", day=" + getDay() +
             ", weekNumber=" + getWeekNumber() +
             ", year=" + getYear() +
-            ", dateCreation='" + getDateCreation() + "'" +
-            ", dateModification='" + getDateModification() + "'" +
             "}";
     }
 }

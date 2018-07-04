@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -50,7 +49,7 @@ public class LeavesSubmissionResource {
      */
     @PostMapping("/leaves-submissions")
     @Timed
-    public ResponseEntity<LeavesSubmissionDTO> createLeavesSubmission(@Valid @RequestBody LeavesSubmissionDTO leavesSubmissionDTO) throws URISyntaxException {
+    public ResponseEntity<LeavesSubmissionDTO> createLeavesSubmission(@RequestBody LeavesSubmissionDTO leavesSubmissionDTO) throws URISyntaxException {
         log.debug("REST request to save LeavesSubmission : {}", leavesSubmissionDTO);
         if (leavesSubmissionDTO.getId() != null) {
             throw new BadRequestAlertException("A new leavesSubmission cannot already have an ID", ENTITY_NAME, "idexists");
@@ -72,7 +71,7 @@ public class LeavesSubmissionResource {
      */
     @PutMapping("/leaves-submissions")
     @Timed
-    public ResponseEntity<LeavesSubmissionDTO> updateLeavesSubmission(@Valid @RequestBody LeavesSubmissionDTO leavesSubmissionDTO) throws URISyntaxException {
+    public ResponseEntity<LeavesSubmissionDTO> updateLeavesSubmission(@RequestBody LeavesSubmissionDTO leavesSubmissionDTO) throws URISyntaxException {
         log.debug("REST request to update LeavesSubmission : {}", leavesSubmissionDTO);
         if (leavesSubmissionDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");

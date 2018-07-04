@@ -3,7 +3,6 @@ package com.shine.shineappback.web.rest;
 import com.shine.shineappback.ShineAppBackendApp;
 
 import com.shine.shineappback.domain.ActivityValidation;
-import com.shine.shineappback.domain.User;
 import com.shine.shineappback.repository.ActivityValidationRepository;
 import com.shine.shineappback.service.ActivityValidationService;
 import com.shine.shineappback.service.dto.ActivityValidationDTO;
@@ -25,14 +24,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
-import java.time.ZoneId;
 import java.util.List;
 
 
-import static com.shine.shineappback.web.rest.TestUtil.sameInstant;
 import static com.shine.shineappback.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -54,14 +48,8 @@ public class ActivityValidationResourceIntTest {
     private static final Integer DEFAULT_YEAR = 1;
     private static final Integer UPDATED_YEAR = 2;
 
-    private static final Boolean DEFAULT_VALIDATION = false;
-    private static final Boolean UPDATED_VALIDATION = true;
-
-    private static final ZonedDateTime DEFAULT_DATE_CREATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_CREATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
-    private static final ZonedDateTime DEFAULT_DATE_MODIFICATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_MODIFICATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final Boolean DEFAULT_VALIDATED = false;
+    private static final Boolean UPDATED_VALIDATED = true;
 
     @Autowired
     private ActivityValidationRepository activityValidationRepository;
@@ -111,14 +99,7 @@ public class ActivityValidationResourceIntTest {
         ActivityValidation activityValidation = new ActivityValidation()
             .weekNumber(DEFAULT_WEEK_NUMBER)
             .year(DEFAULT_YEAR)
-            .validation(DEFAULT_VALIDATION)
-            .dateCreation(DEFAULT_DATE_CREATION)
-            .dateModification(DEFAULT_DATE_MODIFICATION);
-        // Add required entity
-        User user = UserResourceIntTest.createEntity(em);
-        em.persist(user);
-        em.flush();
-        activityValidation.setUserCreation(user);
+            .validated(DEFAULT_VALIDATED);
         return activityValidation;
     }
 
@@ -145,9 +126,7 @@ public class ActivityValidationResourceIntTest {
         ActivityValidation testActivityValidation = activityValidationList.get(activityValidationList.size() - 1);
         assertThat(testActivityValidation.getWeekNumber()).isEqualTo(DEFAULT_WEEK_NUMBER);
         assertThat(testActivityValidation.getYear()).isEqualTo(DEFAULT_YEAR);
-        assertThat(testActivityValidation.isValidation()).isEqualTo(DEFAULT_VALIDATION);
-        assertThat(testActivityValidation.getDateCreation()).isEqualTo(DEFAULT_DATE_CREATION);
-        assertThat(testActivityValidation.getDateModification()).isEqualTo(DEFAULT_DATE_MODIFICATION);
+        assertThat(testActivityValidation.isValidated()).isEqualTo(DEFAULT_VALIDATED);
     }
 
     @Test
@@ -172,25 +151,6 @@ public class ActivityValidationResourceIntTest {
 
     @Test
     @Transactional
-    public void checkDateCreationIsRequired() throws Exception {
-        int databaseSizeBeforeTest = activityValidationRepository.findAll().size();
-        // set the field null
-        activityValidation.setDateCreation(null);
-
-        // Create the ActivityValidation, which fails.
-        ActivityValidationDTO activityValidationDTO = activityValidationMapper.toDto(activityValidation);
-
-        restActivityValidationMockMvc.perform(post("/api/activity-validations")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(activityValidationDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<ActivityValidation> activityValidationList = activityValidationRepository.findAll();
-        assertThat(activityValidationList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void getAllActivityValidations() throws Exception {
         // Initialize the database
         activityValidationRepository.saveAndFlush(activityValidation);
@@ -202,9 +162,7 @@ public class ActivityValidationResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(activityValidation.getId().intValue())))
             .andExpect(jsonPath("$.[*].weekNumber").value(hasItem(DEFAULT_WEEK_NUMBER)))
             .andExpect(jsonPath("$.[*].year").value(hasItem(DEFAULT_YEAR)))
-            .andExpect(jsonPath("$.[*].validation").value(hasItem(DEFAULT_VALIDATION.booleanValue())))
-            .andExpect(jsonPath("$.[*].dateCreation").value(hasItem(sameInstant(DEFAULT_DATE_CREATION))))
-            .andExpect(jsonPath("$.[*].dateModification").value(hasItem(sameInstant(DEFAULT_DATE_MODIFICATION))));
+            .andExpect(jsonPath("$.[*].validated").value(hasItem(DEFAULT_VALIDATED.booleanValue())));
     }
     
 
@@ -221,9 +179,7 @@ public class ActivityValidationResourceIntTest {
             .andExpect(jsonPath("$.id").value(activityValidation.getId().intValue()))
             .andExpect(jsonPath("$.weekNumber").value(DEFAULT_WEEK_NUMBER))
             .andExpect(jsonPath("$.year").value(DEFAULT_YEAR))
-            .andExpect(jsonPath("$.validation").value(DEFAULT_VALIDATION.booleanValue()))
-            .andExpect(jsonPath("$.dateCreation").value(sameInstant(DEFAULT_DATE_CREATION)))
-            .andExpect(jsonPath("$.dateModification").value(sameInstant(DEFAULT_DATE_MODIFICATION)));
+            .andExpect(jsonPath("$.validated").value(DEFAULT_VALIDATED.booleanValue()));
     }
     @Test
     @Transactional
@@ -248,9 +204,7 @@ public class ActivityValidationResourceIntTest {
         updatedActivityValidation
             .weekNumber(UPDATED_WEEK_NUMBER)
             .year(UPDATED_YEAR)
-            .validation(UPDATED_VALIDATION)
-            .dateCreation(UPDATED_DATE_CREATION)
-            .dateModification(UPDATED_DATE_MODIFICATION);
+            .validated(UPDATED_VALIDATED);
         ActivityValidationDTO activityValidationDTO = activityValidationMapper.toDto(updatedActivityValidation);
 
         restActivityValidationMockMvc.perform(put("/api/activity-validations")
@@ -264,9 +218,7 @@ public class ActivityValidationResourceIntTest {
         ActivityValidation testActivityValidation = activityValidationList.get(activityValidationList.size() - 1);
         assertThat(testActivityValidation.getWeekNumber()).isEqualTo(UPDATED_WEEK_NUMBER);
         assertThat(testActivityValidation.getYear()).isEqualTo(UPDATED_YEAR);
-        assertThat(testActivityValidation.isValidation()).isEqualTo(UPDATED_VALIDATION);
-        assertThat(testActivityValidation.getDateCreation()).isEqualTo(UPDATED_DATE_CREATION);
-        assertThat(testActivityValidation.getDateModification()).isEqualTo(UPDATED_DATE_MODIFICATION);
+        assertThat(testActivityValidation.isValidated()).isEqualTo(UPDATED_VALIDATED);
     }
 
     @Test

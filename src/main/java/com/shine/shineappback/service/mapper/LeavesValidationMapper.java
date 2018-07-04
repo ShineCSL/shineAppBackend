@@ -8,18 +8,11 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity LeavesValidation and its DTO LeavesValidationDTO.
  */
-@Mapper(componentModel = "spring", uses = {UserMapper.class})
+@Mapper(componentModel = "spring", uses = {})
 public interface LeavesValidationMapper extends EntityMapper<LeavesValidationDTO, LeavesValidation> {
 
-    @Mapping(source = "userModification.id", target = "userModificationId")
-    @Mapping(source = "userModification.login", target = "userModificationLogin")
-    @Mapping(source = "userCreation.id", target = "userCreationId")
-    @Mapping(source = "userCreation.login", target = "userCreationLogin")
-    LeavesValidationDTO toDto(LeavesValidation leavesValidation);
 
     @Mapping(target = "leaves", ignore = true)
-    @Mapping(source = "userModificationId", target = "userModification")
-    @Mapping(source = "userCreationId", target = "userCreation")
     LeavesValidation toEntity(LeavesValidationDTO leavesValidationDTO);
 
     default LeavesValidation fromId(Long id) {

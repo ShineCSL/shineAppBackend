@@ -1,31 +1,16 @@
 package com.shine.shineappback.service.dto;
 
-import java.time.ZonedDateTime;
-import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * A DTO for the InvoiceValidation entity.
  */
-public class InvoiceValidationDTO implements Serializable {
+public class InvoiceValidationDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
 
-    private Boolean validation;
-
-    @NotNull
-    private ZonedDateTime dateCreation;
-
-    private ZonedDateTime dateModification;
-
-    private Long userCreationId;
-
-    private String userCreationLogin;
-
-    private Long userModificationId;
-
-    private String userModificationLogin;
+    private Boolean validated;
 
     public Long getId() {
         return id;
@@ -35,60 +20,12 @@ public class InvoiceValidationDTO implements Serializable {
         this.id = id;
     }
 
-    public Boolean isValidation() {
-        return validation;
+    public Boolean isValidated() {
+        return validated;
     }
 
-    public void setValidation(Boolean validation) {
-        this.validation = validation;
-    }
-
-    public ZonedDateTime getDateCreation() {
-        return dateCreation;
-    }
-
-    public void setDateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-    }
-
-    public ZonedDateTime getDateModification() {
-        return dateModification;
-    }
-
-    public void setDateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-    }
-
-    public Long getUserCreationId() {
-        return userCreationId;
-    }
-
-    public void setUserCreationId(Long userId) {
-        this.userCreationId = userId;
-    }
-
-    public String getUserCreationLogin() {
-        return userCreationLogin;
-    }
-
-    public void setUserCreationLogin(String userLogin) {
-        this.userCreationLogin = userLogin;
-    }
-
-    public Long getUserModificationId() {
-        return userModificationId;
-    }
-
-    public void setUserModificationId(Long userId) {
-        this.userModificationId = userId;
-    }
-
-    public String getUserModificationLogin() {
-        return userModificationLogin;
-    }
-
-    public void setUserModificationLogin(String userLogin) {
-        this.userModificationLogin = userLogin;
+    public void setValidated(Boolean validated) {
+        this.validated = validated;
     }
 
     @Override
@@ -116,13 +53,7 @@ public class InvoiceValidationDTO implements Serializable {
     public String toString() {
         return "InvoiceValidationDTO{" +
             "id=" + getId() +
-            ", validation='" + isValidation() + "'" +
-            ", dateCreation='" + getDateCreation() + "'" +
-            ", dateModification='" + getDateModification() + "'" +
-            ", userCreation=" + getUserCreationId() +
-            ", userCreation='" + getUserCreationLogin() + "'" +
-            ", userModification=" + getUserModificationId() +
-            ", userModification='" + getUserModificationLogin() + "'" +
+            ", validated='" + isValidated() + "'" +
             "}";
     }
 }

@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -50,7 +49,7 @@ public class LeavesRejectionResource {
      */
     @PostMapping("/leaves-rejections")
     @Timed
-    public ResponseEntity<LeavesRejectionDTO> createLeavesRejection(@Valid @RequestBody LeavesRejectionDTO leavesRejectionDTO) throws URISyntaxException {
+    public ResponseEntity<LeavesRejectionDTO> createLeavesRejection(@RequestBody LeavesRejectionDTO leavesRejectionDTO) throws URISyntaxException {
         log.debug("REST request to save LeavesRejection : {}", leavesRejectionDTO);
         if (leavesRejectionDTO.getId() != null) {
             throw new BadRequestAlertException("A new leavesRejection cannot already have an ID", ENTITY_NAME, "idexists");
@@ -72,7 +71,7 @@ public class LeavesRejectionResource {
      */
     @PutMapping("/leaves-rejections")
     @Timed
-    public ResponseEntity<LeavesRejectionDTO> updateLeavesRejection(@Valid @RequestBody LeavesRejectionDTO leavesRejectionDTO) throws URISyntaxException {
+    public ResponseEntity<LeavesRejectionDTO> updateLeavesRejection(@RequestBody LeavesRejectionDTO leavesRejectionDTO) throws URISyntaxException {
         log.debug("REST request to update LeavesRejection : {}", leavesRejectionDTO);
         if (leavesRejectionDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");

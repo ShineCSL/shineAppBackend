@@ -1,27 +1,7 @@
 {
     "fluentMethods": true,
     "clientRootFolder": "",
-    "relationships": [
-        {
-            "relationshipName": "userModification",
-            "otherEntityName": "user",
-            "relationshipType": "many-to-one",
-            "otherEntityField": "login",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "activitySubmission"
-        },
-        {
-            "relationshipName": "userCreation",
-            "otherEntityName": "user",
-            "relationshipType": "many-to-one",
-            "relationshipValidateRules": [
-                "required"
-            ],
-            "otherEntityField": "login",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "activitySubmission"
-        }
-    ],
+    "relationships": [],
     "fields": [
         {
             "fieldName": "submitted",
@@ -34,17 +14,6 @@
         {
             "fieldName": "weekNumber",
             "fieldType": "Integer"
-        },
-        {
-            "fieldName": "dateCreation",
-            "fieldType": "ZonedDateTime",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
-        {
-            "fieldName": "dateModification",
-            "fieldType": "ZonedDateTime"
         }
     ],
     "changelogDate": "20180627113240",
@@ -53,5 +22,6 @@
     "service": "serviceClass",
     "entityTableName": "activity_submission",
     "jpaMetamodelFiltering": false,
-    "pagination": "pagination"
+    "pagination": "pagination",
+    "enableEntityAudit": true
 }

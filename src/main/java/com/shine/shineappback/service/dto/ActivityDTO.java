@@ -1,7 +1,6 @@
 package com.shine.shineappback.service.dto;
 
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -9,7 +8,7 @@ import java.util.Objects;
 /**
  * A DTO for the Activity entity.
  */
-public class ActivityDTO implements Serializable {
+public class ActivityDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
 
@@ -28,11 +27,6 @@ public class ActivityDTO implements Serializable {
     @NotNull
     private Integer year;
 
-    @NotNull
-    private ZonedDateTime dateCreation;
-
-    private ZonedDateTime dateModification;
-
     private Long taskId;
 
     private String taskCode;
@@ -41,23 +35,21 @@ public class ActivityDTO implements Serializable {
 
     private String userLogin;
 
-    private Long activitySubmissionId;
-
-    private Long activityValidationId;
-
-    private Long activityRejectionId;
-
-    private Long userCreationId;
-
-    private String userCreationLogin;
-
-    private Long userModificationId;
-
-    private String userModificationLogin;
-
     private Long missionId;
 
     private String missionCode;
+
+    private Long activityRejectionId;
+
+    private String activityRejectionRejected;
+
+    private Long activitySubmissionId;
+
+    private String activitySubmissionSubmitted;
+
+    private Long activityValidationId;
+
+    private String activityValidationValidated;
 
     public Long getId() {
         return id;
@@ -107,22 +99,6 @@ public class ActivityDTO implements Serializable {
         this.year = year;
     }
 
-    public ZonedDateTime getDateCreation() {
-        return dateCreation;
-    }
-
-    public void setDateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-    }
-
-    public ZonedDateTime getDateModification() {
-        return dateModification;
-    }
-
-    public void setDateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-    }
-
     public Long getTaskId() {
         return taskId;
     }
@@ -155,62 +131,6 @@ public class ActivityDTO implements Serializable {
         this.userLogin = userLogin;
     }
 
-    public Long getActivitySubmissionId() {
-        return activitySubmissionId;
-    }
-
-    public void setActivitySubmissionId(Long activitySubmissionId) {
-        this.activitySubmissionId = activitySubmissionId;
-    }
-
-    public Long getActivityValidationId() {
-        return activityValidationId;
-    }
-
-    public void setActivityValidationId(Long activityValidationId) {
-        this.activityValidationId = activityValidationId;
-    }
-
-    public Long getActivityRejectionId() {
-        return activityRejectionId;
-    }
-
-    public void setActivityRejectionId(Long activityRejectionId) {
-        this.activityRejectionId = activityRejectionId;
-    }
-
-    public Long getUserCreationId() {
-        return userCreationId;
-    }
-
-    public void setUserCreationId(Long userId) {
-        this.userCreationId = userId;
-    }
-
-    public String getUserCreationLogin() {
-        return userCreationLogin;
-    }
-
-    public void setUserCreationLogin(String userLogin) {
-        this.userCreationLogin = userLogin;
-    }
-
-    public Long getUserModificationId() {
-        return userModificationId;
-    }
-
-    public void setUserModificationId(Long userId) {
-        this.userModificationId = userId;
-    }
-
-    public String getUserModificationLogin() {
-        return userModificationLogin;
-    }
-
-    public void setUserModificationLogin(String userLogin) {
-        this.userModificationLogin = userLogin;
-    }
-
     public Long getMissionId() {
         return missionId;
     }
@@ -225,6 +145,54 @@ public class ActivityDTO implements Serializable {
 
     public void setMissionCode(String missionCode) {
         this.missionCode = missionCode;
+    }
+
+    public Long getActivityRejectionId() {
+        return activityRejectionId;
+    }
+
+    public void setActivityRejectionId(Long activityRejectionId) {
+        this.activityRejectionId = activityRejectionId;
+    }
+
+    public String getActivityRejectionRejected() {
+        return activityRejectionRejected;
+    }
+
+    public void setActivityRejectionRejected(String activityRejectionRejected) {
+        this.activityRejectionRejected = activityRejectionRejected;
+    }
+
+    public Long getActivitySubmissionId() {
+        return activitySubmissionId;
+    }
+
+    public void setActivitySubmissionId(Long activitySubmissionId) {
+        this.activitySubmissionId = activitySubmissionId;
+    }
+
+    public String getActivitySubmissionSubmitted() {
+        return activitySubmissionSubmitted;
+    }
+
+    public void setActivitySubmissionSubmitted(String activitySubmissionSubmitted) {
+        this.activitySubmissionSubmitted = activitySubmissionSubmitted;
+    }
+
+    public Long getActivityValidationId() {
+        return activityValidationId;
+    }
+
+    public void setActivityValidationId(Long activityValidationId) {
+        this.activityValidationId = activityValidationId;
+    }
+
+    public String getActivityValidationValidated() {
+        return activityValidationValidated;
+    }
+
+    public void setActivityValidationValidated(String activityValidationValidated) {
+        this.activityValidationValidated = activityValidationValidated;
     }
 
     @Override
@@ -257,21 +225,18 @@ public class ActivityDTO implements Serializable {
             ", day=" + getDay() +
             ", weekNumber=" + getWeekNumber() +
             ", year=" + getYear() +
-            ", dateCreation='" + getDateCreation() + "'" +
-            ", dateModification='" + getDateModification() + "'" +
             ", task=" + getTaskId() +
             ", task='" + getTaskCode() + "'" +
             ", user=" + getUserId() +
             ", user='" + getUserLogin() + "'" +
-            ", activitySubmission=" + getActivitySubmissionId() +
-            ", activityValidation=" + getActivityValidationId() +
-            ", activityRejection=" + getActivityRejectionId() +
-            ", userCreation=" + getUserCreationId() +
-            ", userCreation='" + getUserCreationLogin() + "'" +
-            ", userModification=" + getUserModificationId() +
-            ", userModification='" + getUserModificationLogin() + "'" +
             ", mission=" + getMissionId() +
             ", mission='" + getMissionCode() + "'" +
+            ", activityRejection=" + getActivityRejectionId() +
+            ", activityRejection='" + getActivityRejectionRejected() + "'" +
+            ", activitySubmission=" + getActivitySubmissionId() +
+            ", activitySubmission='" + getActivitySubmissionSubmitted() + "'" +
+            ", activityValidation=" + getActivityValidationId() +
+            ", activityValidation='" + getActivityValidationValidated() + "'" +
             "}";
     }
 }

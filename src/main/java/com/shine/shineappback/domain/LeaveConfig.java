@@ -6,7 +6,6 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -14,7 +13,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "leave_config")
-public class LeaveConfig implements Serializable {
+public class LeaveConfig extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -31,26 +30,10 @@ public class LeaveConfig implements Serializable {
     @Column(name = "nb_special_leaves")
     private Integer nbSpecialLeaves;
 
-    @NotNull
-    @Column(name = "date_creation", nullable = false)
-    private ZonedDateTime dateCreation;
-
-    @Column(name = "date_modification")
-    private ZonedDateTime dateModification;
-
     @ManyToOne(optional = false)
     @NotNull
     @JsonIgnoreProperties("")
     private User user;
-
-    @ManyToOne(optional = false)
-    @NotNull
-    @JsonIgnoreProperties("")
-    private User userCreation;
-
-    @ManyToOne
-    @JsonIgnoreProperties("")
-    private User userModification;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -100,32 +83,6 @@ public class LeaveConfig implements Serializable {
         this.nbSpecialLeaves = nbSpecialLeaves;
     }
 
-    public ZonedDateTime getDateCreation() {
-        return dateCreation;
-    }
-
-    public LeaveConfig dateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-        return this;
-    }
-
-    public void setDateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-    }
-
-    public ZonedDateTime getDateModification() {
-        return dateModification;
-    }
-
-    public LeaveConfig dateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-        return this;
-    }
-
-    public void setDateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-    }
-
     public User getUser() {
         return user;
     }
@@ -137,32 +94,6 @@ public class LeaveConfig implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public User getUserCreation() {
-        return userCreation;
-    }
-
-    public LeaveConfig userCreation(User user) {
-        this.userCreation = user;
-        return this;
-    }
-
-    public void setUserCreation(User user) {
-        this.userCreation = user;
-    }
-
-    public User getUserModification() {
-        return userModification;
-    }
-
-    public LeaveConfig userModification(User user) {
-        this.userModification = user;
-        return this;
-    }
-
-    public void setUserModification(User user) {
-        this.userModification = user;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -193,8 +124,6 @@ public class LeaveConfig implements Serializable {
             ", nbSickLeaves=" + getNbSickLeaves() +
             ", nbAnnualLeaves=" + getNbAnnualLeaves() +
             ", nbSpecialLeaves=" + getNbSpecialLeaves() +
-            ", dateCreation='" + getDateCreation() + "'" +
-            ", dateModification='" + getDateModification() + "'" +
             "}";
     }
 }

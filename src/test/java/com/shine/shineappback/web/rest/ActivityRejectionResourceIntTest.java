@@ -3,7 +3,6 @@ package com.shine.shineappback.web.rest;
 import com.shine.shineappback.ShineAppBackendApp;
 
 import com.shine.shineappback.domain.ActivityRejection;
-import com.shine.shineappback.domain.User;
 import com.shine.shineappback.repository.ActivityRejectionRepository;
 import com.shine.shineappback.service.ActivityRejectionService;
 import com.shine.shineappback.service.dto.ActivityRejectionDTO;
@@ -25,14 +24,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
-import java.time.ZoneId;
 import java.util.List;
 
 
-import static com.shine.shineappback.web.rest.TestUtil.sameInstant;
 import static com.shine.shineappback.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -51,11 +45,11 @@ public class ActivityRejectionResourceIntTest {
     private static final Boolean DEFAULT_REJECTED = false;
     private static final Boolean UPDATED_REJECTED = true;
 
-    private static final ZonedDateTime DEFAULT_DATE_CREATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_CREATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final Integer DEFAULT_WEEK_NUMBER = 1;
+    private static final Integer UPDATED_WEEK_NUMBER = 2;
 
-    private static final ZonedDateTime DEFAULT_DATE_MODIFICATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_MODIFICATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final Integer DEFAULT_YEAR = 1;
+    private static final Integer UPDATED_YEAR = 2;
 
     @Autowired
     private ActivityRejectionRepository activityRejectionRepository;
@@ -104,13 +98,8 @@ public class ActivityRejectionResourceIntTest {
     public static ActivityRejection createEntity(EntityManager em) {
         ActivityRejection activityRejection = new ActivityRejection()
             .rejected(DEFAULT_REJECTED)
-            .dateCreation(DEFAULT_DATE_CREATION)
-            .dateModification(DEFAULT_DATE_MODIFICATION);
-        // Add required entity
-        User user = UserResourceIntTest.createEntity(em);
-        em.persist(user);
-        em.flush();
-        activityRejection.setUserCreation(user);
+            .weekNumber(DEFAULT_WEEK_NUMBER)
+            .year(DEFAULT_YEAR);
         return activityRejection;
     }
 
@@ -136,8 +125,8 @@ public class ActivityRejectionResourceIntTest {
         assertThat(activityRejectionList).hasSize(databaseSizeBeforeCreate + 1);
         ActivityRejection testActivityRejection = activityRejectionList.get(activityRejectionList.size() - 1);
         assertThat(testActivityRejection.isRejected()).isEqualTo(DEFAULT_REJECTED);
-        assertThat(testActivityRejection.getDateCreation()).isEqualTo(DEFAULT_DATE_CREATION);
-        assertThat(testActivityRejection.getDateModification()).isEqualTo(DEFAULT_DATE_MODIFICATION);
+        assertThat(testActivityRejection.getWeekNumber()).isEqualTo(DEFAULT_WEEK_NUMBER);
+        assertThat(testActivityRejection.getYear()).isEqualTo(DEFAULT_YEAR);
     }
 
     @Test
@@ -162,10 +151,29 @@ public class ActivityRejectionResourceIntTest {
 
     @Test
     @Transactional
-    public void checkDateCreationIsRequired() throws Exception {
+    public void checkWeekNumberIsRequired() throws Exception {
         int databaseSizeBeforeTest = activityRejectionRepository.findAll().size();
         // set the field null
-        activityRejection.setDateCreation(null);
+        activityRejection.setWeekNumber(null);
+
+        // Create the ActivityRejection, which fails.
+        ActivityRejectionDTO activityRejectionDTO = activityRejectionMapper.toDto(activityRejection);
+
+        restActivityRejectionMockMvc.perform(post("/api/activity-rejections")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(activityRejectionDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<ActivityRejection> activityRejectionList = activityRejectionRepository.findAll();
+        assertThat(activityRejectionList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkYearIsRequired() throws Exception {
+        int databaseSizeBeforeTest = activityRejectionRepository.findAll().size();
+        // set the field null
+        activityRejection.setYear(null);
 
         // Create the ActivityRejection, which fails.
         ActivityRejectionDTO activityRejectionDTO = activityRejectionMapper.toDto(activityRejection);
@@ -191,8 +199,8 @@ public class ActivityRejectionResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(activityRejection.getId().intValue())))
             .andExpect(jsonPath("$.[*].rejected").value(hasItem(DEFAULT_REJECTED.booleanValue())))
-            .andExpect(jsonPath("$.[*].dateCreation").value(hasItem(sameInstant(DEFAULT_DATE_CREATION))))
-            .andExpect(jsonPath("$.[*].dateModification").value(hasItem(sameInstant(DEFAULT_DATE_MODIFICATION))));
+            .andExpect(jsonPath("$.[*].weekNumber").value(hasItem(DEFAULT_WEEK_NUMBER)))
+            .andExpect(jsonPath("$.[*].year").value(hasItem(DEFAULT_YEAR)));
     }
     
 
@@ -208,8 +216,8 @@ public class ActivityRejectionResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(activityRejection.getId().intValue()))
             .andExpect(jsonPath("$.rejected").value(DEFAULT_REJECTED.booleanValue()))
-            .andExpect(jsonPath("$.dateCreation").value(sameInstant(DEFAULT_DATE_CREATION)))
-            .andExpect(jsonPath("$.dateModification").value(sameInstant(DEFAULT_DATE_MODIFICATION)));
+            .andExpect(jsonPath("$.weekNumber").value(DEFAULT_WEEK_NUMBER))
+            .andExpect(jsonPath("$.year").value(DEFAULT_YEAR));
     }
     @Test
     @Transactional
@@ -233,8 +241,8 @@ public class ActivityRejectionResourceIntTest {
         em.detach(updatedActivityRejection);
         updatedActivityRejection
             .rejected(UPDATED_REJECTED)
-            .dateCreation(UPDATED_DATE_CREATION)
-            .dateModification(UPDATED_DATE_MODIFICATION);
+            .weekNumber(UPDATED_WEEK_NUMBER)
+            .year(UPDATED_YEAR);
         ActivityRejectionDTO activityRejectionDTO = activityRejectionMapper.toDto(updatedActivityRejection);
 
         restActivityRejectionMockMvc.perform(put("/api/activity-rejections")
@@ -247,8 +255,8 @@ public class ActivityRejectionResourceIntTest {
         assertThat(activityRejectionList).hasSize(databaseSizeBeforeUpdate);
         ActivityRejection testActivityRejection = activityRejectionList.get(activityRejectionList.size() - 1);
         assertThat(testActivityRejection.isRejected()).isEqualTo(UPDATED_REJECTED);
-        assertThat(testActivityRejection.getDateCreation()).isEqualTo(UPDATED_DATE_CREATION);
-        assertThat(testActivityRejection.getDateModification()).isEqualTo(UPDATED_DATE_MODIFICATION);
+        assertThat(testActivityRejection.getWeekNumber()).isEqualTo(UPDATED_WEEK_NUMBER);
+        assertThat(testActivityRejection.getYear()).isEqualTo(UPDATED_YEAR);
     }
 
     @Test

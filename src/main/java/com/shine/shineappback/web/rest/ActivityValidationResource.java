@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -49,7 +48,7 @@ public class ActivityValidationResource {
      */
     @PostMapping("/activity-validations")
     @Timed
-    public ResponseEntity<ActivityValidationDTO> createActivityValidation(@Valid @RequestBody ActivityValidationDTO activityValidationDTO) throws URISyntaxException {
+    public ResponseEntity<ActivityValidationDTO> createActivityValidation(@RequestBody ActivityValidationDTO activityValidationDTO) throws URISyntaxException {
         log.debug("REST request to save ActivityValidation : {}", activityValidationDTO);
         if (activityValidationDTO.getId() != null) {
             throw new BadRequestAlertException("A new activityValidation cannot already have an ID", ENTITY_NAME, "idexists");
@@ -71,7 +70,7 @@ public class ActivityValidationResource {
      */
     @PutMapping("/activity-validations")
     @Timed
-    public ResponseEntity<ActivityValidationDTO> updateActivityValidation(@Valid @RequestBody ActivityValidationDTO activityValidationDTO) throws URISyntaxException {
+    public ResponseEntity<ActivityValidationDTO> updateActivityValidation(@RequestBody ActivityValidationDTO activityValidationDTO) throws URISyntaxException {
         log.debug("REST request to update ActivityValidation : {}", activityValidationDTO);
         if (activityValidationDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");

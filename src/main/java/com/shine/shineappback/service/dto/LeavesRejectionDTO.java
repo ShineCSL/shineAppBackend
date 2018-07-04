@@ -1,31 +1,16 @@
 package com.shine.shineappback.service.dto;
 
-import java.time.ZonedDateTime;
-import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * A DTO for the LeavesRejection entity.
  */
-public class LeavesRejectionDTO implements Serializable {
+public class LeavesRejectionDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
 
     private Boolean rejected;
-
-    private ZonedDateTime dateModification;
-
-    @NotNull
-    private ZonedDateTime dateCreation;
-
-    private Long userCreationId;
-
-    private String userCreationLogin;
-
-    private Long userModificationId;
-
-    private String userModificationLogin;
 
     public Long getId() {
         return id;
@@ -41,54 +26,6 @@ public class LeavesRejectionDTO implements Serializable {
 
     public void setRejected(Boolean rejected) {
         this.rejected = rejected;
-    }
-
-    public ZonedDateTime getDateModification() {
-        return dateModification;
-    }
-
-    public void setDateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-    }
-
-    public ZonedDateTime getDateCreation() {
-        return dateCreation;
-    }
-
-    public void setDateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-    }
-
-    public Long getUserCreationId() {
-        return userCreationId;
-    }
-
-    public void setUserCreationId(Long userId) {
-        this.userCreationId = userId;
-    }
-
-    public String getUserCreationLogin() {
-        return userCreationLogin;
-    }
-
-    public void setUserCreationLogin(String userLogin) {
-        this.userCreationLogin = userLogin;
-    }
-
-    public Long getUserModificationId() {
-        return userModificationId;
-    }
-
-    public void setUserModificationId(Long userId) {
-        this.userModificationId = userId;
-    }
-
-    public String getUserModificationLogin() {
-        return userModificationLogin;
-    }
-
-    public void setUserModificationLogin(String userLogin) {
-        this.userModificationLogin = userLogin;
     }
 
     @Override
@@ -117,12 +54,6 @@ public class LeavesRejectionDTO implements Serializable {
         return "LeavesRejectionDTO{" +
             "id=" + getId() +
             ", rejected='" + isRejected() + "'" +
-            ", dateModification='" + getDateModification() + "'" +
-            ", dateCreation='" + getDateCreation() + "'" +
-            ", userCreation=" + getUserCreationId() +
-            ", userCreation='" + getUserCreationLogin() + "'" +
-            ", userModification=" + getUserModificationId() +
-            ", userModification='" + getUserModificationLogin() + "'" +
             "}";
     }
 }

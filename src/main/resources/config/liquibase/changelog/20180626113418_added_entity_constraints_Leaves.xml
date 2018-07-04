@@ -14,6 +14,12 @@
                                  referencedColumnNames="id"
                                  referencedTableName="jhi_user"/>
 
+        <addForeignKeyConstraint baseColumnNames="task_id"
+                                 baseTableName="leaves"
+                                 constraintName="fk_leaves_task_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="task"/>
+
         <addForeignKeyConstraint baseColumnNames="leaves_submission_id"
                                  baseTableName="leaves"
                                  constraintName="fk_leaves_leaves_submission_id"
@@ -31,12 +37,6 @@
                                  constraintName="fk_leaves_leaves_rejection_id"
                                  referencedColumnNames="id"
                                  referencedTableName="leaves_rejection"/>
-
-        <addForeignKeyConstraint baseColumnNames="task_id"
-                                 baseTableName="leaves"
-                                 constraintName="fk_leaves_task_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="task"/>
 
     </changeSet>
 </databaseChangeLog>

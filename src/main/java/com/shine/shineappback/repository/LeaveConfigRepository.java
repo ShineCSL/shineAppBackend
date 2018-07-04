@@ -16,10 +16,4 @@ public interface LeaveConfigRepository extends JpaRepository<LeaveConfig, Long> 
     @Query("select leave_config from LeaveConfig leave_config where leave_config.user.login = ?#{principal.username}")
     List<LeaveConfig> findByUserIsCurrentUser();
 
-    @Query("select leave_config from LeaveConfig leave_config where leave_config.userCreation.login = ?#{principal.username}")
-    List<LeaveConfig> findByUserCreationIsCurrentUser();
-
-    @Query("select leave_config from LeaveConfig leave_config where leave_config.userModification.login = ?#{principal.username}")
-    List<LeaveConfig> findByUserModificationIsCurrentUser();
-
 }

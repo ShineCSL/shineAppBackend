@@ -1,7 +1,6 @@
 package com.shine.shineappback.service.dto;
 
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -9,7 +8,7 @@ import java.util.Objects;
 /**
  * A DTO for the Leaves entity.
  */
-public class LeavesDTO implements Serializable {
+public class LeavesDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
 
@@ -21,27 +20,32 @@ public class LeavesDTO implements Serializable {
 
     private Integer year;
 
-    private ZonedDateTime dateCreation;
-
-    private ZonedDateTime dateModification;
-
     private Integer weekNumber;
 
     private String comment;
+
+    @NotNull
+    private Integer day;
 
     private Long userId;
 
     private String userLogin;
 
-    private Long leavesSubmissionId;
-
-    private Long leavesValidationId;
-
-    private Long leavesRejectionId;
-
     private Long taskId;
 
     private String taskCode;
+
+    private Long leavesSubmissionId;
+
+    private String leavesSubmissionSubmitted;
+
+    private Long leavesValidationId;
+
+    private String leavesValidationValidated;
+
+    private Long leavesRejectionId;
+
+    private String leavesRejectionRejected;
 
     public Long getId() {
         return id;
@@ -75,22 +79,6 @@ public class LeavesDTO implements Serializable {
         this.year = year;
     }
 
-    public ZonedDateTime getDateCreation() {
-        return dateCreation;
-    }
-
-    public void setDateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-    }
-
-    public ZonedDateTime getDateModification() {
-        return dateModification;
-    }
-
-    public void setDateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-    }
-
     public Integer getWeekNumber() {
         return weekNumber;
     }
@@ -105,6 +93,14 @@ public class LeavesDTO implements Serializable {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public Integer getDay() {
+        return day;
+    }
+
+    public void setDay(Integer day) {
+        this.day = day;
     }
 
     public Long getUserId() {
@@ -123,30 +119,6 @@ public class LeavesDTO implements Serializable {
         this.userLogin = userLogin;
     }
 
-    public Long getLeavesSubmissionId() {
-        return leavesSubmissionId;
-    }
-
-    public void setLeavesSubmissionId(Long leavesSubmissionId) {
-        this.leavesSubmissionId = leavesSubmissionId;
-    }
-
-    public Long getLeavesValidationId() {
-        return leavesValidationId;
-    }
-
-    public void setLeavesValidationId(Long leavesValidationId) {
-        this.leavesValidationId = leavesValidationId;
-    }
-
-    public Long getLeavesRejectionId() {
-        return leavesRejectionId;
-    }
-
-    public void setLeavesRejectionId(Long leavesRejectionId) {
-        this.leavesRejectionId = leavesRejectionId;
-    }
-
     public Long getTaskId() {
         return taskId;
     }
@@ -161,6 +133,54 @@ public class LeavesDTO implements Serializable {
 
     public void setTaskCode(String taskCode) {
         this.taskCode = taskCode;
+    }
+
+    public Long getLeavesSubmissionId() {
+        return leavesSubmissionId;
+    }
+
+    public void setLeavesSubmissionId(Long leavesSubmissionId) {
+        this.leavesSubmissionId = leavesSubmissionId;
+    }
+
+    public String getLeavesSubmissionSubmitted() {
+        return leavesSubmissionSubmitted;
+    }
+
+    public void setLeavesSubmissionSubmitted(String leavesSubmissionSubmitted) {
+        this.leavesSubmissionSubmitted = leavesSubmissionSubmitted;
+    }
+
+    public Long getLeavesValidationId() {
+        return leavesValidationId;
+    }
+
+    public void setLeavesValidationId(Long leavesValidationId) {
+        this.leavesValidationId = leavesValidationId;
+    }
+
+    public String getLeavesValidationValidated() {
+        return leavesValidationValidated;
+    }
+
+    public void setLeavesValidationValidated(String leavesValidationValidated) {
+        this.leavesValidationValidated = leavesValidationValidated;
+    }
+
+    public Long getLeavesRejectionId() {
+        return leavesRejectionId;
+    }
+
+    public void setLeavesRejectionId(Long leavesRejectionId) {
+        this.leavesRejectionId = leavesRejectionId;
+    }
+
+    public String getLeavesRejectionRejected() {
+        return leavesRejectionRejected;
+    }
+
+    public void setLeavesRejectionRejected(String leavesRejectionRejected) {
+        this.leavesRejectionRejected = leavesRejectionRejected;
     }
 
     @Override
@@ -191,17 +211,19 @@ public class LeavesDTO implements Serializable {
             ", leaveDate='" + getLeaveDate() + "'" +
             ", nbOfHours=" + getNbOfHours() +
             ", year=" + getYear() +
-            ", dateCreation='" + getDateCreation() + "'" +
-            ", dateModification='" + getDateModification() + "'" +
             ", weekNumber=" + getWeekNumber() +
             ", comment='" + getComment() + "'" +
+            ", day=" + getDay() +
             ", user=" + getUserId() +
             ", user='" + getUserLogin() + "'" +
-            ", leavesSubmission=" + getLeavesSubmissionId() +
-            ", leavesValidation=" + getLeavesValidationId() +
-            ", leavesRejection=" + getLeavesRejectionId() +
             ", task=" + getTaskId() +
             ", task='" + getTaskCode() + "'" +
+            ", leavesSubmission=" + getLeavesSubmissionId() +
+            ", leavesSubmission='" + getLeavesSubmissionSubmitted() + "'" +
+            ", leavesValidation=" + getLeavesValidationId() +
+            ", leavesValidation='" + getLeavesValidationValidated() + "'" +
+            ", leavesRejection=" + getLeavesRejectionId() +
+            ", leavesRejection='" + getLeavesRejectionRejected() + "'" +
             "}";
     }
 }

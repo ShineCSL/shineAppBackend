@@ -1,13 +1,10 @@
 package com.shine.shineappback.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
 
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -15,7 +12,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "leaves_validation")
-public class LeavesValidation implements Serializable {
+public class LeavesValidation extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -26,25 +23,9 @@ public class LeavesValidation implements Serializable {
     @Column(name = "validated")
     private Boolean validated;
 
-    @Column(name = "date_modification")
-    private ZonedDateTime dateModification;
-
-    @NotNull
-    @Column(name = "date_creation", nullable = false)
-    private ZonedDateTime dateCreation;
-
     @OneToOne(mappedBy = "leavesValidation")
     @JsonIgnore
     private Leaves leaves;
-
-    @ManyToOne
-    @JsonIgnoreProperties("")
-    private User userModification;
-
-    @ManyToOne(optional = false)
-    @NotNull
-    @JsonIgnoreProperties("")
-    private User userCreation;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -68,32 +49,6 @@ public class LeavesValidation implements Serializable {
         this.validated = validated;
     }
 
-    public ZonedDateTime getDateModification() {
-        return dateModification;
-    }
-
-    public LeavesValidation dateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-        return this;
-    }
-
-    public void setDateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-    }
-
-    public ZonedDateTime getDateCreation() {
-        return dateCreation;
-    }
-
-    public LeavesValidation dateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-        return this;
-    }
-
-    public void setDateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-    }
-
     public Leaves getLeaves() {
         return leaves;
     }
@@ -105,32 +60,6 @@ public class LeavesValidation implements Serializable {
 
     public void setLeaves(Leaves leaves) {
         this.leaves = leaves;
-    }
-
-    public User getUserModification() {
-        return userModification;
-    }
-
-    public LeavesValidation userModification(User user) {
-        this.userModification = user;
-        return this;
-    }
-
-    public void setUserModification(User user) {
-        this.userModification = user;
-    }
-
-    public User getUserCreation() {
-        return userCreation;
-    }
-
-    public LeavesValidation userCreation(User user) {
-        this.userCreation = user;
-        return this;
-    }
-
-    public void setUserCreation(User user) {
-        this.userCreation = user;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -159,8 +88,6 @@ public class LeavesValidation implements Serializable {
         return "LeavesValidation{" +
             "id=" + getId() +
             ", validated='" + isValidated() + "'" +
-            ", dateModification='" + getDateModification() + "'" +
-            ", dateCreation='" + getDateCreation() + "'" +
             "}";
     }
 }

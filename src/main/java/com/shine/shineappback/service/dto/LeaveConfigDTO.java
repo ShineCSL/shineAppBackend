@@ -1,6 +1,5 @@
 package com.shine.shineappback.service.dto;
 
-import java.time.ZonedDateTime;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -8,7 +7,7 @@ import java.util.Objects;
 /**
  * A DTO for the LeaveConfig entity.
  */
-public class LeaveConfigDTO implements Serializable {
+public class LeaveConfigDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
 
@@ -18,22 +17,9 @@ public class LeaveConfigDTO implements Serializable {
 
     private Integer nbSpecialLeaves;
 
-    @NotNull
-    private ZonedDateTime dateCreation;
-
-    private ZonedDateTime dateModification;
-
     private Long userId;
 
     private String userLogin;
-
-    private Long userCreationId;
-
-    private String userCreationLogin;
-
-    private Long userModificationId;
-
-    private String userModificationLogin;
 
     public Long getId() {
         return id;
@@ -67,22 +53,6 @@ public class LeaveConfigDTO implements Serializable {
         this.nbSpecialLeaves = nbSpecialLeaves;
     }
 
-    public ZonedDateTime getDateCreation() {
-        return dateCreation;
-    }
-
-    public void setDateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-    }
-
-    public ZonedDateTime getDateModification() {
-        return dateModification;
-    }
-
-    public void setDateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-    }
-
     public Long getUserId() {
         return userId;
     }
@@ -97,38 +67,6 @@ public class LeaveConfigDTO implements Serializable {
 
     public void setUserLogin(String userLogin) {
         this.userLogin = userLogin;
-    }
-
-    public Long getUserCreationId() {
-        return userCreationId;
-    }
-
-    public void setUserCreationId(Long userId) {
-        this.userCreationId = userId;
-    }
-
-    public String getUserCreationLogin() {
-        return userCreationLogin;
-    }
-
-    public void setUserCreationLogin(String userLogin) {
-        this.userCreationLogin = userLogin;
-    }
-
-    public Long getUserModificationId() {
-        return userModificationId;
-    }
-
-    public void setUserModificationId(Long userId) {
-        this.userModificationId = userId;
-    }
-
-    public String getUserModificationLogin() {
-        return userModificationLogin;
-    }
-
-    public void setUserModificationLogin(String userLogin) {
-        this.userModificationLogin = userLogin;
     }
 
     @Override
@@ -159,14 +97,8 @@ public class LeaveConfigDTO implements Serializable {
             ", nbSickLeaves=" + getNbSickLeaves() +
             ", nbAnnualLeaves=" + getNbAnnualLeaves() +
             ", nbSpecialLeaves=" + getNbSpecialLeaves() +
-            ", dateCreation='" + getDateCreation() + "'" +
-            ", dateModification='" + getDateModification() + "'" +
             ", user=" + getUserId() +
             ", user='" + getUserLogin() + "'" +
-            ", userCreation=" + getUserCreationId() +
-            ", userCreation='" + getUserCreationLogin() + "'" +
-            ", userModification=" + getUserModificationId() +
-            ", userModification='" + getUserModificationLogin() + "'" +
             "}";
     }
 }

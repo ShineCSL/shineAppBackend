@@ -20,6 +20,18 @@
                                  referencedColumnNames="id"
                                  referencedTableName="jhi_user"/>
 
+        <addForeignKeyConstraint baseColumnNames="mission_id"
+                                 baseTableName="activity"
+                                 constraintName="fk_activity_mission_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="mission"/>
+
+        <addForeignKeyConstraint baseColumnNames="activity_rejection_id"
+                                 baseTableName="activity"
+                                 constraintName="fk_activity_activity_rejection_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="activity_rejection"/>
+
         <addForeignKeyConstraint baseColumnNames="activity_submission_id"
                                  baseTableName="activity"
                                  constraintName="fk_activity_activity_submission_id"
@@ -31,30 +43,6 @@
                                  constraintName="fk_activity_activity_validation_id"
                                  referencedColumnNames="id"
                                  referencedTableName="activity_validation"/>
-
-        <addForeignKeyConstraint baseColumnNames="activity_rejection_id"
-                                 baseTableName="activity"
-                                 constraintName="fk_activity_activity_rejection_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="activity_rejection"/>
-
-        <addForeignKeyConstraint baseColumnNames="user_creation_id"
-                                 baseTableName="activity"
-                                 constraintName="fk_activity_user_creation_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="jhi_user"/>
-
-        <addForeignKeyConstraint baseColumnNames="user_modification_id"
-                                 baseTableName="activity"
-                                 constraintName="fk_activity_user_modification_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="jhi_user"/>
-
-        <addForeignKeyConstraint baseColumnNames="mission_id"
-                                 baseTableName="activity"
-                                 constraintName="fk_activity_mission_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="mission"/>
 
     </changeSet>
 </databaseChangeLog>

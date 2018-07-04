@@ -3,7 +3,6 @@ package com.shine.shineappback.web.rest;
 import com.shine.shineappback.ShineAppBackendApp;
 
 import com.shine.shineappback.domain.TypeInvoice;
-import com.shine.shineappback.domain.User;
 import com.shine.shineappback.repository.TypeInvoiceRepository;
 import com.shine.shineappback.service.TypeInvoiceService;
 import com.shine.shineappback.service.dto.TypeInvoiceDTO;
@@ -25,14 +24,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
-import java.time.ZoneId;
 import java.util.List;
 
 
-import static com.shine.shineappback.web.rest.TestUtil.sameInstant;
 import static com.shine.shineappback.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -48,20 +42,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = ShineAppBackendApp.class)
 public class TypeInvoiceResourceIntTest {
 
-    private static final String DEFAULT_CODE = "D-_/%]";
-    private static final String UPDATED_CODE = "S-_/%]";
-
     private static final String DEFAULT_LABEL_EN = "AAAAAAAAAA";
     private static final String UPDATED_LABEL_EN = "BBBBBBBBBB";
 
     private static final String DEFAULT_LABEL_FR = "AAAAAAAAAA";
     private static final String UPDATED_LABEL_FR = "BBBBBBBBBB";
 
-    private static final ZonedDateTime DEFAULT_DATE_MODIFICATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_MODIFICATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
-    private static final ZonedDateTime DEFAULT_DATE_CREATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_CREATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final String DEFAULT_CODE = "AAAAAAAAAA";
+    private static final String UPDATED_CODE = "BBBBBBBBBB";
 
     @Autowired
     private TypeInvoiceRepository typeInvoiceRepository;
@@ -109,16 +97,9 @@ public class TypeInvoiceResourceIntTest {
      */
     public static TypeInvoice createEntity(EntityManager em) {
         TypeInvoice typeInvoice = new TypeInvoice()
-            .code(DEFAULT_CODE)
             .labelEn(DEFAULT_LABEL_EN)
             .labelFr(DEFAULT_LABEL_FR)
-            .dateModification(DEFAULT_DATE_MODIFICATION)
-            .dateCreation(DEFAULT_DATE_CREATION);
-        // Add required entity
-        User user = UserResourceIntTest.createEntity(em);
-        em.persist(user);
-        em.flush();
-        typeInvoice.setUserCreation(user);
+            .code(DEFAULT_CODE);
         return typeInvoice;
     }
 
@@ -143,11 +124,9 @@ public class TypeInvoiceResourceIntTest {
         List<TypeInvoice> typeInvoiceList = typeInvoiceRepository.findAll();
         assertThat(typeInvoiceList).hasSize(databaseSizeBeforeCreate + 1);
         TypeInvoice testTypeInvoice = typeInvoiceList.get(typeInvoiceList.size() - 1);
-        assertThat(testTypeInvoice.getCode()).isEqualTo(DEFAULT_CODE);
         assertThat(testTypeInvoice.getLabelEn()).isEqualTo(DEFAULT_LABEL_EN);
         assertThat(testTypeInvoice.getLabelFr()).isEqualTo(DEFAULT_LABEL_FR);
-        assertThat(testTypeInvoice.getDateModification()).isEqualTo(DEFAULT_DATE_MODIFICATION);
-        assertThat(testTypeInvoice.getDateCreation()).isEqualTo(DEFAULT_DATE_CREATION);
+        assertThat(testTypeInvoice.getCode()).isEqualTo(DEFAULT_CODE);
     }
 
     @Test
@@ -191,25 +170,6 @@ public class TypeInvoiceResourceIntTest {
 
     @Test
     @Transactional
-    public void checkDateCreationIsRequired() throws Exception {
-        int databaseSizeBeforeTest = typeInvoiceRepository.findAll().size();
-        // set the field null
-        typeInvoice.setDateCreation(null);
-
-        // Create the TypeInvoice, which fails.
-        TypeInvoiceDTO typeInvoiceDTO = typeInvoiceMapper.toDto(typeInvoice);
-
-        restTypeInvoiceMockMvc.perform(post("/api/type-invoices")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(typeInvoiceDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<TypeInvoice> typeInvoiceList = typeInvoiceRepository.findAll();
-        assertThat(typeInvoiceList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void getAllTypeInvoices() throws Exception {
         // Initialize the database
         typeInvoiceRepository.saveAndFlush(typeInvoice);
@@ -219,11 +179,9 @@ public class TypeInvoiceResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(typeInvoice.getId().intValue())))
-            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
             .andExpect(jsonPath("$.[*].labelEn").value(hasItem(DEFAULT_LABEL_EN.toString())))
             .andExpect(jsonPath("$.[*].labelFr").value(hasItem(DEFAULT_LABEL_FR.toString())))
-            .andExpect(jsonPath("$.[*].dateModification").value(hasItem(sameInstant(DEFAULT_DATE_MODIFICATION))))
-            .andExpect(jsonPath("$.[*].dateCreation").value(hasItem(sameInstant(DEFAULT_DATE_CREATION))));
+            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())));
     }
     
 
@@ -238,11 +196,9 @@ public class TypeInvoiceResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(typeInvoice.getId().intValue()))
-            .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()))
             .andExpect(jsonPath("$.labelEn").value(DEFAULT_LABEL_EN.toString()))
             .andExpect(jsonPath("$.labelFr").value(DEFAULT_LABEL_FR.toString()))
-            .andExpect(jsonPath("$.dateModification").value(sameInstant(DEFAULT_DATE_MODIFICATION)))
-            .andExpect(jsonPath("$.dateCreation").value(sameInstant(DEFAULT_DATE_CREATION)));
+            .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()));
     }
     @Test
     @Transactional
@@ -265,11 +221,9 @@ public class TypeInvoiceResourceIntTest {
         // Disconnect from session so that the updates on updatedTypeInvoice are not directly saved in db
         em.detach(updatedTypeInvoice);
         updatedTypeInvoice
-            .code(UPDATED_CODE)
             .labelEn(UPDATED_LABEL_EN)
             .labelFr(UPDATED_LABEL_FR)
-            .dateModification(UPDATED_DATE_MODIFICATION)
-            .dateCreation(UPDATED_DATE_CREATION);
+            .code(UPDATED_CODE);
         TypeInvoiceDTO typeInvoiceDTO = typeInvoiceMapper.toDto(updatedTypeInvoice);
 
         restTypeInvoiceMockMvc.perform(put("/api/type-invoices")
@@ -281,11 +235,9 @@ public class TypeInvoiceResourceIntTest {
         List<TypeInvoice> typeInvoiceList = typeInvoiceRepository.findAll();
         assertThat(typeInvoiceList).hasSize(databaseSizeBeforeUpdate);
         TypeInvoice testTypeInvoice = typeInvoiceList.get(typeInvoiceList.size() - 1);
-        assertThat(testTypeInvoice.getCode()).isEqualTo(UPDATED_CODE);
         assertThat(testTypeInvoice.getLabelEn()).isEqualTo(UPDATED_LABEL_EN);
         assertThat(testTypeInvoice.getLabelFr()).isEqualTo(UPDATED_LABEL_FR);
-        assertThat(testTypeInvoice.getDateModification()).isEqualTo(UPDATED_DATE_MODIFICATION);
-        assertThat(testTypeInvoice.getDateCreation()).isEqualTo(UPDATED_DATE_CREATION);
+        assertThat(testTypeInvoice.getCode()).isEqualTo(UPDATED_CODE);
     }
 
     @Test

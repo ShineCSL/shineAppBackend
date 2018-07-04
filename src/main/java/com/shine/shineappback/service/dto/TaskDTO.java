@@ -1,6 +1,5 @@
 package com.shine.shineappback.service.dto;
 
-import java.time.ZonedDateTime;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -8,32 +7,19 @@ import java.util.Objects;
 /**
  * A DTO for the Task entity.
  */
-public class TaskDTO implements Serializable {
+public class TaskDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
 
     private Boolean leave;
-
-    private ZonedDateTime dateModification;
-
-    @NotNull
-    @Pattern(regexp = "^[A-Z0-9()[\\\\]+-_*/%]*$")
-    private String code;
 
     private String labelEn;
 
     private String labelFr;
 
     @NotNull
-    private ZonedDateTime dateCreation;
-
-    private Long userCreationId;
-
-    private String userCreationLogin;
-
-    private Long userModificationId;
-
-    private String userModificationLogin;
+    @Pattern(regexp = "^[A-Z0-9()\\[\\]#$+*%\\-_/\\\\]*$")
+    private String code;
 
     public Long getId() {
         return id;
@@ -49,22 +35,6 @@ public class TaskDTO implements Serializable {
 
     public void setLeave(Boolean leave) {
         this.leave = leave;
-    }
-
-    public ZonedDateTime getDateModification() {
-        return dateModification;
-    }
-
-    public void setDateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public String getLabelEn() {
@@ -83,44 +53,12 @@ public class TaskDTO implements Serializable {
         this.labelFr = labelFr;
     }
 
-    public ZonedDateTime getDateCreation() {
-        return dateCreation;
+    public String getCode() {
+        return code;
     }
 
-    public void setDateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-    }
-
-    public Long getUserCreationId() {
-        return userCreationId;
-    }
-
-    public void setUserCreationId(Long userId) {
-        this.userCreationId = userId;
-    }
-
-    public String getUserCreationLogin() {
-        return userCreationLogin;
-    }
-
-    public void setUserCreationLogin(String userLogin) {
-        this.userCreationLogin = userLogin;
-    }
-
-    public Long getUserModificationId() {
-        return userModificationId;
-    }
-
-    public void setUserModificationId(Long userId) {
-        this.userModificationId = userId;
-    }
-
-    public String getUserModificationLogin() {
-        return userModificationLogin;
-    }
-
-    public void setUserModificationLogin(String userLogin) {
-        this.userModificationLogin = userLogin;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     @Override
@@ -149,15 +87,9 @@ public class TaskDTO implements Serializable {
         return "TaskDTO{" +
             "id=" + getId() +
             ", leave='" + isLeave() + "'" +
-            ", dateModification='" + getDateModification() + "'" +
-            ", code='" + getCode() + "'" +
             ", labelEn='" + getLabelEn() + "'" +
             ", labelFr='" + getLabelFr() + "'" +
-            ", dateCreation='" + getDateCreation() + "'" +
-            ", userCreation=" + getUserCreationId() +
-            ", userCreation='" + getUserCreationLogin() + "'" +
-            ", userModification=" + getUserModificationId() +
-            ", userModification='" + getUserModificationLogin() + "'" +
+            ", code='" + getCode() + "'" +
             "}";
     }
 }

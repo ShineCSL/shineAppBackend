@@ -16,10 +16,4 @@ public interface ActivityRepository extends JpaRepository<Activity, Long> {
     @Query("select activity from Activity activity where activity.user.login = ?#{principal.username}")
     List<Activity> findByUserIsCurrentUser();
 
-    @Query("select activity from Activity activity where activity.userCreation.login = ?#{principal.username}")
-    List<Activity> findByUserCreationIsCurrentUser();
-
-    @Query("select activity from Activity activity where activity.userModification.login = ?#{principal.username}")
-    List<Activity> findByUserModificationIsCurrentUser();
-
 }

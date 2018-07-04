@@ -14,17 +14,5 @@
                                  referencedColumnNames="id"
                                  referencedTableName="client"/>
 
-        <addForeignKeyConstraint baseColumnNames="user_creation_id"
-                                 baseTableName="mission"
-                                 constraintName="fk_mission_user_creation_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="jhi_user"/>
-
-        <addForeignKeyConstraint baseColumnNames="user_modification_id"
-                                 baseTableName="mission"
-                                 constraintName="fk_mission_user_modification_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="jhi_user"/>
-
     </changeSet>
 </databaseChangeLog>

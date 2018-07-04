@@ -7,7 +7,6 @@ import javax.validation.constraints.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -15,7 +14,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "leaves")
-public class Leaves implements Serializable {
+public class Leaves extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -34,22 +33,25 @@ public class Leaves implements Serializable {
     @Column(name = "jhi_year")
     private Integer year;
 
-    @Column(name = "date_creation")
-    private ZonedDateTime dateCreation;
-
-    @Column(name = "date_modification")
-    private ZonedDateTime dateModification;
-
     @Column(name = "week_number")
     private Integer weekNumber;
 
     @Column(name = "jhi_comment")
     private String comment;
 
+    @NotNull
+    @Column(name = "day", nullable = false)
+    private Integer day;
+
     @ManyToOne(optional = false)
     @NotNull
     @JsonIgnoreProperties("")
     private User user;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    @JsonIgnoreProperties("")
+    private Task task;
 
     @OneToOne
     @JoinColumn(unique = true)
@@ -62,11 +64,6 @@ public class Leaves implements Serializable {
     @OneToOne
     @JoinColumn(unique = true)
     private LeavesRejection leavesRejection;
-
-    @ManyToOne(optional = false)
-    @NotNull
-    @JsonIgnoreProperties("")
-    private Task task;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -116,32 +113,6 @@ public class Leaves implements Serializable {
         this.year = year;
     }
 
-    public ZonedDateTime getDateCreation() {
-        return dateCreation;
-    }
-
-    public Leaves dateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-        return this;
-    }
-
-    public void setDateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-    }
-
-    public ZonedDateTime getDateModification() {
-        return dateModification;
-    }
-
-    public Leaves dateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-        return this;
-    }
-
-    public void setDateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-    }
-
     public Integer getWeekNumber() {
         return weekNumber;
     }
@@ -168,6 +139,19 @@ public class Leaves implements Serializable {
         this.comment = comment;
     }
 
+    public Integer getDay() {
+        return day;
+    }
+
+    public Leaves day(Integer day) {
+        this.day = day;
+        return this;
+    }
+
+    public void setDay(Integer day) {
+        this.day = day;
+    }
+
     public User getUser() {
         return user;
     }
@@ -179,6 +163,19 @@ public class Leaves implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Task getTask() {
+        return task;
+    }
+
+    public Leaves task(Task task) {
+        this.task = task;
+        return this;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
     }
 
     public LeavesSubmission getLeavesSubmission() {
@@ -219,19 +216,6 @@ public class Leaves implements Serializable {
     public void setLeavesRejection(LeavesRejection leavesRejection) {
         this.leavesRejection = leavesRejection;
     }
-
-    public Task getTask() {
-        return task;
-    }
-
-    public Leaves task(Task task) {
-        this.task = task;
-        return this;
-    }
-
-    public void setTask(Task task) {
-        this.task = task;
-    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
@@ -261,10 +245,9 @@ public class Leaves implements Serializable {
             ", leaveDate='" + getLeaveDate() + "'" +
             ", nbOfHours=" + getNbOfHours() +
             ", year=" + getYear() +
-            ", dateCreation='" + getDateCreation() + "'" +
-            ", dateModification='" + getDateModification() + "'" +
             ", weekNumber=" + getWeekNumber() +
             ", comment='" + getComment() + "'" +
+            ", day=" + getDay() +
             "}";
     }
 }

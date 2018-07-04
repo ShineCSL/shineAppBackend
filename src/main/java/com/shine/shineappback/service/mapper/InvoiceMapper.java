@@ -8,28 +8,26 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity Invoice and its DTO InvoiceDTO.
  */
-@Mapper(componentModel = "spring", uses = {TypeInvoiceMapper.class, InvoiceSubmissionMapper.class, InvoiceValidationMapper.class, InvoiceRejectionMapper.class, CurrencyMapper.class, UserMapper.class})
+@Mapper(componentModel = "spring", uses = {CurrencyMapper.class, InvoiceRejectionMapper.class, InvoiceSubmissionMapper.class, InvoiceValidationMapper.class, TypeInvoiceMapper.class})
 public interface InvoiceMapper extends EntityMapper<InvoiceDTO, Invoice> {
 
-    @Mapping(source = "typeInvoice.id", target = "typeInvoiceId")
-    @Mapping(source = "invoiceSubmission.id", target = "invoiceSubmissionId")
-    @Mapping(source = "invoiceValidation.id", target = "invoiceValidationId")
-    @Mapping(source = "invoiceRejection.id", target = "invoiceRejectionId")
     @Mapping(source = "currency.id", target = "currencyId")
     @Mapping(source = "currency.code", target = "currencyCode")
-    @Mapping(source = "userCreation.id", target = "userCreationId")
-    @Mapping(source = "userCreation.login", target = "userCreationLogin")
-    @Mapping(source = "userModification.id", target = "userModificationId")
-    @Mapping(source = "userModification.login", target = "userModificationLogin")
+    @Mapping(source = "invoiceRejection.id", target = "invoiceRejectionId")
+    @Mapping(source = "invoiceRejection.rejected", target = "invoiceRejectionRejected")
+    @Mapping(source = "invoiceSubmission.id", target = "invoiceSubmissionId")
+    @Mapping(source = "invoiceSubmission.submitted", target = "invoiceSubmissionSubmitted")
+    @Mapping(source = "invoiceValidation.id", target = "invoiceValidationId")
+    @Mapping(source = "invoiceValidation.validated", target = "invoiceValidationValidated")
+    @Mapping(source = "typeInvoice.id", target = "typeInvoiceId")
+    @Mapping(source = "typeInvoice.code", target = "typeInvoiceCode")
     InvoiceDTO toDto(Invoice invoice);
 
-    @Mapping(source = "typeInvoiceId", target = "typeInvoice")
+    @Mapping(source = "currencyId", target = "currency")
+    @Mapping(source = "invoiceRejectionId", target = "invoiceRejection")
     @Mapping(source = "invoiceSubmissionId", target = "invoiceSubmission")
     @Mapping(source = "invoiceValidationId", target = "invoiceValidation")
-    @Mapping(source = "invoiceRejectionId", target = "invoiceRejection")
-    @Mapping(source = "currencyId", target = "currency")
-    @Mapping(source = "userCreationId", target = "userCreation")
-    @Mapping(source = "userModificationId", target = "userModification")
+    @Mapping(source = "typeInvoiceId", target = "typeInvoice")
     Invoice toEntity(InvoiceDTO invoiceDTO);
 
     default Invoice fromId(Long id) {

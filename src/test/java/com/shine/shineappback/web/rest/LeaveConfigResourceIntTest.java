@@ -4,7 +4,6 @@ import com.shine.shineappback.ShineAppBackendApp;
 
 import com.shine.shineappback.domain.LeaveConfig;
 import com.shine.shineappback.domain.User;
-import com.shine.shineappback.domain.User;
 import com.shine.shineappback.repository.LeaveConfigRepository;
 import com.shine.shineappback.service.LeaveConfigService;
 import com.shine.shineappback.service.dto.LeaveConfigDTO;
@@ -26,14 +25,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
-import java.time.ZoneId;
 import java.util.List;
 
 
-import static com.shine.shineappback.web.rest.TestUtil.sameInstant;
 import static com.shine.shineappback.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -57,12 +51,6 @@ public class LeaveConfigResourceIntTest {
 
     private static final Integer DEFAULT_NB_SPECIAL_LEAVES = 1;
     private static final Integer UPDATED_NB_SPECIAL_LEAVES = 2;
-
-    private static final ZonedDateTime DEFAULT_DATE_CREATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_CREATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
-    private static final ZonedDateTime DEFAULT_DATE_MODIFICATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_MODIFICATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
     @Autowired
     private LeaveConfigRepository leaveConfigRepository;
@@ -112,16 +100,12 @@ public class LeaveConfigResourceIntTest {
         LeaveConfig leaveConfig = new LeaveConfig()
             .nbSickLeaves(DEFAULT_NB_SICK_LEAVES)
             .nbAnnualLeaves(DEFAULT_NB_ANNUAL_LEAVES)
-            .nbSpecialLeaves(DEFAULT_NB_SPECIAL_LEAVES)
-            .dateCreation(DEFAULT_DATE_CREATION)
-            .dateModification(DEFAULT_DATE_MODIFICATION);
+            .nbSpecialLeaves(DEFAULT_NB_SPECIAL_LEAVES);
         // Add required entity
         User user = UserResourceIntTest.createEntity(em);
         em.persist(user);
         em.flush();
         leaveConfig.setUser(user);
-        // Add required entity
-        leaveConfig.setUserCreation(user);
         return leaveConfig;
     }
 
@@ -149,8 +133,6 @@ public class LeaveConfigResourceIntTest {
         assertThat(testLeaveConfig.getNbSickLeaves()).isEqualTo(DEFAULT_NB_SICK_LEAVES);
         assertThat(testLeaveConfig.getNbAnnualLeaves()).isEqualTo(DEFAULT_NB_ANNUAL_LEAVES);
         assertThat(testLeaveConfig.getNbSpecialLeaves()).isEqualTo(DEFAULT_NB_SPECIAL_LEAVES);
-        assertThat(testLeaveConfig.getDateCreation()).isEqualTo(DEFAULT_DATE_CREATION);
-        assertThat(testLeaveConfig.getDateModification()).isEqualTo(DEFAULT_DATE_MODIFICATION);
     }
 
     @Test
@@ -175,25 +157,6 @@ public class LeaveConfigResourceIntTest {
 
     @Test
     @Transactional
-    public void checkDateCreationIsRequired() throws Exception {
-        int databaseSizeBeforeTest = leaveConfigRepository.findAll().size();
-        // set the field null
-        leaveConfig.setDateCreation(null);
-
-        // Create the LeaveConfig, which fails.
-        LeaveConfigDTO leaveConfigDTO = leaveConfigMapper.toDto(leaveConfig);
-
-        restLeaveConfigMockMvc.perform(post("/api/leave-configs")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(leaveConfigDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<LeaveConfig> leaveConfigList = leaveConfigRepository.findAll();
-        assertThat(leaveConfigList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void getAllLeaveConfigs() throws Exception {
         // Initialize the database
         leaveConfigRepository.saveAndFlush(leaveConfig);
@@ -205,9 +168,7 @@ public class LeaveConfigResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(leaveConfig.getId().intValue())))
             .andExpect(jsonPath("$.[*].nbSickLeaves").value(hasItem(DEFAULT_NB_SICK_LEAVES)))
             .andExpect(jsonPath("$.[*].nbAnnualLeaves").value(hasItem(DEFAULT_NB_ANNUAL_LEAVES)))
-            .andExpect(jsonPath("$.[*].nbSpecialLeaves").value(hasItem(DEFAULT_NB_SPECIAL_LEAVES)))
-            .andExpect(jsonPath("$.[*].dateCreation").value(hasItem(sameInstant(DEFAULT_DATE_CREATION))))
-            .andExpect(jsonPath("$.[*].dateModification").value(hasItem(sameInstant(DEFAULT_DATE_MODIFICATION))));
+            .andExpect(jsonPath("$.[*].nbSpecialLeaves").value(hasItem(DEFAULT_NB_SPECIAL_LEAVES)));
     }
     
 
@@ -224,9 +185,7 @@ public class LeaveConfigResourceIntTest {
             .andExpect(jsonPath("$.id").value(leaveConfig.getId().intValue()))
             .andExpect(jsonPath("$.nbSickLeaves").value(DEFAULT_NB_SICK_LEAVES))
             .andExpect(jsonPath("$.nbAnnualLeaves").value(DEFAULT_NB_ANNUAL_LEAVES))
-            .andExpect(jsonPath("$.nbSpecialLeaves").value(DEFAULT_NB_SPECIAL_LEAVES))
-            .andExpect(jsonPath("$.dateCreation").value(sameInstant(DEFAULT_DATE_CREATION)))
-            .andExpect(jsonPath("$.dateModification").value(sameInstant(DEFAULT_DATE_MODIFICATION)));
+            .andExpect(jsonPath("$.nbSpecialLeaves").value(DEFAULT_NB_SPECIAL_LEAVES));
     }
     @Test
     @Transactional
@@ -251,9 +210,7 @@ public class LeaveConfigResourceIntTest {
         updatedLeaveConfig
             .nbSickLeaves(UPDATED_NB_SICK_LEAVES)
             .nbAnnualLeaves(UPDATED_NB_ANNUAL_LEAVES)
-            .nbSpecialLeaves(UPDATED_NB_SPECIAL_LEAVES)
-            .dateCreation(UPDATED_DATE_CREATION)
-            .dateModification(UPDATED_DATE_MODIFICATION);
+            .nbSpecialLeaves(UPDATED_NB_SPECIAL_LEAVES);
         LeaveConfigDTO leaveConfigDTO = leaveConfigMapper.toDto(updatedLeaveConfig);
 
         restLeaveConfigMockMvc.perform(put("/api/leave-configs")
@@ -268,8 +225,6 @@ public class LeaveConfigResourceIntTest {
         assertThat(testLeaveConfig.getNbSickLeaves()).isEqualTo(UPDATED_NB_SICK_LEAVES);
         assertThat(testLeaveConfig.getNbAnnualLeaves()).isEqualTo(UPDATED_NB_ANNUAL_LEAVES);
         assertThat(testLeaveConfig.getNbSpecialLeaves()).isEqualTo(UPDATED_NB_SPECIAL_LEAVES);
-        assertThat(testLeaveConfig.getDateCreation()).isEqualTo(UPDATED_DATE_CREATION);
-        assertThat(testLeaveConfig.getDateModification()).isEqualTo(UPDATED_DATE_MODIFICATION);
     }
 
     @Test

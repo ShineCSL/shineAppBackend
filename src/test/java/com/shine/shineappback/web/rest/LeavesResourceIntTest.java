@@ -27,14 +27,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
 import java.time.ZoneId;
 import java.util.List;
 
 
-import static com.shine.shineappback.web.rest.TestUtil.sameInstant;
 import static com.shine.shineappback.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -59,17 +55,14 @@ public class LeavesResourceIntTest {
     private static final Integer DEFAULT_YEAR = 1;
     private static final Integer UPDATED_YEAR = 2;
 
-    private static final ZonedDateTime DEFAULT_DATE_CREATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_CREATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
-    private static final ZonedDateTime DEFAULT_DATE_MODIFICATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_MODIFICATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
     private static final Integer DEFAULT_WEEK_NUMBER = 1;
     private static final Integer UPDATED_WEEK_NUMBER = 2;
 
     private static final String DEFAULT_COMMENT = "AAAAAAAAAA";
     private static final String UPDATED_COMMENT = "BBBBBBBBBB";
+
+    private static final Integer DEFAULT_DAY = 1;
+    private static final Integer UPDATED_DAY = 2;
 
     @Autowired
     private LeavesRepository leavesRepository;
@@ -120,10 +113,9 @@ public class LeavesResourceIntTest {
             .leaveDate(DEFAULT_LEAVE_DATE)
             .nbOfHours(DEFAULT_NB_OF_HOURS)
             .year(DEFAULT_YEAR)
-            .dateCreation(DEFAULT_DATE_CREATION)
-            .dateModification(DEFAULT_DATE_MODIFICATION)
             .weekNumber(DEFAULT_WEEK_NUMBER)
-            .comment(DEFAULT_COMMENT);
+            .comment(DEFAULT_COMMENT)
+            .day(DEFAULT_DAY);
         // Add required entity
         User user = UserResourceIntTest.createEntity(em);
         em.persist(user);
@@ -161,10 +153,9 @@ public class LeavesResourceIntTest {
         assertThat(testLeaves.getLeaveDate()).isEqualTo(DEFAULT_LEAVE_DATE);
         assertThat(testLeaves.getNbOfHours()).isEqualTo(DEFAULT_NB_OF_HOURS);
         assertThat(testLeaves.getYear()).isEqualTo(DEFAULT_YEAR);
-        assertThat(testLeaves.getDateCreation()).isEqualTo(DEFAULT_DATE_CREATION);
-        assertThat(testLeaves.getDateModification()).isEqualTo(DEFAULT_DATE_MODIFICATION);
         assertThat(testLeaves.getWeekNumber()).isEqualTo(DEFAULT_WEEK_NUMBER);
         assertThat(testLeaves.getComment()).isEqualTo(DEFAULT_COMMENT);
+        assertThat(testLeaves.getDay()).isEqualTo(DEFAULT_DAY);
     }
 
     @Test
@@ -227,6 +218,25 @@ public class LeavesResourceIntTest {
 
     @Test
     @Transactional
+    public void checkDayIsRequired() throws Exception {
+        int databaseSizeBeforeTest = leavesRepository.findAll().size();
+        // set the field null
+        leaves.setDay(null);
+
+        // Create the Leaves, which fails.
+        LeavesDTO leavesDTO = leavesMapper.toDto(leaves);
+
+        restLeavesMockMvc.perform(post("/api/leaves")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(leavesDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<Leaves> leavesList = leavesRepository.findAll();
+        assertThat(leavesList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllLeaves() throws Exception {
         // Initialize the database
         leavesRepository.saveAndFlush(leaves);
@@ -239,10 +249,9 @@ public class LeavesResourceIntTest {
             .andExpect(jsonPath("$.[*].leaveDate").value(hasItem(DEFAULT_LEAVE_DATE.toString())))
             .andExpect(jsonPath("$.[*].nbOfHours").value(hasItem(DEFAULT_NB_OF_HOURS.doubleValue())))
             .andExpect(jsonPath("$.[*].year").value(hasItem(DEFAULT_YEAR)))
-            .andExpect(jsonPath("$.[*].dateCreation").value(hasItem(sameInstant(DEFAULT_DATE_CREATION))))
-            .andExpect(jsonPath("$.[*].dateModification").value(hasItem(sameInstant(DEFAULT_DATE_MODIFICATION))))
             .andExpect(jsonPath("$.[*].weekNumber").value(hasItem(DEFAULT_WEEK_NUMBER)))
-            .andExpect(jsonPath("$.[*].comment").value(hasItem(DEFAULT_COMMENT.toString())));
+            .andExpect(jsonPath("$.[*].comment").value(hasItem(DEFAULT_COMMENT.toString())))
+            .andExpect(jsonPath("$.[*].day").value(hasItem(DEFAULT_DAY)));
     }
     
 
@@ -260,10 +269,9 @@ public class LeavesResourceIntTest {
             .andExpect(jsonPath("$.leaveDate").value(DEFAULT_LEAVE_DATE.toString()))
             .andExpect(jsonPath("$.nbOfHours").value(DEFAULT_NB_OF_HOURS.doubleValue()))
             .andExpect(jsonPath("$.year").value(DEFAULT_YEAR))
-            .andExpect(jsonPath("$.dateCreation").value(sameInstant(DEFAULT_DATE_CREATION)))
-            .andExpect(jsonPath("$.dateModification").value(sameInstant(DEFAULT_DATE_MODIFICATION)))
             .andExpect(jsonPath("$.weekNumber").value(DEFAULT_WEEK_NUMBER))
-            .andExpect(jsonPath("$.comment").value(DEFAULT_COMMENT.toString()));
+            .andExpect(jsonPath("$.comment").value(DEFAULT_COMMENT.toString()))
+            .andExpect(jsonPath("$.day").value(DEFAULT_DAY));
     }
     @Test
     @Transactional
@@ -289,10 +297,9 @@ public class LeavesResourceIntTest {
             .leaveDate(UPDATED_LEAVE_DATE)
             .nbOfHours(UPDATED_NB_OF_HOURS)
             .year(UPDATED_YEAR)
-            .dateCreation(UPDATED_DATE_CREATION)
-            .dateModification(UPDATED_DATE_MODIFICATION)
             .weekNumber(UPDATED_WEEK_NUMBER)
-            .comment(UPDATED_COMMENT);
+            .comment(UPDATED_COMMENT)
+            .day(UPDATED_DAY);
         LeavesDTO leavesDTO = leavesMapper.toDto(updatedLeaves);
 
         restLeavesMockMvc.perform(put("/api/leaves")
@@ -307,10 +314,9 @@ public class LeavesResourceIntTest {
         assertThat(testLeaves.getLeaveDate()).isEqualTo(UPDATED_LEAVE_DATE);
         assertThat(testLeaves.getNbOfHours()).isEqualTo(UPDATED_NB_OF_HOURS);
         assertThat(testLeaves.getYear()).isEqualTo(UPDATED_YEAR);
-        assertThat(testLeaves.getDateCreation()).isEqualTo(UPDATED_DATE_CREATION);
-        assertThat(testLeaves.getDateModification()).isEqualTo(UPDATED_DATE_MODIFICATION);
         assertThat(testLeaves.getWeekNumber()).isEqualTo(UPDATED_WEEK_NUMBER);
         assertThat(testLeaves.getComment()).isEqualTo(UPDATED_COMMENT);
+        assertThat(testLeaves.getDay()).isEqualTo(UPDATED_DAY);
     }
 
     @Test

@@ -3,7 +3,6 @@ package com.shine.shineappback.web.rest;
 import com.shine.shineappback.ShineAppBackendApp;
 
 import com.shine.shineappback.domain.AccountDetails;
-import com.shine.shineappback.domain.User;
 import com.shine.shineappback.domain.Currency;
 import com.shine.shineappback.repository.AccountDetailsRepository;
 import com.shine.shineappback.service.AccountDetailsService;
@@ -26,14 +25,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
-import java.time.ZoneId;
 import java.util.List;
 
 
-import static com.shine.shineappback.web.rest.TestUtil.sameInstant;
 import static com.shine.shineappback.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -49,23 +43,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = ShineAppBackendApp.class)
 public class AccountDetailsResourceIntTest {
 
-    private static final String DEFAULT_CODE = "P-/%]";
-    private static final String UPDATED_CODE = "S-_/%";
-
     private static final Double DEFAULT_AMOUNT = 1D;
     private static final Double UPDATED_AMOUNT = 2D;
-
-    private static final String DEFAULT_TYPE = "AAAAAAAAAA";
-    private static final String UPDATED_TYPE = "BBBBBBBBBB";
 
     private static final Double DEFAULT_RATE = 1D;
     private static final Double UPDATED_RATE = 2D;
 
-    private static final ZonedDateTime DEFAULT_DATE_CREATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_CREATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final String DEFAULT_LABEL = "AAAAAAAAAA";
+    private static final String UPDATED_LABEL = "BBBBBBBBBB";
 
-    private static final ZonedDateTime DEFAULT_DATE_MODIFICATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_MODIFICATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
+    private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
+
+    private static final String DEFAULT_TYPE = "AAAAAAAAAA";
+    private static final String UPDATED_TYPE = "BBBBBBBBBB";
 
     @Autowired
     private AccountDetailsRepository accountDetailsRepository;
@@ -113,17 +104,11 @@ public class AccountDetailsResourceIntTest {
      */
     public static AccountDetails createEntity(EntityManager em) {
         AccountDetails accountDetails = new AccountDetails()
-            .code(DEFAULT_CODE)
             .amount(DEFAULT_AMOUNT)
-            .type(DEFAULT_TYPE)
             .rate(DEFAULT_RATE)
-            .dateCreation(DEFAULT_DATE_CREATION)
-            .dateModification(DEFAULT_DATE_MODIFICATION);
-        // Add required entity
-        User user = UserResourceIntTest.createEntity(em);
-        em.persist(user);
-        em.flush();
-        accountDetails.setUserCreation(user);
+            .label(DEFAULT_LABEL)
+            .description(DEFAULT_DESCRIPTION)
+            .type(DEFAULT_TYPE);
         // Add required entity
         Currency currency = CurrencyResourceIntTest.createEntity(em);
         em.persist(currency);
@@ -153,12 +138,11 @@ public class AccountDetailsResourceIntTest {
         List<AccountDetails> accountDetailsList = accountDetailsRepository.findAll();
         assertThat(accountDetailsList).hasSize(databaseSizeBeforeCreate + 1);
         AccountDetails testAccountDetails = accountDetailsList.get(accountDetailsList.size() - 1);
-        assertThat(testAccountDetails.getCode()).isEqualTo(DEFAULT_CODE);
         assertThat(testAccountDetails.getAmount()).isEqualTo(DEFAULT_AMOUNT);
-        assertThat(testAccountDetails.getType()).isEqualTo(DEFAULT_TYPE);
         assertThat(testAccountDetails.getRate()).isEqualTo(DEFAULT_RATE);
-        assertThat(testAccountDetails.getDateCreation()).isEqualTo(DEFAULT_DATE_CREATION);
-        assertThat(testAccountDetails.getDateModification()).isEqualTo(DEFAULT_DATE_MODIFICATION);
+        assertThat(testAccountDetails.getLabel()).isEqualTo(DEFAULT_LABEL);
+        assertThat(testAccountDetails.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
+        assertThat(testAccountDetails.getType()).isEqualTo(DEFAULT_TYPE);
     }
 
     @Test
@@ -183,10 +167,10 @@ public class AccountDetailsResourceIntTest {
 
     @Test
     @Transactional
-    public void checkCodeIsRequired() throws Exception {
+    public void checkAmountIsRequired() throws Exception {
         int databaseSizeBeforeTest = accountDetailsRepository.findAll().size();
         // set the field null
-        accountDetails.setCode(null);
+        accountDetails.setAmount(null);
 
         // Create the AccountDetails, which fails.
         AccountDetailsDTO accountDetailsDTO = accountDetailsMapper.toDto(accountDetails);
@@ -202,10 +186,10 @@ public class AccountDetailsResourceIntTest {
 
     @Test
     @Transactional
-    public void checkAmountIsRequired() throws Exception {
+    public void checkLabelIsRequired() throws Exception {
         int databaseSizeBeforeTest = accountDetailsRepository.findAll().size();
         // set the field null
-        accountDetails.setAmount(null);
+        accountDetails.setLabel(null);
 
         // Create the AccountDetails, which fails.
         AccountDetailsDTO accountDetailsDTO = accountDetailsMapper.toDto(accountDetails);
@@ -240,25 +224,6 @@ public class AccountDetailsResourceIntTest {
 
     @Test
     @Transactional
-    public void checkDateCreationIsRequired() throws Exception {
-        int databaseSizeBeforeTest = accountDetailsRepository.findAll().size();
-        // set the field null
-        accountDetails.setDateCreation(null);
-
-        // Create the AccountDetails, which fails.
-        AccountDetailsDTO accountDetailsDTO = accountDetailsMapper.toDto(accountDetails);
-
-        restAccountDetailsMockMvc.perform(post("/api/account-details")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(accountDetailsDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<AccountDetails> accountDetailsList = accountDetailsRepository.findAll();
-        assertThat(accountDetailsList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void getAllAccountDetails() throws Exception {
         // Initialize the database
         accountDetailsRepository.saveAndFlush(accountDetails);
@@ -268,12 +233,11 @@ public class AccountDetailsResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(accountDetails.getId().intValue())))
-            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
             .andExpect(jsonPath("$.[*].amount").value(hasItem(DEFAULT_AMOUNT.doubleValue())))
-            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
             .andExpect(jsonPath("$.[*].rate").value(hasItem(DEFAULT_RATE.doubleValue())))
-            .andExpect(jsonPath("$.[*].dateCreation").value(hasItem(sameInstant(DEFAULT_DATE_CREATION))))
-            .andExpect(jsonPath("$.[*].dateModification").value(hasItem(sameInstant(DEFAULT_DATE_MODIFICATION))));
+            .andExpect(jsonPath("$.[*].label").value(hasItem(DEFAULT_LABEL.toString())))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
+            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())));
     }
     
 
@@ -288,12 +252,11 @@ public class AccountDetailsResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(accountDetails.getId().intValue()))
-            .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()))
             .andExpect(jsonPath("$.amount").value(DEFAULT_AMOUNT.doubleValue()))
-            .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()))
             .andExpect(jsonPath("$.rate").value(DEFAULT_RATE.doubleValue()))
-            .andExpect(jsonPath("$.dateCreation").value(sameInstant(DEFAULT_DATE_CREATION)))
-            .andExpect(jsonPath("$.dateModification").value(sameInstant(DEFAULT_DATE_MODIFICATION)));
+            .andExpect(jsonPath("$.label").value(DEFAULT_LABEL.toString()))
+            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
+            .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()));
     }
     @Test
     @Transactional
@@ -316,12 +279,11 @@ public class AccountDetailsResourceIntTest {
         // Disconnect from session so that the updates on updatedAccountDetails are not directly saved in db
         em.detach(updatedAccountDetails);
         updatedAccountDetails
-            .code(UPDATED_CODE)
             .amount(UPDATED_AMOUNT)
-            .type(UPDATED_TYPE)
             .rate(UPDATED_RATE)
-            .dateCreation(UPDATED_DATE_CREATION)
-            .dateModification(UPDATED_DATE_MODIFICATION);
+            .label(UPDATED_LABEL)
+            .description(UPDATED_DESCRIPTION)
+            .type(UPDATED_TYPE);
         AccountDetailsDTO accountDetailsDTO = accountDetailsMapper.toDto(updatedAccountDetails);
 
         restAccountDetailsMockMvc.perform(put("/api/account-details")
@@ -333,12 +295,11 @@ public class AccountDetailsResourceIntTest {
         List<AccountDetails> accountDetailsList = accountDetailsRepository.findAll();
         assertThat(accountDetailsList).hasSize(databaseSizeBeforeUpdate);
         AccountDetails testAccountDetails = accountDetailsList.get(accountDetailsList.size() - 1);
-        assertThat(testAccountDetails.getCode()).isEqualTo(UPDATED_CODE);
         assertThat(testAccountDetails.getAmount()).isEqualTo(UPDATED_AMOUNT);
-        assertThat(testAccountDetails.getType()).isEqualTo(UPDATED_TYPE);
         assertThat(testAccountDetails.getRate()).isEqualTo(UPDATED_RATE);
-        assertThat(testAccountDetails.getDateCreation()).isEqualTo(UPDATED_DATE_CREATION);
-        assertThat(testAccountDetails.getDateModification()).isEqualTo(UPDATED_DATE_MODIFICATION);
+        assertThat(testAccountDetails.getLabel()).isEqualTo(UPDATED_LABEL);
+        assertThat(testAccountDetails.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+        assertThat(testAccountDetails.getType()).isEqualTo(UPDATED_TYPE);
     }
 
     @Test

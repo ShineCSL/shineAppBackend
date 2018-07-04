@@ -1,13 +1,10 @@
 package com.shine.shineappback.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
 
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -15,7 +12,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "invoice_validation")
-public class InvoiceValidation implements Serializable {
+public class InvoiceValidation extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -23,28 +20,12 @@ public class InvoiceValidation implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "jhi_validation")
-    private Boolean validation;
-
-    @NotNull
-    @Column(name = "date_creation", nullable = false)
-    private ZonedDateTime dateCreation;
-
-    @Column(name = "date_modification")
-    private ZonedDateTime dateModification;
+    @Column(name = "validated")
+    private Boolean validated;
 
     @OneToOne(mappedBy = "invoiceValidation")
     @JsonIgnore
     private Invoice invoice;
-
-    @ManyToOne(optional = false)
-    @NotNull
-    @JsonIgnoreProperties("")
-    private User userCreation;
-
-    @ManyToOne
-    @JsonIgnoreProperties("")
-    private User userModification;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -55,43 +36,17 @@ public class InvoiceValidation implements Serializable {
         this.id = id;
     }
 
-    public Boolean isValidation() {
-        return validation;
+    public Boolean isValidated() {
+        return validated;
     }
 
-    public InvoiceValidation validation(Boolean validation) {
-        this.validation = validation;
+    public InvoiceValidation validated(Boolean validated) {
+        this.validated = validated;
         return this;
     }
 
-    public void setValidation(Boolean validation) {
-        this.validation = validation;
-    }
-
-    public ZonedDateTime getDateCreation() {
-        return dateCreation;
-    }
-
-    public InvoiceValidation dateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-        return this;
-    }
-
-    public void setDateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-    }
-
-    public ZonedDateTime getDateModification() {
-        return dateModification;
-    }
-
-    public InvoiceValidation dateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-        return this;
-    }
-
-    public void setDateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
+    public void setValidated(Boolean validated) {
+        this.validated = validated;
     }
 
     public Invoice getInvoice() {
@@ -105,32 +60,6 @@ public class InvoiceValidation implements Serializable {
 
     public void setInvoice(Invoice invoice) {
         this.invoice = invoice;
-    }
-
-    public User getUserCreation() {
-        return userCreation;
-    }
-
-    public InvoiceValidation userCreation(User user) {
-        this.userCreation = user;
-        return this;
-    }
-
-    public void setUserCreation(User user) {
-        this.userCreation = user;
-    }
-
-    public User getUserModification() {
-        return userModification;
-    }
-
-    public InvoiceValidation userModification(User user) {
-        this.userModification = user;
-        return this;
-    }
-
-    public void setUserModification(User user) {
-        this.userModification = user;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -158,9 +87,7 @@ public class InvoiceValidation implements Serializable {
     public String toString() {
         return "InvoiceValidation{" +
             "id=" + getId() +
-            ", validation='" + isValidation() + "'" +
-            ", dateCreation='" + getDateCreation() + "'" +
-            ", dateModification='" + getDateModification() + "'" +
+            ", validated='" + isValidated() + "'" +
             "}";
     }
 }

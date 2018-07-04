@@ -1,13 +1,10 @@
 package com.shine.shineappback.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
 
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -15,7 +12,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "invoice_submission")
-public class InvoiceSubmission implements Serializable {
+public class InvoiceSubmission extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -26,25 +23,9 @@ public class InvoiceSubmission implements Serializable {
     @Column(name = "submitted")
     private Boolean submitted;
 
-    @NotNull
-    @Column(name = "date_creation", nullable = false)
-    private ZonedDateTime dateCreation;
-
-    @Column(name = "date_modification")
-    private ZonedDateTime dateModification;
-
     @OneToOne(mappedBy = "invoiceSubmission")
     @JsonIgnore
     private Invoice invoice;
-
-    @ManyToOne(optional = false)
-    @NotNull
-    @JsonIgnoreProperties("")
-    private User userCreation;
-
-    @ManyToOne
-    @JsonIgnoreProperties("")
-    private User userModification;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -68,32 +49,6 @@ public class InvoiceSubmission implements Serializable {
         this.submitted = submitted;
     }
 
-    public ZonedDateTime getDateCreation() {
-        return dateCreation;
-    }
-
-    public InvoiceSubmission dateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-        return this;
-    }
-
-    public void setDateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-    }
-
-    public ZonedDateTime getDateModification() {
-        return dateModification;
-    }
-
-    public InvoiceSubmission dateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-        return this;
-    }
-
-    public void setDateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-    }
-
     public Invoice getInvoice() {
         return invoice;
     }
@@ -105,32 +60,6 @@ public class InvoiceSubmission implements Serializable {
 
     public void setInvoice(Invoice invoice) {
         this.invoice = invoice;
-    }
-
-    public User getUserCreation() {
-        return userCreation;
-    }
-
-    public InvoiceSubmission userCreation(User user) {
-        this.userCreation = user;
-        return this;
-    }
-
-    public void setUserCreation(User user) {
-        this.userCreation = user;
-    }
-
-    public User getUserModification() {
-        return userModification;
-    }
-
-    public InvoiceSubmission userModification(User user) {
-        this.userModification = user;
-        return this;
-    }
-
-    public void setUserModification(User user) {
-        this.userModification = user;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -159,8 +88,6 @@ public class InvoiceSubmission implements Serializable {
         return "InvoiceSubmission{" +
             "id=" + getId() +
             ", submitted='" + isSubmitted() + "'" +
-            ", dateCreation='" + getDateCreation() + "'" +
-            ", dateModification='" + getDateModification() + "'" +
             "}";
     }
 }

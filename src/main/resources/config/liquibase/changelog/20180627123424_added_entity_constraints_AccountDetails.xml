@@ -14,18 +14,6 @@
                                  referencedColumnNames="id"
                                  referencedTableName="client"/>
 
-        <addForeignKeyConstraint baseColumnNames="user_creation_id"
-                                 baseTableName="account_details"
-                                 constraintName="fk_account_details_user_creation_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="jhi_user"/>
-
-        <addForeignKeyConstraint baseColumnNames="user_modfication_id"
-                                 baseTableName="account_details"
-                                 constraintName="fk_account_details_user_modfication_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="jhi_user"/>
-
         <addForeignKeyConstraint baseColumnNames="invoice_id"
                                  baseTableName="account_details"
                                  constraintName="fk_account_details_invoice_id"

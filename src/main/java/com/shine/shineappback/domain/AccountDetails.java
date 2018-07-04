@@ -6,7 +6,6 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -14,7 +13,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "account_details")
-public class AccountDetails implements Serializable {
+public class AccountDetails extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -23,40 +22,26 @@ public class AccountDetails implements Serializable {
     private Long id;
 
     @NotNull
-    @Pattern(regexp = "^[A-Z0-9()[\\\\]+-_*/%]*$")
-    @Column(name = "code", nullable = false)
-    private String code;
-
-    @NotNull
     @Column(name = "amount", nullable = false)
     private Double amount;
-
-    @NotNull
-    @Column(name = "jhi_type", nullable = false)
-    private String type;
 
     @Column(name = "rate")
     private Double rate;
 
     @NotNull
-    @Column(name = "date_creation", nullable = false)
-    private ZonedDateTime dateCreation;
+    @Column(name = "jhi_label", nullable = false)
+    private String label;
 
-    @Column(name = "date_modification")
-    private ZonedDateTime dateModification;
+    @Column(name = "description")
+    private String description;
+
+    @NotNull
+    @Column(name = "jhi_type", nullable = false)
+    private String type;
 
     @ManyToOne
     @JsonIgnoreProperties("")
     private Client client;
-
-    @ManyToOne(optional = false)
-    @NotNull
-    @JsonIgnoreProperties("")
-    private User userCreation;
-
-    @ManyToOne
-    @JsonIgnoreProperties("")
-    private User userModfication;
 
     @OneToOne
     @JoinColumn(unique = true)
@@ -76,19 +61,6 @@ public class AccountDetails implements Serializable {
         this.id = id;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public AccountDetails code(String code) {
-        this.code = code;
-        return this;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
     public Double getAmount() {
         return amount;
     }
@@ -100,19 +72,6 @@ public class AccountDetails implements Serializable {
 
     public void setAmount(Double amount) {
         this.amount = amount;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public AccountDetails type(String type) {
-        this.type = type;
-        return this;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public Double getRate() {
@@ -128,30 +87,43 @@ public class AccountDetails implements Serializable {
         this.rate = rate;
     }
 
-    public ZonedDateTime getDateCreation() {
-        return dateCreation;
+    public String getLabel() {
+        return label;
     }
 
-    public AccountDetails dateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
+    public AccountDetails label(String label) {
+        this.label = label;
         return this;
     }
 
-    public void setDateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
-    public ZonedDateTime getDateModification() {
-        return dateModification;
+    public String getDescription() {
+        return description;
     }
 
-    public AccountDetails dateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
+    public AccountDetails description(String description) {
+        this.description = description;
         return this;
     }
 
-    public void setDateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public AccountDetails type(String type) {
+        this.type = type;
+        return this;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public Client getClient() {
@@ -165,32 +137,6 @@ public class AccountDetails implements Serializable {
 
     public void setClient(Client client) {
         this.client = client;
-    }
-
-    public User getUserCreation() {
-        return userCreation;
-    }
-
-    public AccountDetails userCreation(User user) {
-        this.userCreation = user;
-        return this;
-    }
-
-    public void setUserCreation(User user) {
-        this.userCreation = user;
-    }
-
-    public User getUserModfication() {
-        return userModfication;
-    }
-
-    public AccountDetails userModfication(User user) {
-        this.userModfication = user;
-        return this;
-    }
-
-    public void setUserModfication(User user) {
-        this.userModfication = user;
     }
 
     public Invoice getInvoice() {
@@ -244,12 +190,11 @@ public class AccountDetails implements Serializable {
     public String toString() {
         return "AccountDetails{" +
             "id=" + getId() +
-            ", code='" + getCode() + "'" +
             ", amount=" + getAmount() +
-            ", type='" + getType() + "'" +
             ", rate=" + getRate() +
-            ", dateCreation='" + getDateCreation() + "'" +
-            ", dateModification='" + getDateModification() + "'" +
+            ", label='" + getLabel() + "'" +
+            ", description='" + getDescription() + "'" +
+            ", type='" + getType() + "'" +
             "}";
     }
 }

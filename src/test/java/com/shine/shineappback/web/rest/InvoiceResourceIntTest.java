@@ -3,9 +3,8 @@ package com.shine.shineappback.web.rest;
 import com.shine.shineappback.ShineAppBackendApp;
 
 import com.shine.shineappback.domain.Invoice;
-import com.shine.shineappback.domain.TypeInvoice;
 import com.shine.shineappback.domain.Currency;
-import com.shine.shineappback.domain.User;
+import com.shine.shineappback.domain.TypeInvoice;
 import com.shine.shineappback.repository.InvoiceRepository;
 import com.shine.shineappback.service.InvoiceService;
 import com.shine.shineappback.service.dto.InvoiceDTO;
@@ -29,14 +28,10 @@ import org.springframework.util.Base64Utils;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
 import java.time.ZoneId;
 import java.util.List;
 
 
-import static com.shine.shineappback.web.rest.TestUtil.sameInstant;
 import static com.shine.shineappback.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -63,12 +58,6 @@ public class InvoiceResourceIntTest {
 
     private static final LocalDate DEFAULT_DATE_INVOICE = LocalDate.ofEpochDay(0L);
     private static final LocalDate UPDATED_DATE_INVOICE = LocalDate.now(ZoneId.systemDefault());
-
-    private static final ZonedDateTime DEFAULT_DATE_CREATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_CREATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
-    private static final ZonedDateTime DEFAULT_DATE_MODIFICATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_MODIFICATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
     private static final byte[] DEFAULT_DOCUMENT = TestUtil.createByteArray(1, "0");
     private static final byte[] UPDATED_DOCUMENT = TestUtil.createByteArray(2, "1");
@@ -128,26 +117,19 @@ public class InvoiceResourceIntTest {
             .description(DEFAULT_DESCRIPTION)
             .amount(DEFAULT_AMOUNT)
             .dateInvoice(DEFAULT_DATE_INVOICE)
-            .dateCreation(DEFAULT_DATE_CREATION)
-            .dateModification(DEFAULT_DATE_MODIFICATION)
             .document(DEFAULT_DOCUMENT)
             .documentContentType(DEFAULT_DOCUMENT_CONTENT_TYPE)
             .rate(DEFAULT_RATE);
-        // Add required entity
-        TypeInvoice typeInvoice = TypeInvoiceResourceIntTest.createEntity(em);
-        em.persist(typeInvoice);
-        em.flush();
-        invoice.setTypeInvoice(typeInvoice);
         // Add required entity
         Currency currency = CurrencyResourceIntTest.createEntity(em);
         em.persist(currency);
         em.flush();
         invoice.setCurrency(currency);
         // Add required entity
-        User user = UserResourceIntTest.createEntity(em);
-        em.persist(user);
+        TypeInvoice typeInvoice = TypeInvoiceResourceIntTest.createEntity(em);
+        em.persist(typeInvoice);
         em.flush();
-        invoice.setUserCreation(user);
+        invoice.setTypeInvoice(typeInvoice);
         return invoice;
     }
 
@@ -176,8 +158,6 @@ public class InvoiceResourceIntTest {
         assertThat(testInvoice.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
         assertThat(testInvoice.getAmount()).isEqualTo(DEFAULT_AMOUNT);
         assertThat(testInvoice.getDateInvoice()).isEqualTo(DEFAULT_DATE_INVOICE);
-        assertThat(testInvoice.getDateCreation()).isEqualTo(DEFAULT_DATE_CREATION);
-        assertThat(testInvoice.getDateModification()).isEqualTo(DEFAULT_DATE_MODIFICATION);
         assertThat(testInvoice.getDocument()).isEqualTo(DEFAULT_DOCUMENT);
         assertThat(testInvoice.getDocumentContentType()).isEqualTo(DEFAULT_DOCUMENT_CONTENT_TYPE);
         assertThat(testInvoice.getRate()).isEqualTo(DEFAULT_RATE);
@@ -262,25 +242,6 @@ public class InvoiceResourceIntTest {
 
     @Test
     @Transactional
-    public void checkDateCreationIsRequired() throws Exception {
-        int databaseSizeBeforeTest = invoiceRepository.findAll().size();
-        // set the field null
-        invoice.setDateCreation(null);
-
-        // Create the Invoice, which fails.
-        InvoiceDTO invoiceDTO = invoiceMapper.toDto(invoice);
-
-        restInvoiceMockMvc.perform(post("/api/invoices")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(invoiceDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<Invoice> invoiceList = invoiceRepository.findAll();
-        assertThat(invoiceList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void getAllInvoices() throws Exception {
         // Initialize the database
         invoiceRepository.saveAndFlush(invoice);
@@ -294,8 +255,6 @@ public class InvoiceResourceIntTest {
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
             .andExpect(jsonPath("$.[*].amount").value(hasItem(DEFAULT_AMOUNT.doubleValue())))
             .andExpect(jsonPath("$.[*].dateInvoice").value(hasItem(DEFAULT_DATE_INVOICE.toString())))
-            .andExpect(jsonPath("$.[*].dateCreation").value(hasItem(sameInstant(DEFAULT_DATE_CREATION))))
-            .andExpect(jsonPath("$.[*].dateModification").value(hasItem(sameInstant(DEFAULT_DATE_MODIFICATION))))
             .andExpect(jsonPath("$.[*].documentContentType").value(hasItem(DEFAULT_DOCUMENT_CONTENT_TYPE)))
             .andExpect(jsonPath("$.[*].document").value(hasItem(Base64Utils.encodeToString(DEFAULT_DOCUMENT))))
             .andExpect(jsonPath("$.[*].rate").value(hasItem(DEFAULT_RATE.doubleValue())));
@@ -317,8 +276,6 @@ public class InvoiceResourceIntTest {
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
             .andExpect(jsonPath("$.amount").value(DEFAULT_AMOUNT.doubleValue()))
             .andExpect(jsonPath("$.dateInvoice").value(DEFAULT_DATE_INVOICE.toString()))
-            .andExpect(jsonPath("$.dateCreation").value(sameInstant(DEFAULT_DATE_CREATION)))
-            .andExpect(jsonPath("$.dateModification").value(sameInstant(DEFAULT_DATE_MODIFICATION)))
             .andExpect(jsonPath("$.documentContentType").value(DEFAULT_DOCUMENT_CONTENT_TYPE))
             .andExpect(jsonPath("$.document").value(Base64Utils.encodeToString(DEFAULT_DOCUMENT)))
             .andExpect(jsonPath("$.rate").value(DEFAULT_RATE.doubleValue()));
@@ -348,8 +305,6 @@ public class InvoiceResourceIntTest {
             .description(UPDATED_DESCRIPTION)
             .amount(UPDATED_AMOUNT)
             .dateInvoice(UPDATED_DATE_INVOICE)
-            .dateCreation(UPDATED_DATE_CREATION)
-            .dateModification(UPDATED_DATE_MODIFICATION)
             .document(UPDATED_DOCUMENT)
             .documentContentType(UPDATED_DOCUMENT_CONTENT_TYPE)
             .rate(UPDATED_RATE);
@@ -368,8 +323,6 @@ public class InvoiceResourceIntTest {
         assertThat(testInvoice.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testInvoice.getAmount()).isEqualTo(UPDATED_AMOUNT);
         assertThat(testInvoice.getDateInvoice()).isEqualTo(UPDATED_DATE_INVOICE);
-        assertThat(testInvoice.getDateCreation()).isEqualTo(UPDATED_DATE_CREATION);
-        assertThat(testInvoice.getDateModification()).isEqualTo(UPDATED_DATE_MODIFICATION);
         assertThat(testInvoice.getDocument()).isEqualTo(UPDATED_DOCUMENT);
         assertThat(testInvoice.getDocumentContentType()).isEqualTo(UPDATED_DOCUMENT_CONTENT_TYPE);
         assertThat(testInvoice.getRate()).isEqualTo(UPDATED_RATE);

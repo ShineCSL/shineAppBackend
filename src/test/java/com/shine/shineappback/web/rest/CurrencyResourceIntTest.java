@@ -3,7 +3,6 @@ package com.shine.shineappback.web.rest;
 import com.shine.shineappback.ShineAppBackendApp;
 
 import com.shine.shineappback.domain.Currency;
-import com.shine.shineappback.domain.User;
 import com.shine.shineappback.repository.CurrencyRepository;
 import com.shine.shineappback.service.CurrencyService;
 import com.shine.shineappback.service.dto.CurrencyDTO;
@@ -25,14 +24,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
-import java.time.ZoneId;
 import java.util.List;
 
 
-import static com.shine.shineappback.web.rest.TestUtil.sameInstant;
 import static com.shine.shineappback.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -54,14 +48,8 @@ public class CurrencyResourceIntTest {
     private static final String DEFAULT_LABEL_FR = "AAAAAAAAAA";
     private static final String UPDATED_LABEL_FR = "BBBBBBBBBB";
 
-    private static final ZonedDateTime DEFAULT_DATE_CREATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_CREATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
-    private static final ZonedDateTime DEFAULT_DATE_MODIFICATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_MODIFICATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
-    private static final String DEFAULT_CODE = "K-_/%]";
-    private static final String UPDATED_CODE = "HO-_/%]";
+    private static final String DEFAULT_CODE = "AAAAAAAAAA";
+    private static final String UPDATED_CODE = "BBBBBBBBBB";
 
     @Autowired
     private CurrencyRepository currencyRepository;
@@ -111,14 +99,7 @@ public class CurrencyResourceIntTest {
         Currency currency = new Currency()
             .labelEn(DEFAULT_LABEL_EN)
             .labelFr(DEFAULT_LABEL_FR)
-            .dateCreation(DEFAULT_DATE_CREATION)
-            .dateModification(DEFAULT_DATE_MODIFICATION)
             .code(DEFAULT_CODE);
-        // Add required entity
-        User user = UserResourceIntTest.createEntity(em);
-        em.persist(user);
-        em.flush();
-        currency.setUserCreation(user);
         return currency;
     }
 
@@ -145,8 +126,6 @@ public class CurrencyResourceIntTest {
         Currency testCurrency = currencyList.get(currencyList.size() - 1);
         assertThat(testCurrency.getLabelEn()).isEqualTo(DEFAULT_LABEL_EN);
         assertThat(testCurrency.getLabelFr()).isEqualTo(DEFAULT_LABEL_FR);
-        assertThat(testCurrency.getDateCreation()).isEqualTo(DEFAULT_DATE_CREATION);
-        assertThat(testCurrency.getDateModification()).isEqualTo(DEFAULT_DATE_MODIFICATION);
         assertThat(testCurrency.getCode()).isEqualTo(DEFAULT_CODE);
     }
 
@@ -168,25 +147,6 @@ public class CurrencyResourceIntTest {
         // Validate the Currency in the database
         List<Currency> currencyList = currencyRepository.findAll();
         assertThat(currencyList).hasSize(databaseSizeBeforeCreate);
-    }
-
-    @Test
-    @Transactional
-    public void checkDateCreationIsRequired() throws Exception {
-        int databaseSizeBeforeTest = currencyRepository.findAll().size();
-        // set the field null
-        currency.setDateCreation(null);
-
-        // Create the Currency, which fails.
-        CurrencyDTO currencyDTO = currencyMapper.toDto(currency);
-
-        restCurrencyMockMvc.perform(post("/api/currencies")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(currencyDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<Currency> currencyList = currencyRepository.findAll();
-        assertThat(currencyList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
@@ -221,8 +181,6 @@ public class CurrencyResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(currency.getId().intValue())))
             .andExpect(jsonPath("$.[*].labelEn").value(hasItem(DEFAULT_LABEL_EN.toString())))
             .andExpect(jsonPath("$.[*].labelFr").value(hasItem(DEFAULT_LABEL_FR.toString())))
-            .andExpect(jsonPath("$.[*].dateCreation").value(hasItem(sameInstant(DEFAULT_DATE_CREATION))))
-            .andExpect(jsonPath("$.[*].dateModification").value(hasItem(sameInstant(DEFAULT_DATE_MODIFICATION))))
             .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())));
     }
     
@@ -240,8 +198,6 @@ public class CurrencyResourceIntTest {
             .andExpect(jsonPath("$.id").value(currency.getId().intValue()))
             .andExpect(jsonPath("$.labelEn").value(DEFAULT_LABEL_EN.toString()))
             .andExpect(jsonPath("$.labelFr").value(DEFAULT_LABEL_FR.toString()))
-            .andExpect(jsonPath("$.dateCreation").value(sameInstant(DEFAULT_DATE_CREATION)))
-            .andExpect(jsonPath("$.dateModification").value(sameInstant(DEFAULT_DATE_MODIFICATION)))
             .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()));
     }
     @Test
@@ -267,8 +223,6 @@ public class CurrencyResourceIntTest {
         updatedCurrency
             .labelEn(UPDATED_LABEL_EN)
             .labelFr(UPDATED_LABEL_FR)
-            .dateCreation(UPDATED_DATE_CREATION)
-            .dateModification(UPDATED_DATE_MODIFICATION)
             .code(UPDATED_CODE);
         CurrencyDTO currencyDTO = currencyMapper.toDto(updatedCurrency);
 
@@ -283,8 +237,6 @@ public class CurrencyResourceIntTest {
         Currency testCurrency = currencyList.get(currencyList.size() - 1);
         assertThat(testCurrency.getLabelEn()).isEqualTo(UPDATED_LABEL_EN);
         assertThat(testCurrency.getLabelFr()).isEqualTo(UPDATED_LABEL_FR);
-        assertThat(testCurrency.getDateCreation()).isEqualTo(UPDATED_DATE_CREATION);
-        assertThat(testCurrency.getDateModification()).isEqualTo(UPDATED_DATE_MODIFICATION);
         assertThat(testCurrency.getCode()).isEqualTo(UPDATED_CODE);
     }
 

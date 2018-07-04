@@ -3,7 +3,6 @@ package com.shine.shineappback.web.rest;
 import com.shine.shineappback.ShineAppBackendApp;
 
 import com.shine.shineappback.domain.Task;
-import com.shine.shineappback.domain.User;
 import com.shine.shineappback.repository.TaskRepository;
 import com.shine.shineappback.service.TaskService;
 import com.shine.shineappback.service.dto.TaskDTO;
@@ -25,14 +24,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
-import java.time.ZoneId;
 import java.util.List;
 
 
-import static com.shine.shineappback.web.rest.TestUtil.sameInstant;
 import static com.shine.shineappback.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -51,20 +45,14 @@ public class TaskResourceIntTest {
     private static final Boolean DEFAULT_LEAVE = false;
     private static final Boolean UPDATED_LEAVE = true;
 
-    private static final ZonedDateTime DEFAULT_DATE_MODIFICATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_MODIFICATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
-    private static final String DEFAULT_CODE = "B-_/%]";
-    private static final String UPDATED_CODE = "X4-_/%]";
-
     private static final String DEFAULT_LABEL_EN = "AAAAAAAAAA";
     private static final String UPDATED_LABEL_EN = "BBBBBBBBBB";
 
     private static final String DEFAULT_LABEL_FR = "AAAAAAAAAA";
     private static final String UPDATED_LABEL_FR = "BBBBBBBBBB";
 
-    private static final ZonedDateTime DEFAULT_DATE_CREATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_CREATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final String DEFAULT_CODE = "AAAAAAAAAA";
+    private static final String UPDATED_CODE = "BBBBBBBBBB";
 
     @Autowired
     private TaskRepository taskRepository;
@@ -113,16 +101,9 @@ public class TaskResourceIntTest {
     public static Task createEntity(EntityManager em) {
         Task task = new Task()
             .leave(DEFAULT_LEAVE)
-            .dateModification(DEFAULT_DATE_MODIFICATION)
-            .code(DEFAULT_CODE)
             .labelEn(DEFAULT_LABEL_EN)
             .labelFr(DEFAULT_LABEL_FR)
-            .dateCreation(DEFAULT_DATE_CREATION);
-        // Add required entity
-        User user = UserResourceIntTest.createEntity(em);
-        em.persist(user);
-        em.flush();
-        task.setUserCreation(user);
+            .code(DEFAULT_CODE);
         return task;
     }
 
@@ -148,11 +129,9 @@ public class TaskResourceIntTest {
         assertThat(taskList).hasSize(databaseSizeBeforeCreate + 1);
         Task testTask = taskList.get(taskList.size() - 1);
         assertThat(testTask.isLeave()).isEqualTo(DEFAULT_LEAVE);
-        assertThat(testTask.getDateModification()).isEqualTo(DEFAULT_DATE_MODIFICATION);
-        assertThat(testTask.getCode()).isEqualTo(DEFAULT_CODE);
         assertThat(testTask.getLabelEn()).isEqualTo(DEFAULT_LABEL_EN);
         assertThat(testTask.getLabelFr()).isEqualTo(DEFAULT_LABEL_FR);
-        assertThat(testTask.getDateCreation()).isEqualTo(DEFAULT_DATE_CREATION);
+        assertThat(testTask.getCode()).isEqualTo(DEFAULT_CODE);
     }
 
     @Test
@@ -196,25 +175,6 @@ public class TaskResourceIntTest {
 
     @Test
     @Transactional
-    public void checkDateCreationIsRequired() throws Exception {
-        int databaseSizeBeforeTest = taskRepository.findAll().size();
-        // set the field null
-        task.setDateCreation(null);
-
-        // Create the Task, which fails.
-        TaskDTO taskDTO = taskMapper.toDto(task);
-
-        restTaskMockMvc.perform(post("/api/tasks")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(taskDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<Task> taskList = taskRepository.findAll();
-        assertThat(taskList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void getAllTasks() throws Exception {
         // Initialize the database
         taskRepository.saveAndFlush(task);
@@ -225,11 +185,9 @@ public class TaskResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(task.getId().intValue())))
             .andExpect(jsonPath("$.[*].leave").value(hasItem(DEFAULT_LEAVE.booleanValue())))
-            .andExpect(jsonPath("$.[*].dateModification").value(hasItem(sameInstant(DEFAULT_DATE_MODIFICATION))))
-            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
             .andExpect(jsonPath("$.[*].labelEn").value(hasItem(DEFAULT_LABEL_EN.toString())))
             .andExpect(jsonPath("$.[*].labelFr").value(hasItem(DEFAULT_LABEL_FR.toString())))
-            .andExpect(jsonPath("$.[*].dateCreation").value(hasItem(sameInstant(DEFAULT_DATE_CREATION))));
+            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())));
     }
     
 
@@ -245,11 +203,9 @@ public class TaskResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(task.getId().intValue()))
             .andExpect(jsonPath("$.leave").value(DEFAULT_LEAVE.booleanValue()))
-            .andExpect(jsonPath("$.dateModification").value(sameInstant(DEFAULT_DATE_MODIFICATION)))
-            .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()))
             .andExpect(jsonPath("$.labelEn").value(DEFAULT_LABEL_EN.toString()))
             .andExpect(jsonPath("$.labelFr").value(DEFAULT_LABEL_FR.toString()))
-            .andExpect(jsonPath("$.dateCreation").value(sameInstant(DEFAULT_DATE_CREATION)));
+            .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()));
     }
     @Test
     @Transactional
@@ -273,11 +229,9 @@ public class TaskResourceIntTest {
         em.detach(updatedTask);
         updatedTask
             .leave(UPDATED_LEAVE)
-            .dateModification(UPDATED_DATE_MODIFICATION)
-            .code(UPDATED_CODE)
             .labelEn(UPDATED_LABEL_EN)
             .labelFr(UPDATED_LABEL_FR)
-            .dateCreation(UPDATED_DATE_CREATION);
+            .code(UPDATED_CODE);
         TaskDTO taskDTO = taskMapper.toDto(updatedTask);
 
         restTaskMockMvc.perform(put("/api/tasks")
@@ -290,11 +244,9 @@ public class TaskResourceIntTest {
         assertThat(taskList).hasSize(databaseSizeBeforeUpdate);
         Task testTask = taskList.get(taskList.size() - 1);
         assertThat(testTask.isLeave()).isEqualTo(UPDATED_LEAVE);
-        assertThat(testTask.getDateModification()).isEqualTo(UPDATED_DATE_MODIFICATION);
-        assertThat(testTask.getCode()).isEqualTo(UPDATED_CODE);
         assertThat(testTask.getLabelEn()).isEqualTo(UPDATED_LABEL_EN);
         assertThat(testTask.getLabelFr()).isEqualTo(UPDATED_LABEL_FR);
-        assertThat(testTask.getDateCreation()).isEqualTo(UPDATED_DATE_CREATION);
+        assertThat(testTask.getCode()).isEqualTo(UPDATED_CODE);
     }
 
     @Test

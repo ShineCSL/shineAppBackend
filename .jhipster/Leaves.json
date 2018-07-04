@@ -14,30 +14,6 @@
             "otherEntityRelationshipName": "leaves"
         },
         {
-            "relationshipName": "leavesSubmission",
-            "otherEntityName": "leavesSubmission",
-            "relationshipType": "one-to-one",
-            "otherEntityField": "id",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "leaves"
-        },
-        {
-            "relationshipName": "leavesValidation",
-            "otherEntityName": "leavesValidation",
-            "relationshipType": "one-to-one",
-            "otherEntityField": "id",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "leaves"
-        },
-        {
-            "relationshipName": "leavesRejection",
-            "otherEntityName": "leavesRejection",
-            "relationshipType": "one-to-one",
-            "otherEntityField": "id",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "leaves"
-        },
-        {
             "relationshipName": "task",
             "otherEntityName": "task",
             "relationshipType": "many-to-one",
@@ -45,6 +21,30 @@
                 "required"
             ],
             "otherEntityField": "code"
+        },
+        {
+            "relationshipName": "leavesSubmission",
+            "otherEntityName": "leavesSubmission",
+            "relationshipType": "one-to-one",
+            "otherEntityField": "submitted",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "leaves"
+        },
+        {
+            "relationshipName": "leavesValidation",
+            "otherEntityName": "leavesValidation",
+            "relationshipType": "one-to-one",
+            "otherEntityField": "validated",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "leaves"
+        },
+        {
+            "relationshipName": "leavesRejection",
+            "otherEntityName": "leavesRejection",
+            "relationshipType": "one-to-one",
+            "otherEntityField": "rejected",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "leaves"
         }
     ],
     "fields": [
@@ -67,20 +67,19 @@
             "fieldType": "Integer"
         },
         {
-            "fieldName": "dateCreation",
-            "fieldType": "ZonedDateTime"
-        },
-        {
-            "fieldName": "dateModification",
-            "fieldType": "ZonedDateTime"
-        },
-        {
             "fieldName": "weekNumber",
             "fieldType": "Integer"
         },
         {
             "fieldName": "comment",
             "fieldType": "String"
+        },
+        {
+            "fieldName": "day",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required"
+            ]
         }
     ],
     "changelogDate": "20180626113418",
@@ -89,5 +88,6 @@
     "service": "serviceClass",
     "entityTableName": "leaves",
     "jpaMetamodelFiltering": false,
-    "pagination": "pagination"
+    "pagination": "pagination",
+    "enableEntityAudit": true
 }

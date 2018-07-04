@@ -34,14 +34,6 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="date_creation" type="datetime">
-                <constraints nullable="true" />
-            </column>
-
-            <column name="date_modification" type="datetime">
-                <constraints nullable="true" />
-            </column>
-
             <column name="week_number" type="integer">
                 <constraints nullable="true" />
             </column>
@@ -50,7 +42,15 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="day" type="integer">
+                <constraints nullable="false" />
+            </column>
+
             <column name="user_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="task_id" type="bigint">
                 <constraints nullable="false" />
             </column>
             <column name="leaves_submission_id" type="bigint">
@@ -60,15 +60,23 @@
             </column>            <column name="leaves_rejection_id" type="bigint">
                 <constraints unique="true" nullable="true" />
             </column>
-            <column name="task_id" type="bigint">
-                <constraints nullable="false" />
-            </column>
-
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-        <dropDefaultValue tableName="leaves" columnName="date_creation" columnDataType="datetime"/>
-        <dropDefaultValue tableName="leaves" columnName="date_modification" columnDataType="datetime"/>
         
+    </changeSet>
+    
+    <!-- Added the entity audit columns -->
+    <changeSet id="20180704110037-audit-1" author="jhipster-entity-audit">
+        <addColumn tableName="leaves">
+            <column name="created_by" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(50)"/>
+            <column name="last_modified_date" type="timestamp"/>
+        </addColumn>
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

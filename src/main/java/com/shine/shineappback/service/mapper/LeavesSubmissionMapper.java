@@ -8,18 +8,11 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity LeavesSubmission and its DTO LeavesSubmissionDTO.
  */
-@Mapper(componentModel = "spring", uses = {UserMapper.class})
+@Mapper(componentModel = "spring", uses = {})
 public interface LeavesSubmissionMapper extends EntityMapper<LeavesSubmissionDTO, LeavesSubmission> {
 
-    @Mapping(source = "userModification.id", target = "userModificationId")
-    @Mapping(source = "userModification.login", target = "userModificationLogin")
-    @Mapping(source = "userCreation.id", target = "userCreationId")
-    @Mapping(source = "userCreation.login", target = "userCreationLogin")
-    LeavesSubmissionDTO toDto(LeavesSubmission leavesSubmission);
 
-    @Mapping(source = "userModificationId", target = "userModification")
     @Mapping(target = "leaves", ignore = true)
-    @Mapping(source = "userCreationId", target = "userCreation")
     LeavesSubmission toEntity(LeavesSubmissionDTO leavesSubmissionDTO);
 
     default LeavesSubmission fromId(Long id) {

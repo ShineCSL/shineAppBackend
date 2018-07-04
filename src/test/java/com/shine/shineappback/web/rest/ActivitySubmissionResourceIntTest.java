@@ -3,7 +3,6 @@ package com.shine.shineappback.web.rest;
 import com.shine.shineappback.ShineAppBackendApp;
 
 import com.shine.shineappback.domain.ActivitySubmission;
-import com.shine.shineappback.domain.User;
 import com.shine.shineappback.repository.ActivitySubmissionRepository;
 import com.shine.shineappback.service.ActivitySubmissionService;
 import com.shine.shineappback.service.dto.ActivitySubmissionDTO;
@@ -25,14 +24,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
-import java.time.ZoneId;
 import java.util.List;
 
 
-import static com.shine.shineappback.web.rest.TestUtil.sameInstant;
 import static com.shine.shineappback.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -56,12 +50,6 @@ public class ActivitySubmissionResourceIntTest {
 
     private static final Integer DEFAULT_WEEK_NUMBER = 1;
     private static final Integer UPDATED_WEEK_NUMBER = 2;
-
-    private static final ZonedDateTime DEFAULT_DATE_CREATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_CREATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
-    private static final ZonedDateTime DEFAULT_DATE_MODIFICATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_MODIFICATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
     @Autowired
     private ActivitySubmissionRepository activitySubmissionRepository;
@@ -111,14 +99,7 @@ public class ActivitySubmissionResourceIntTest {
         ActivitySubmission activitySubmission = new ActivitySubmission()
             .submitted(DEFAULT_SUBMITTED)
             .year(DEFAULT_YEAR)
-            .weekNumber(DEFAULT_WEEK_NUMBER)
-            .dateCreation(DEFAULT_DATE_CREATION)
-            .dateModification(DEFAULT_DATE_MODIFICATION);
-        // Add required entity
-        User user = UserResourceIntTest.createEntity(em);
-        em.persist(user);
-        em.flush();
-        activitySubmission.setUserCreation(user);
+            .weekNumber(DEFAULT_WEEK_NUMBER);
         return activitySubmission;
     }
 
@@ -146,8 +127,6 @@ public class ActivitySubmissionResourceIntTest {
         assertThat(testActivitySubmission.isSubmitted()).isEqualTo(DEFAULT_SUBMITTED);
         assertThat(testActivitySubmission.getYear()).isEqualTo(DEFAULT_YEAR);
         assertThat(testActivitySubmission.getWeekNumber()).isEqualTo(DEFAULT_WEEK_NUMBER);
-        assertThat(testActivitySubmission.getDateCreation()).isEqualTo(DEFAULT_DATE_CREATION);
-        assertThat(testActivitySubmission.getDateModification()).isEqualTo(DEFAULT_DATE_MODIFICATION);
     }
 
     @Test
@@ -172,25 +151,6 @@ public class ActivitySubmissionResourceIntTest {
 
     @Test
     @Transactional
-    public void checkDateCreationIsRequired() throws Exception {
-        int databaseSizeBeforeTest = activitySubmissionRepository.findAll().size();
-        // set the field null
-        activitySubmission.setDateCreation(null);
-
-        // Create the ActivitySubmission, which fails.
-        ActivitySubmissionDTO activitySubmissionDTO = activitySubmissionMapper.toDto(activitySubmission);
-
-        restActivitySubmissionMockMvc.perform(post("/api/activity-submissions")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(activitySubmissionDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<ActivitySubmission> activitySubmissionList = activitySubmissionRepository.findAll();
-        assertThat(activitySubmissionList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void getAllActivitySubmissions() throws Exception {
         // Initialize the database
         activitySubmissionRepository.saveAndFlush(activitySubmission);
@@ -202,9 +162,7 @@ public class ActivitySubmissionResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(activitySubmission.getId().intValue())))
             .andExpect(jsonPath("$.[*].submitted").value(hasItem(DEFAULT_SUBMITTED.booleanValue())))
             .andExpect(jsonPath("$.[*].year").value(hasItem(DEFAULT_YEAR)))
-            .andExpect(jsonPath("$.[*].weekNumber").value(hasItem(DEFAULT_WEEK_NUMBER)))
-            .andExpect(jsonPath("$.[*].dateCreation").value(hasItem(sameInstant(DEFAULT_DATE_CREATION))))
-            .andExpect(jsonPath("$.[*].dateModification").value(hasItem(sameInstant(DEFAULT_DATE_MODIFICATION))));
+            .andExpect(jsonPath("$.[*].weekNumber").value(hasItem(DEFAULT_WEEK_NUMBER)));
     }
     
 
@@ -221,9 +179,7 @@ public class ActivitySubmissionResourceIntTest {
             .andExpect(jsonPath("$.id").value(activitySubmission.getId().intValue()))
             .andExpect(jsonPath("$.submitted").value(DEFAULT_SUBMITTED.booleanValue()))
             .andExpect(jsonPath("$.year").value(DEFAULT_YEAR))
-            .andExpect(jsonPath("$.weekNumber").value(DEFAULT_WEEK_NUMBER))
-            .andExpect(jsonPath("$.dateCreation").value(sameInstant(DEFAULT_DATE_CREATION)))
-            .andExpect(jsonPath("$.dateModification").value(sameInstant(DEFAULT_DATE_MODIFICATION)));
+            .andExpect(jsonPath("$.weekNumber").value(DEFAULT_WEEK_NUMBER));
     }
     @Test
     @Transactional
@@ -248,9 +204,7 @@ public class ActivitySubmissionResourceIntTest {
         updatedActivitySubmission
             .submitted(UPDATED_SUBMITTED)
             .year(UPDATED_YEAR)
-            .weekNumber(UPDATED_WEEK_NUMBER)
-            .dateCreation(UPDATED_DATE_CREATION)
-            .dateModification(UPDATED_DATE_MODIFICATION);
+            .weekNumber(UPDATED_WEEK_NUMBER);
         ActivitySubmissionDTO activitySubmissionDTO = activitySubmissionMapper.toDto(updatedActivitySubmission);
 
         restActivitySubmissionMockMvc.perform(put("/api/activity-submissions")
@@ -265,8 +219,6 @@ public class ActivitySubmissionResourceIntTest {
         assertThat(testActivitySubmission.isSubmitted()).isEqualTo(UPDATED_SUBMITTED);
         assertThat(testActivitySubmission.getYear()).isEqualTo(UPDATED_YEAR);
         assertThat(testActivitySubmission.getWeekNumber()).isEqualTo(UPDATED_WEEK_NUMBER);
-        assertThat(testActivitySubmission.getDateCreation()).isEqualTo(UPDATED_DATE_CREATION);
-        assertThat(testActivitySubmission.getDateModification()).isEqualTo(UPDATED_DATE_MODIFICATION);
     }
 
     @Test

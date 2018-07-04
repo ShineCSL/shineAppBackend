@@ -1,7 +1,6 @@
 package com.shine.shineappback.service.dto;
 
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -10,7 +9,7 @@ import javax.persistence.Lob;
 /**
  * A DTO for the Invoice entity.
  */
-public class InvoiceDTO implements Serializable {
+public class InvoiceDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
 
@@ -25,36 +24,31 @@ public class InvoiceDTO implements Serializable {
     @NotNull
     private LocalDate dateInvoice;
 
-    @NotNull
-    private ZonedDateTime dateCreation;
-
-    private ZonedDateTime dateModification;
-
     @Lob
     private byte[] document;
     private String documentContentType;
 
     private Double rate;
 
-    private Long typeInvoiceId;
-
-    private Long invoiceSubmissionId;
-
-    private Long invoiceValidationId;
-
-    private Long invoiceRejectionId;
-
     private Long currencyId;
 
     private String currencyCode;
 
-    private Long userCreationId;
+    private Long invoiceRejectionId;
 
-    private String userCreationLogin;
+    private String invoiceRejectionRejected;
 
-    private Long userModificationId;
+    private Long invoiceSubmissionId;
 
-    private String userModificationLogin;
+    private String invoiceSubmissionSubmitted;
+
+    private Long invoiceValidationId;
+
+    private String invoiceValidationValidated;
+
+    private Long typeInvoiceId;
+
+    private String typeInvoiceCode;
 
     public Long getId() {
         return id;
@@ -96,22 +90,6 @@ public class InvoiceDTO implements Serializable {
         this.dateInvoice = dateInvoice;
     }
 
-    public ZonedDateTime getDateCreation() {
-        return dateCreation;
-    }
-
-    public void setDateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-    }
-
-    public ZonedDateTime getDateModification() {
-        return dateModification;
-    }
-
-    public void setDateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-    }
-
     public byte[] getDocument() {
         return document;
     }
@@ -136,38 +114,6 @@ public class InvoiceDTO implements Serializable {
         this.rate = rate;
     }
 
-    public Long getTypeInvoiceId() {
-        return typeInvoiceId;
-    }
-
-    public void setTypeInvoiceId(Long typeInvoiceId) {
-        this.typeInvoiceId = typeInvoiceId;
-    }
-
-    public Long getInvoiceSubmissionId() {
-        return invoiceSubmissionId;
-    }
-
-    public void setInvoiceSubmissionId(Long invoiceSubmissionId) {
-        this.invoiceSubmissionId = invoiceSubmissionId;
-    }
-
-    public Long getInvoiceValidationId() {
-        return invoiceValidationId;
-    }
-
-    public void setInvoiceValidationId(Long invoiceValidationId) {
-        this.invoiceValidationId = invoiceValidationId;
-    }
-
-    public Long getInvoiceRejectionId() {
-        return invoiceRejectionId;
-    }
-
-    public void setInvoiceRejectionId(Long invoiceRejectionId) {
-        this.invoiceRejectionId = invoiceRejectionId;
-    }
-
     public Long getCurrencyId() {
         return currencyId;
     }
@@ -184,36 +130,68 @@ public class InvoiceDTO implements Serializable {
         this.currencyCode = currencyCode;
     }
 
-    public Long getUserCreationId() {
-        return userCreationId;
+    public Long getInvoiceRejectionId() {
+        return invoiceRejectionId;
     }
 
-    public void setUserCreationId(Long userId) {
-        this.userCreationId = userId;
+    public void setInvoiceRejectionId(Long invoiceRejectionId) {
+        this.invoiceRejectionId = invoiceRejectionId;
     }
 
-    public String getUserCreationLogin() {
-        return userCreationLogin;
+    public String getInvoiceRejectionRejected() {
+        return invoiceRejectionRejected;
     }
 
-    public void setUserCreationLogin(String userLogin) {
-        this.userCreationLogin = userLogin;
+    public void setInvoiceRejectionRejected(String invoiceRejectionRejected) {
+        this.invoiceRejectionRejected = invoiceRejectionRejected;
     }
 
-    public Long getUserModificationId() {
-        return userModificationId;
+    public Long getInvoiceSubmissionId() {
+        return invoiceSubmissionId;
     }
 
-    public void setUserModificationId(Long userId) {
-        this.userModificationId = userId;
+    public void setInvoiceSubmissionId(Long invoiceSubmissionId) {
+        this.invoiceSubmissionId = invoiceSubmissionId;
     }
 
-    public String getUserModificationLogin() {
-        return userModificationLogin;
+    public String getInvoiceSubmissionSubmitted() {
+        return invoiceSubmissionSubmitted;
     }
 
-    public void setUserModificationLogin(String userLogin) {
-        this.userModificationLogin = userLogin;
+    public void setInvoiceSubmissionSubmitted(String invoiceSubmissionSubmitted) {
+        this.invoiceSubmissionSubmitted = invoiceSubmissionSubmitted;
+    }
+
+    public Long getInvoiceValidationId() {
+        return invoiceValidationId;
+    }
+
+    public void setInvoiceValidationId(Long invoiceValidationId) {
+        this.invoiceValidationId = invoiceValidationId;
+    }
+
+    public String getInvoiceValidationValidated() {
+        return invoiceValidationValidated;
+    }
+
+    public void setInvoiceValidationValidated(String invoiceValidationValidated) {
+        this.invoiceValidationValidated = invoiceValidationValidated;
+    }
+
+    public Long getTypeInvoiceId() {
+        return typeInvoiceId;
+    }
+
+    public void setTypeInvoiceId(Long typeInvoiceId) {
+        this.typeInvoiceId = typeInvoiceId;
+    }
+
+    public String getTypeInvoiceCode() {
+        return typeInvoiceCode;
+    }
+
+    public void setTypeInvoiceCode(String typeInvoiceCode) {
+        this.typeInvoiceCode = typeInvoiceCode;
     }
 
     @Override
@@ -245,20 +223,18 @@ public class InvoiceDTO implements Serializable {
             ", description='" + getDescription() + "'" +
             ", amount=" + getAmount() +
             ", dateInvoice='" + getDateInvoice() + "'" +
-            ", dateCreation='" + getDateCreation() + "'" +
-            ", dateModification='" + getDateModification() + "'" +
             ", document='" + getDocument() + "'" +
             ", rate=" + getRate() +
-            ", typeInvoice=" + getTypeInvoiceId() +
-            ", invoiceSubmission=" + getInvoiceSubmissionId() +
-            ", invoiceValidation=" + getInvoiceValidationId() +
-            ", invoiceRejection=" + getInvoiceRejectionId() +
             ", currency=" + getCurrencyId() +
             ", currency='" + getCurrencyCode() + "'" +
-            ", userCreation=" + getUserCreationId() +
-            ", userCreation='" + getUserCreationLogin() + "'" +
-            ", userModification=" + getUserModificationId() +
-            ", userModification='" + getUserModificationLogin() + "'" +
+            ", invoiceRejection=" + getInvoiceRejectionId() +
+            ", invoiceRejection='" + getInvoiceRejectionRejected() + "'" +
+            ", invoiceSubmission=" + getInvoiceSubmissionId() +
+            ", invoiceSubmission='" + getInvoiceSubmissionSubmitted() + "'" +
+            ", invoiceValidation=" + getInvoiceValidationId() +
+            ", invoiceValidation='" + getInvoiceValidationValidated() + "'" +
+            ", typeInvoice=" + getTypeInvoiceId() +
+            ", typeInvoice='" + getTypeInvoiceCode() + "'" +
             "}";
     }
 }

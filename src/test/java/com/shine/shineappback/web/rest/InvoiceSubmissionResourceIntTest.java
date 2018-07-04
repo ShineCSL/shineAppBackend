@@ -3,7 +3,6 @@ package com.shine.shineappback.web.rest;
 import com.shine.shineappback.ShineAppBackendApp;
 
 import com.shine.shineappback.domain.InvoiceSubmission;
-import com.shine.shineappback.domain.User;
 import com.shine.shineappback.repository.InvoiceSubmissionRepository;
 import com.shine.shineappback.service.InvoiceSubmissionService;
 import com.shine.shineappback.service.dto.InvoiceSubmissionDTO;
@@ -25,14 +24,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
-import java.time.ZoneId;
 import java.util.List;
 
 
-import static com.shine.shineappback.web.rest.TestUtil.sameInstant;
 import static com.shine.shineappback.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -50,12 +44,6 @@ public class InvoiceSubmissionResourceIntTest {
 
     private static final Boolean DEFAULT_SUBMITTED = false;
     private static final Boolean UPDATED_SUBMITTED = true;
-
-    private static final ZonedDateTime DEFAULT_DATE_CREATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_CREATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
-    private static final ZonedDateTime DEFAULT_DATE_MODIFICATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_MODIFICATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
     @Autowired
     private InvoiceSubmissionRepository invoiceSubmissionRepository;
@@ -103,14 +91,7 @@ public class InvoiceSubmissionResourceIntTest {
      */
     public static InvoiceSubmission createEntity(EntityManager em) {
         InvoiceSubmission invoiceSubmission = new InvoiceSubmission()
-            .submitted(DEFAULT_SUBMITTED)
-            .dateCreation(DEFAULT_DATE_CREATION)
-            .dateModification(DEFAULT_DATE_MODIFICATION);
-        // Add required entity
-        User user = UserResourceIntTest.createEntity(em);
-        em.persist(user);
-        em.flush();
-        invoiceSubmission.setUserCreation(user);
+            .submitted(DEFAULT_SUBMITTED);
         return invoiceSubmission;
     }
 
@@ -136,8 +117,6 @@ public class InvoiceSubmissionResourceIntTest {
         assertThat(invoiceSubmissionList).hasSize(databaseSizeBeforeCreate + 1);
         InvoiceSubmission testInvoiceSubmission = invoiceSubmissionList.get(invoiceSubmissionList.size() - 1);
         assertThat(testInvoiceSubmission.isSubmitted()).isEqualTo(DEFAULT_SUBMITTED);
-        assertThat(testInvoiceSubmission.getDateCreation()).isEqualTo(DEFAULT_DATE_CREATION);
-        assertThat(testInvoiceSubmission.getDateModification()).isEqualTo(DEFAULT_DATE_MODIFICATION);
     }
 
     @Test
@@ -162,25 +141,6 @@ public class InvoiceSubmissionResourceIntTest {
 
     @Test
     @Transactional
-    public void checkDateCreationIsRequired() throws Exception {
-        int databaseSizeBeforeTest = invoiceSubmissionRepository.findAll().size();
-        // set the field null
-        invoiceSubmission.setDateCreation(null);
-
-        // Create the InvoiceSubmission, which fails.
-        InvoiceSubmissionDTO invoiceSubmissionDTO = invoiceSubmissionMapper.toDto(invoiceSubmission);
-
-        restInvoiceSubmissionMockMvc.perform(post("/api/invoice-submissions")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(invoiceSubmissionDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<InvoiceSubmission> invoiceSubmissionList = invoiceSubmissionRepository.findAll();
-        assertThat(invoiceSubmissionList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void getAllInvoiceSubmissions() throws Exception {
         // Initialize the database
         invoiceSubmissionRepository.saveAndFlush(invoiceSubmission);
@@ -190,9 +150,7 @@ public class InvoiceSubmissionResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(invoiceSubmission.getId().intValue())))
-            .andExpect(jsonPath("$.[*].submitted").value(hasItem(DEFAULT_SUBMITTED.booleanValue())))
-            .andExpect(jsonPath("$.[*].dateCreation").value(hasItem(sameInstant(DEFAULT_DATE_CREATION))))
-            .andExpect(jsonPath("$.[*].dateModification").value(hasItem(sameInstant(DEFAULT_DATE_MODIFICATION))));
+            .andExpect(jsonPath("$.[*].submitted").value(hasItem(DEFAULT_SUBMITTED.booleanValue())));
     }
     
 
@@ -207,9 +165,7 @@ public class InvoiceSubmissionResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(invoiceSubmission.getId().intValue()))
-            .andExpect(jsonPath("$.submitted").value(DEFAULT_SUBMITTED.booleanValue()))
-            .andExpect(jsonPath("$.dateCreation").value(sameInstant(DEFAULT_DATE_CREATION)))
-            .andExpect(jsonPath("$.dateModification").value(sameInstant(DEFAULT_DATE_MODIFICATION)));
+            .andExpect(jsonPath("$.submitted").value(DEFAULT_SUBMITTED.booleanValue()));
     }
     @Test
     @Transactional
@@ -232,9 +188,7 @@ public class InvoiceSubmissionResourceIntTest {
         // Disconnect from session so that the updates on updatedInvoiceSubmission are not directly saved in db
         em.detach(updatedInvoiceSubmission);
         updatedInvoiceSubmission
-            .submitted(UPDATED_SUBMITTED)
-            .dateCreation(UPDATED_DATE_CREATION)
-            .dateModification(UPDATED_DATE_MODIFICATION);
+            .submitted(UPDATED_SUBMITTED);
         InvoiceSubmissionDTO invoiceSubmissionDTO = invoiceSubmissionMapper.toDto(updatedInvoiceSubmission);
 
         restInvoiceSubmissionMockMvc.perform(put("/api/invoice-submissions")
@@ -247,8 +201,6 @@ public class InvoiceSubmissionResourceIntTest {
         assertThat(invoiceSubmissionList).hasSize(databaseSizeBeforeUpdate);
         InvoiceSubmission testInvoiceSubmission = invoiceSubmissionList.get(invoiceSubmissionList.size() - 1);
         assertThat(testInvoiceSubmission.isSubmitted()).isEqualTo(UPDATED_SUBMITTED);
-        assertThat(testInvoiceSubmission.getDateCreation()).isEqualTo(UPDATED_DATE_CREATION);
-        assertThat(testInvoiceSubmission.getDateModification()).isEqualTo(UPDATED_DATE_MODIFICATION);
     }
 
     @Test

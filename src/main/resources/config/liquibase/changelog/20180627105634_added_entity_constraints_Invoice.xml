@@ -8,11 +8,17 @@
     -->
     <changeSet id="20180627105634-2" author="jhipster">
         
-        <addForeignKeyConstraint baseColumnNames="type_invoice_id"
+        <addForeignKeyConstraint baseColumnNames="currency_id"
                                  baseTableName="invoice"
-                                 constraintName="fk_invoice_type_invoice_id"
+                                 constraintName="fk_invoice_currency_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="type_invoice"/>
+                                 referencedTableName="currency"/>
+
+        <addForeignKeyConstraint baseColumnNames="invoice_rejection_id"
+                                 baseTableName="invoice"
+                                 constraintName="fk_invoice_invoice_rejection_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="invoice_rejection"/>
 
         <addForeignKeyConstraint baseColumnNames="invoice_submission_id"
                                  baseTableName="invoice"
@@ -26,29 +32,11 @@
                                  referencedColumnNames="id"
                                  referencedTableName="invoice_validation"/>
 
-        <addForeignKeyConstraint baseColumnNames="invoice_rejection_id"
+        <addForeignKeyConstraint baseColumnNames="type_invoice_id"
                                  baseTableName="invoice"
-                                 constraintName="fk_invoice_invoice_rejection_id"
+                                 constraintName="fk_invoice_type_invoice_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="invoice_rejection"/>
-
-        <addForeignKeyConstraint baseColumnNames="currency_id"
-                                 baseTableName="invoice"
-                                 constraintName="fk_invoice_currency_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="currency"/>
-
-        <addForeignKeyConstraint baseColumnNames="user_creation_id"
-                                 baseTableName="invoice"
-                                 constraintName="fk_invoice_user_creation_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="jhi_user"/>
-
-        <addForeignKeyConstraint baseColumnNames="user_modification_id"
-                                 baseTableName="invoice"
-                                 constraintName="fk_invoice_user_modification_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="jhi_user"/>
+                                 referencedTableName="type_invoice"/>
 
     </changeSet>
 </databaseChangeLog>

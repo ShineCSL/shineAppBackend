@@ -3,7 +3,6 @@ package com.shine.shineappback.web.rest;
 import com.shine.shineappback.ShineAppBackendApp;
 
 import com.shine.shineappback.domain.InvoiceValidation;
-import com.shine.shineappback.domain.User;
 import com.shine.shineappback.repository.InvoiceValidationRepository;
 import com.shine.shineappback.service.InvoiceValidationService;
 import com.shine.shineappback.service.dto.InvoiceValidationDTO;
@@ -25,14 +24,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
-import java.time.ZoneId;
 import java.util.List;
 
 
-import static com.shine.shineappback.web.rest.TestUtil.sameInstant;
 import static com.shine.shineappback.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -48,14 +42,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = ShineAppBackendApp.class)
 public class InvoiceValidationResourceIntTest {
 
-    private static final Boolean DEFAULT_VALIDATION = false;
-    private static final Boolean UPDATED_VALIDATION = true;
-
-    private static final ZonedDateTime DEFAULT_DATE_CREATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_CREATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
-    private static final ZonedDateTime DEFAULT_DATE_MODIFICATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_MODIFICATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final Boolean DEFAULT_VALIDATED = false;
+    private static final Boolean UPDATED_VALIDATED = true;
 
     @Autowired
     private InvoiceValidationRepository invoiceValidationRepository;
@@ -103,14 +91,7 @@ public class InvoiceValidationResourceIntTest {
      */
     public static InvoiceValidation createEntity(EntityManager em) {
         InvoiceValidation invoiceValidation = new InvoiceValidation()
-            .validation(DEFAULT_VALIDATION)
-            .dateCreation(DEFAULT_DATE_CREATION)
-            .dateModification(DEFAULT_DATE_MODIFICATION);
-        // Add required entity
-        User user = UserResourceIntTest.createEntity(em);
-        em.persist(user);
-        em.flush();
-        invoiceValidation.setUserCreation(user);
+            .validated(DEFAULT_VALIDATED);
         return invoiceValidation;
     }
 
@@ -135,9 +116,7 @@ public class InvoiceValidationResourceIntTest {
         List<InvoiceValidation> invoiceValidationList = invoiceValidationRepository.findAll();
         assertThat(invoiceValidationList).hasSize(databaseSizeBeforeCreate + 1);
         InvoiceValidation testInvoiceValidation = invoiceValidationList.get(invoiceValidationList.size() - 1);
-        assertThat(testInvoiceValidation.isValidation()).isEqualTo(DEFAULT_VALIDATION);
-        assertThat(testInvoiceValidation.getDateCreation()).isEqualTo(DEFAULT_DATE_CREATION);
-        assertThat(testInvoiceValidation.getDateModification()).isEqualTo(DEFAULT_DATE_MODIFICATION);
+        assertThat(testInvoiceValidation.isValidated()).isEqualTo(DEFAULT_VALIDATED);
     }
 
     @Test
@@ -162,25 +141,6 @@ public class InvoiceValidationResourceIntTest {
 
     @Test
     @Transactional
-    public void checkDateCreationIsRequired() throws Exception {
-        int databaseSizeBeforeTest = invoiceValidationRepository.findAll().size();
-        // set the field null
-        invoiceValidation.setDateCreation(null);
-
-        // Create the InvoiceValidation, which fails.
-        InvoiceValidationDTO invoiceValidationDTO = invoiceValidationMapper.toDto(invoiceValidation);
-
-        restInvoiceValidationMockMvc.perform(post("/api/invoice-validations")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(invoiceValidationDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<InvoiceValidation> invoiceValidationList = invoiceValidationRepository.findAll();
-        assertThat(invoiceValidationList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void getAllInvoiceValidations() throws Exception {
         // Initialize the database
         invoiceValidationRepository.saveAndFlush(invoiceValidation);
@@ -190,9 +150,7 @@ public class InvoiceValidationResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(invoiceValidation.getId().intValue())))
-            .andExpect(jsonPath("$.[*].validation").value(hasItem(DEFAULT_VALIDATION.booleanValue())))
-            .andExpect(jsonPath("$.[*].dateCreation").value(hasItem(sameInstant(DEFAULT_DATE_CREATION))))
-            .andExpect(jsonPath("$.[*].dateModification").value(hasItem(sameInstant(DEFAULT_DATE_MODIFICATION))));
+            .andExpect(jsonPath("$.[*].validated").value(hasItem(DEFAULT_VALIDATED.booleanValue())));
     }
     
 
@@ -207,9 +165,7 @@ public class InvoiceValidationResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(invoiceValidation.getId().intValue()))
-            .andExpect(jsonPath("$.validation").value(DEFAULT_VALIDATION.booleanValue()))
-            .andExpect(jsonPath("$.dateCreation").value(sameInstant(DEFAULT_DATE_CREATION)))
-            .andExpect(jsonPath("$.dateModification").value(sameInstant(DEFAULT_DATE_MODIFICATION)));
+            .andExpect(jsonPath("$.validated").value(DEFAULT_VALIDATED.booleanValue()));
     }
     @Test
     @Transactional
@@ -232,9 +188,7 @@ public class InvoiceValidationResourceIntTest {
         // Disconnect from session so that the updates on updatedInvoiceValidation are not directly saved in db
         em.detach(updatedInvoiceValidation);
         updatedInvoiceValidation
-            .validation(UPDATED_VALIDATION)
-            .dateCreation(UPDATED_DATE_CREATION)
-            .dateModification(UPDATED_DATE_MODIFICATION);
+            .validated(UPDATED_VALIDATED);
         InvoiceValidationDTO invoiceValidationDTO = invoiceValidationMapper.toDto(updatedInvoiceValidation);
 
         restInvoiceValidationMockMvc.perform(put("/api/invoice-validations")
@@ -246,9 +200,7 @@ public class InvoiceValidationResourceIntTest {
         List<InvoiceValidation> invoiceValidationList = invoiceValidationRepository.findAll();
         assertThat(invoiceValidationList).hasSize(databaseSizeBeforeUpdate);
         InvoiceValidation testInvoiceValidation = invoiceValidationList.get(invoiceValidationList.size() - 1);
-        assertThat(testInvoiceValidation.isValidation()).isEqualTo(UPDATED_VALIDATION);
-        assertThat(testInvoiceValidation.getDateCreation()).isEqualTo(UPDATED_DATE_CREATION);
-        assertThat(testInvoiceValidation.getDateModification()).isEqualTo(UPDATED_DATE_MODIFICATION);
+        assertThat(testInvoiceValidation.isValidated()).isEqualTo(UPDATED_VALIDATED);
     }
 
     @Test

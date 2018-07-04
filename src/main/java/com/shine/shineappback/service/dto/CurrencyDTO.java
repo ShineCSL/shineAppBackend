@@ -1,6 +1,5 @@
 package com.shine.shineappback.service.dto;
 
-import java.time.ZonedDateTime;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -8,7 +7,7 @@ import java.util.Objects;
 /**
  * A DTO for the Currency entity.
  */
-public class CurrencyDTO implements Serializable {
+public class CurrencyDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
 
@@ -17,21 +16,8 @@ public class CurrencyDTO implements Serializable {
     private String labelFr;
 
     @NotNull
-    private ZonedDateTime dateCreation;
-
-    private ZonedDateTime dateModification;
-
-    @NotNull
-    @Pattern(regexp = "^[A-Z0-9()[\\\\]+-_*/%]*$")
+    @Pattern(regexp = "^[A-Z0-9()\\[\\]#$€+*%\\-_/\\\\]*$")
     private String code;
-
-    private Long userCreationId;
-
-    private String userCreationLogin;
-
-    private Long userModificationId;
-
-    private String userModificationLogin;
 
     public Long getId() {
         return id;
@@ -57,60 +43,12 @@ public class CurrencyDTO implements Serializable {
         this.labelFr = labelFr;
     }
 
-    public ZonedDateTime getDateCreation() {
-        return dateCreation;
-    }
-
-    public void setDateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-    }
-
-    public ZonedDateTime getDateModification() {
-        return dateModification;
-    }
-
-    public void setDateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-    }
-
     public String getCode() {
         return code;
     }
 
     public void setCode(String code) {
         this.code = code;
-    }
-
-    public Long getUserCreationId() {
-        return userCreationId;
-    }
-
-    public void setUserCreationId(Long userId) {
-        this.userCreationId = userId;
-    }
-
-    public String getUserCreationLogin() {
-        return userCreationLogin;
-    }
-
-    public void setUserCreationLogin(String userLogin) {
-        this.userCreationLogin = userLogin;
-    }
-
-    public Long getUserModificationId() {
-        return userModificationId;
-    }
-
-    public void setUserModificationId(Long userId) {
-        this.userModificationId = userId;
-    }
-
-    public String getUserModificationLogin() {
-        return userModificationLogin;
-    }
-
-    public void setUserModificationLogin(String userLogin) {
-        this.userModificationLogin = userLogin;
     }
 
     @Override
@@ -140,13 +78,7 @@ public class CurrencyDTO implements Serializable {
             "id=" + getId() +
             ", labelEn='" + getLabelEn() + "'" +
             ", labelFr='" + getLabelFr() + "'" +
-            ", dateCreation='" + getDateCreation() + "'" +
-            ", dateModification='" + getDateModification() + "'" +
             ", code='" + getCode() + "'" +
-            ", userCreation=" + getUserCreationId() +
-            ", userCreation='" + getUserCreationLogin() + "'" +
-            ", userModification=" + getUserModificationId() +
-            ", userModification='" + getUserModificationLogin() + "'" +
             "}";
     }
 }

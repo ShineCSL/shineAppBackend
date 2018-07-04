@@ -47,5 +47,8 @@
     ],
     "clientPackageManager": "yarn",
     "skipClient": true
+  },
+  "generator-jhipster-entity-audit": {
+    "auditFramework": "custom"
   }
 }

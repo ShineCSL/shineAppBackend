@@ -4,7 +4,6 @@ import com.shine.shineappback.ShineAppBackendApp;
 
 import com.shine.shineappback.domain.Mission;
 import com.shine.shineappback.domain.Client;
-import com.shine.shineappback.domain.User;
 import com.shine.shineappback.repository.MissionRepository;
 import com.shine.shineappback.service.MissionService;
 import com.shine.shineappback.service.dto.MissionDTO;
@@ -26,14 +25,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
-import java.time.ZoneId;
 import java.util.List;
 
 
-import static com.shine.shineappback.web.rest.TestUtil.sameInstant;
 import static com.shine.shineappback.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -49,17 +43,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = ShineAppBackendApp.class)
 public class MissionResourceIntTest {
 
-    private static final String DEFAULT_CODE = "K-/%]";
-    private static final String UPDATED_CODE = "W9-/%]";
-
     private static final String DEFAULT_LABEL = "AAAAAAAAAA";
     private static final String UPDATED_LABEL = "BBBBBBBBBB";
 
-    private static final ZonedDateTime DEFAULT_DATE_CREATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_CREATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
-    private static final ZonedDateTime DEFAULT_DATE_MODIFICATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_MODIFICATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final String DEFAULT_CODE = "AAAAAAAAAA";
+    private static final String UPDATED_CODE = "BBBBBBBBBB";
 
     @Autowired
     private MissionRepository missionRepository;
@@ -107,20 +95,13 @@ public class MissionResourceIntTest {
      */
     public static Mission createEntity(EntityManager em) {
         Mission mission = new Mission()
-            .code(DEFAULT_CODE)
             .label(DEFAULT_LABEL)
-            .dateCreation(DEFAULT_DATE_CREATION)
-            .dateModification(DEFAULT_DATE_MODIFICATION);
+            .code(DEFAULT_CODE);
         // Add required entity
         Client client = ClientResourceIntTest.createEntity(em);
         em.persist(client);
         em.flush();
         mission.setClient(client);
-        // Add required entity
-        User user = UserResourceIntTest.createEntity(em);
-        em.persist(user);
-        em.flush();
-        mission.setUserCreation(user);
         return mission;
     }
 
@@ -145,10 +126,8 @@ public class MissionResourceIntTest {
         List<Mission> missionList = missionRepository.findAll();
         assertThat(missionList).hasSize(databaseSizeBeforeCreate + 1);
         Mission testMission = missionList.get(missionList.size() - 1);
-        assertThat(testMission.getCode()).isEqualTo(DEFAULT_CODE);
         assertThat(testMission.getLabel()).isEqualTo(DEFAULT_LABEL);
-        assertThat(testMission.getDateCreation()).isEqualTo(DEFAULT_DATE_CREATION);
-        assertThat(testMission.getDateModification()).isEqualTo(DEFAULT_DATE_MODIFICATION);
+        assertThat(testMission.getCode()).isEqualTo(DEFAULT_CODE);
     }
 
     @Test
@@ -192,25 +171,6 @@ public class MissionResourceIntTest {
 
     @Test
     @Transactional
-    public void checkDateCreationIsRequired() throws Exception {
-        int databaseSizeBeforeTest = missionRepository.findAll().size();
-        // set the field null
-        mission.setDateCreation(null);
-
-        // Create the Mission, which fails.
-        MissionDTO missionDTO = missionMapper.toDto(mission);
-
-        restMissionMockMvc.perform(post("/api/missions")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(missionDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<Mission> missionList = missionRepository.findAll();
-        assertThat(missionList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void getAllMissions() throws Exception {
         // Initialize the database
         missionRepository.saveAndFlush(mission);
@@ -220,10 +180,8 @@ public class MissionResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(mission.getId().intValue())))
-            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
             .andExpect(jsonPath("$.[*].label").value(hasItem(DEFAULT_LABEL.toString())))
-            .andExpect(jsonPath("$.[*].dateCreation").value(hasItem(sameInstant(DEFAULT_DATE_CREATION))))
-            .andExpect(jsonPath("$.[*].dateModification").value(hasItem(sameInstant(DEFAULT_DATE_MODIFICATION))));
+            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())));
     }
     
 
@@ -238,10 +196,8 @@ public class MissionResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(mission.getId().intValue()))
-            .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()))
             .andExpect(jsonPath("$.label").value(DEFAULT_LABEL.toString()))
-            .andExpect(jsonPath("$.dateCreation").value(sameInstant(DEFAULT_DATE_CREATION)))
-            .andExpect(jsonPath("$.dateModification").value(sameInstant(DEFAULT_DATE_MODIFICATION)));
+            .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()));
     }
     @Test
     @Transactional
@@ -264,10 +220,8 @@ public class MissionResourceIntTest {
         // Disconnect from session so that the updates on updatedMission are not directly saved in db
         em.detach(updatedMission);
         updatedMission
-            .code(UPDATED_CODE)
             .label(UPDATED_LABEL)
-            .dateCreation(UPDATED_DATE_CREATION)
-            .dateModification(UPDATED_DATE_MODIFICATION);
+            .code(UPDATED_CODE);
         MissionDTO missionDTO = missionMapper.toDto(updatedMission);
 
         restMissionMockMvc.perform(put("/api/missions")
@@ -279,10 +233,8 @@ public class MissionResourceIntTest {
         List<Mission> missionList = missionRepository.findAll();
         assertThat(missionList).hasSize(databaseSizeBeforeUpdate);
         Mission testMission = missionList.get(missionList.size() - 1);
-        assertThat(testMission.getCode()).isEqualTo(UPDATED_CODE);
         assertThat(testMission.getLabel()).isEqualTo(UPDATED_LABEL);
-        assertThat(testMission.getDateCreation()).isEqualTo(UPDATED_DATE_CREATION);
-        assertThat(testMission.getDateModification()).isEqualTo(UPDATED_DATE_MODIFICATION);
+        assertThat(testMission.getCode()).isEqualTo(UPDATED_CODE);
     }
 
     @Test

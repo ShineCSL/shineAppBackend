@@ -23,43 +23,6 @@
             "otherEntityRelationshipName": "activity"
         },
         {
-            "relationshipName": "activitySubmission",
-            "otherEntityName": "activitySubmission",
-            "relationshipType": "many-to-one",
-            "otherEntityField": "id"
-        },
-        {
-            "relationshipName": "activityValidation",
-            "otherEntityName": "activityValidation",
-            "relationshipType": "many-to-one",
-            "otherEntityField": "id"
-        },
-        {
-            "relationshipName": "activityRejection",
-            "otherEntityName": "activityRejection",
-            "relationshipType": "many-to-one",
-            "otherEntityField": "id"
-        },
-        {
-            "relationshipName": "userCreation",
-            "otherEntityName": "user",
-            "relationshipType": "many-to-one",
-            "relationshipValidateRules": [
-                "required"
-            ],
-            "otherEntityField": "login",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "activity"
-        },
-        {
-            "relationshipName": "userModification",
-            "otherEntityName": "user",
-            "relationshipType": "many-to-one",
-            "otherEntityField": "login",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "activity"
-        },
-        {
             "relationshipName": "mission",
             "otherEntityName": "mission",
             "relationshipType": "many-to-one",
@@ -67,6 +30,25 @@
                 "required"
             ],
             "otherEntityField": "code"
+        },
+        {
+            "relationshipName": "activityRejection",
+            "otherEntityName": "activityRejection",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "rejected"
+        },
+        {
+            "relationshipName": "activitySubmission",
+            "otherEntityName": "activitySubmission",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [],
+            "otherEntityField": "submitted"
+        },
+        {
+            "relationshipName": "activityValidation",
+            "otherEntityName": "activityValidation",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "validated"
         }
     ],
     "fields": [
@@ -104,17 +86,6 @@
             "fieldValidateRules": [
                 "required"
             ]
-        },
-        {
-            "fieldName": "dateCreation",
-            "fieldType": "ZonedDateTime",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
-        {
-            "fieldName": "dateModification",
-            "fieldType": "ZonedDateTime"
         }
     ],
     "changelogDate": "20180627115804",
@@ -123,5 +94,6 @@
     "service": "serviceClass",
     "entityTableName": "activity",
     "jpaMetamodelFiltering": false,
-    "pagination": "pagination"
+    "pagination": "pagination",
+    "enableEntityAudit": true
 }

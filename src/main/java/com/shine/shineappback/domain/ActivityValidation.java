@@ -1,12 +1,9 @@
 package com.shine.shineappback.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
 
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -14,7 +11,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "activity_validation")
-public class ActivityValidation implements Serializable {
+public class ActivityValidation extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -28,24 +25,8 @@ public class ActivityValidation implements Serializable {
     @Column(name = "jhi_year")
     private Integer year;
 
-    @Column(name = "jhi_validation")
-    private Boolean validation;
-
-    @NotNull
-    @Column(name = "date_creation", nullable = false)
-    private ZonedDateTime dateCreation;
-
-    @Column(name = "date_modification")
-    private ZonedDateTime dateModification;
-
-    @ManyToOne
-    @JsonIgnoreProperties("")
-    private User userModification;
-
-    @ManyToOne(optional = false)
-    @NotNull
-    @JsonIgnoreProperties("")
-    private User userCreation;
+    @Column(name = "validated")
+    private Boolean validated;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -82,69 +63,17 @@ public class ActivityValidation implements Serializable {
         this.year = year;
     }
 
-    public Boolean isValidation() {
-        return validation;
+    public Boolean isValidated() {
+        return validated;
     }
 
-    public ActivityValidation validation(Boolean validation) {
-        this.validation = validation;
+    public ActivityValidation validated(Boolean validated) {
+        this.validated = validated;
         return this;
     }
 
-    public void setValidation(Boolean validation) {
-        this.validation = validation;
-    }
-
-    public ZonedDateTime getDateCreation() {
-        return dateCreation;
-    }
-
-    public ActivityValidation dateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-        return this;
-    }
-
-    public void setDateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-    }
-
-    public ZonedDateTime getDateModification() {
-        return dateModification;
-    }
-
-    public ActivityValidation dateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-        return this;
-    }
-
-    public void setDateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-    }
-
-    public User getUserModification() {
-        return userModification;
-    }
-
-    public ActivityValidation userModification(User user) {
-        this.userModification = user;
-        return this;
-    }
-
-    public void setUserModification(User user) {
-        this.userModification = user;
-    }
-
-    public User getUserCreation() {
-        return userCreation;
-    }
-
-    public ActivityValidation userCreation(User user) {
-        this.userCreation = user;
-        return this;
-    }
-
-    public void setUserCreation(User user) {
-        this.userCreation = user;
+    public void setValidated(Boolean validated) {
+        this.validated = validated;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -174,9 +103,7 @@ public class ActivityValidation implements Serializable {
             "id=" + getId() +
             ", weekNumber=" + getWeekNumber() +
             ", year=" + getYear() +
-            ", validation='" + isValidation() + "'" +
-            ", dateCreation='" + getDateCreation() + "'" +
-            ", dateModification='" + getDateModification() + "'" +
+            ", validated='" + isValidated() + "'" +
             "}";
     }
 }

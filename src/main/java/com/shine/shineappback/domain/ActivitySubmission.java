@@ -1,12 +1,9 @@
 package com.shine.shineappback.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
 
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -14,7 +11,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "activity_submission")
-public class ActivitySubmission implements Serializable {
+public class ActivitySubmission extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -30,22 +27,6 @@ public class ActivitySubmission implements Serializable {
 
     @Column(name = "week_number")
     private Integer weekNumber;
-
-    @NotNull
-    @Column(name = "date_creation", nullable = false)
-    private ZonedDateTime dateCreation;
-
-    @Column(name = "date_modification")
-    private ZonedDateTime dateModification;
-
-    @ManyToOne
-    @JsonIgnoreProperties("")
-    private User userModification;
-
-    @ManyToOne(optional = false)
-    @NotNull
-    @JsonIgnoreProperties("")
-    private User userCreation;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -94,58 +75,6 @@ public class ActivitySubmission implements Serializable {
     public void setWeekNumber(Integer weekNumber) {
         this.weekNumber = weekNumber;
     }
-
-    public ZonedDateTime getDateCreation() {
-        return dateCreation;
-    }
-
-    public ActivitySubmission dateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-        return this;
-    }
-
-    public void setDateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-    }
-
-    public ZonedDateTime getDateModification() {
-        return dateModification;
-    }
-
-    public ActivitySubmission dateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-        return this;
-    }
-
-    public void setDateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-    }
-
-    public User getUserModification() {
-        return userModification;
-    }
-
-    public ActivitySubmission userModification(User user) {
-        this.userModification = user;
-        return this;
-    }
-
-    public void setUserModification(User user) {
-        this.userModification = user;
-    }
-
-    public User getUserCreation() {
-        return userCreation;
-    }
-
-    public ActivitySubmission userCreation(User user) {
-        this.userCreation = user;
-        return this;
-    }
-
-    public void setUserCreation(User user) {
-        this.userCreation = user;
-    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
@@ -175,8 +104,6 @@ public class ActivitySubmission implements Serializable {
             ", submitted='" + isSubmitted() + "'" +
             ", year=" + getYear() +
             ", weekNumber=" + getWeekNumber() +
-            ", dateCreation='" + getDateCreation() + "'" +
-            ", dateModification='" + getDateModification() + "'" +
             "}";
     }
 }

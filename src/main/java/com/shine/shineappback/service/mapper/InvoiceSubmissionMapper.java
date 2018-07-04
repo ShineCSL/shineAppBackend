@@ -8,18 +8,11 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity InvoiceSubmission and its DTO InvoiceSubmissionDTO.
  */
-@Mapper(componentModel = "spring", uses = {UserMapper.class})
+@Mapper(componentModel = "spring", uses = {})
 public interface InvoiceSubmissionMapper extends EntityMapper<InvoiceSubmissionDTO, InvoiceSubmission> {
 
-    @Mapping(source = "userCreation.id", target = "userCreationId")
-    @Mapping(source = "userCreation.login", target = "userCreationLogin")
-    @Mapping(source = "userModification.id", target = "userModificationId")
-    @Mapping(source = "userModification.login", target = "userModificationLogin")
-    InvoiceSubmissionDTO toDto(InvoiceSubmission invoiceSubmission);
 
     @Mapping(target = "invoice", ignore = true)
-    @Mapping(source = "userCreationId", target = "userCreation")
-    @Mapping(source = "userModificationId", target = "userModification")
     InvoiceSubmission toEntity(InvoiceSubmissionDTO invoiceSubmissionDTO);
 
     default InvoiceSubmission fromId(Long id) {

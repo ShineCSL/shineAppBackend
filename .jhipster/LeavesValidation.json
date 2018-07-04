@@ -8,25 +8,6 @@
             "relationshipType": "one-to-one",
             "ownerSide": false,
             "otherEntityRelationshipName": "leavesValidation"
-        },
-        {
-            "relationshipName": "userModification",
-            "otherEntityName": "user",
-            "relationshipType": "many-to-one",
-            "otherEntityField": "login",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "leavesValidation"
-        },
-        {
-            "relationshipName": "userCreation",
-            "otherEntityName": "user",
-            "relationshipType": "many-to-one",
-            "relationshipValidateRules": [
-                "required"
-            ],
-            "otherEntityField": "login",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "leavesValidation"
         }
     ],
     "fields": [
@@ -34,17 +15,6 @@
             "fieldName": "validated",
             "fieldType": "Boolean",
             "fieldValidateRules": []
-        },
-        {
-            "fieldName": "dateModification",
-            "fieldType": "ZonedDateTime"
-        },
-        {
-            "fieldName": "dateCreation",
-            "fieldType": "ZonedDateTime",
-            "fieldValidateRules": [
-                "required"
-            ]
         }
     ],
     "changelogDate": "20180626123157",
@@ -53,5 +23,6 @@
     "service": "serviceClass",
     "entityTableName": "leaves_validation",
     "jpaMetamodelFiltering": false,
-    "pagination": "pagination"
+    "pagination": "pagination",
+    "enableEntityAudit": true
 }

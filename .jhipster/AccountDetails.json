@@ -9,25 +9,6 @@
             "otherEntityField": "id"
         },
         {
-            "relationshipName": "userCreation",
-            "otherEntityName": "user",
-            "relationshipType": "many-to-one",
-            "relationshipValidateRules": [
-                "required"
-            ],
-            "otherEntityField": "login",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "accountDetails"
-        },
-        {
-            "relationshipName": "userModfication",
-            "otherEntityName": "user",
-            "relationshipType": "many-to-one",
-            "otherEntityField": "login",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "accountDetails"
-        },
-        {
             "relationshipName": "invoice",
             "otherEntityName": "invoice",
             "relationshipType": "one-to-one",
@@ -47,24 +28,8 @@
     ],
     "fields": [
         {
-            "fieldName": "code",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required",
-                "pattern"
-            ],
-            "fieldValidateRulesPattern": "^[A-Z0-9()[\\\\]+-_*/%]*$"
-        },
-        {
             "fieldName": "amount",
             "fieldType": "Double",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
-        {
-            "fieldName": "type",
-            "fieldType": "String",
             "fieldValidateRules": [
                 "required"
             ]
@@ -74,15 +39,22 @@
             "fieldType": "Double"
         },
         {
-            "fieldName": "dateCreation",
-            "fieldType": "ZonedDateTime",
+            "fieldName": "label",
+            "fieldType": "String",
             "fieldValidateRules": [
                 "required"
             ]
         },
         {
-            "fieldName": "dateModification",
-            "fieldType": "ZonedDateTime"
+            "fieldName": "description",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "type",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
         }
     ],
     "changelogDate": "20180627123424",
@@ -91,5 +63,6 @@
     "service": "serviceClass",
     "entityTableName": "account_details",
     "jpaMetamodelFiltering": false,
-    "pagination": "pagination"
+    "pagination": "pagination",
+    "enableEntityAudit": true
 }

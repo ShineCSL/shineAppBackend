@@ -1,6 +1,5 @@
 package com.shine.shineappback.service.dto;
 
-import java.time.ZonedDateTime;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -8,24 +7,17 @@ import java.util.Objects;
 /**
  * A DTO for the ActivityRejection entity.
  */
-public class ActivityRejectionDTO implements Serializable {
+public class ActivityRejectionDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
 
     private Boolean rejected;
 
     @NotNull
-    private ZonedDateTime dateCreation;
+    private Integer weekNumber;
 
-    private ZonedDateTime dateModification;
-
-    private Long userCreationId;
-
-    private String userCreationLogin;
-
-    private Long userModificationId;
-
-    private String userModificationLogin;
+    @NotNull
+    private Integer year;
 
     public Long getId() {
         return id;
@@ -43,52 +35,20 @@ public class ActivityRejectionDTO implements Serializable {
         this.rejected = rejected;
     }
 
-    public ZonedDateTime getDateCreation() {
-        return dateCreation;
+    public Integer getWeekNumber() {
+        return weekNumber;
     }
 
-    public void setDateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
+    public void setWeekNumber(Integer weekNumber) {
+        this.weekNumber = weekNumber;
     }
 
-    public ZonedDateTime getDateModification() {
-        return dateModification;
+    public Integer getYear() {
+        return year;
     }
 
-    public void setDateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-    }
-
-    public Long getUserCreationId() {
-        return userCreationId;
-    }
-
-    public void setUserCreationId(Long userId) {
-        this.userCreationId = userId;
-    }
-
-    public String getUserCreationLogin() {
-        return userCreationLogin;
-    }
-
-    public void setUserCreationLogin(String userLogin) {
-        this.userCreationLogin = userLogin;
-    }
-
-    public Long getUserModificationId() {
-        return userModificationId;
-    }
-
-    public void setUserModificationId(Long userId) {
-        this.userModificationId = userId;
-    }
-
-    public String getUserModificationLogin() {
-        return userModificationLogin;
-    }
-
-    public void setUserModificationLogin(String userLogin) {
-        this.userModificationLogin = userLogin;
+    public void setYear(Integer year) {
+        this.year = year;
     }
 
     @Override
@@ -117,12 +77,8 @@ public class ActivityRejectionDTO implements Serializable {
         return "ActivityRejectionDTO{" +
             "id=" + getId() +
             ", rejected='" + isRejected() + "'" +
-            ", dateCreation='" + getDateCreation() + "'" +
-            ", dateModification='" + getDateModification() + "'" +
-            ", userCreation=" + getUserCreationId() +
-            ", userCreation='" + getUserCreationLogin() + "'" +
-            ", userModification=" + getUserModificationId() +
-            ", userModification='" + getUserModificationLogin() + "'" +
+            ", weekNumber=" + getWeekNumber() +
+            ", year=" + getYear() +
             "}";
     }
 }

@@ -13,15 +13,9 @@ public interface LeaveConfigMapper extends EntityMapper<LeaveConfigDTO, LeaveCon
 
     @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "user.login", target = "userLogin")
-    @Mapping(source = "userCreation.id", target = "userCreationId")
-    @Mapping(source = "userCreation.login", target = "userCreationLogin")
-    @Mapping(source = "userModification.id", target = "userModificationId")
-    @Mapping(source = "userModification.login", target = "userModificationLogin")
     LeaveConfigDTO toDto(LeaveConfig leaveConfig);
 
     @Mapping(source = "userId", target = "user")
-    @Mapping(source = "userCreationId", target = "userCreation")
-    @Mapping(source = "userModificationId", target = "userModification")
     LeaveConfig toEntity(LeaveConfigDTO leaveConfigDTO);
 
     default LeaveConfig fromId(Long id) {

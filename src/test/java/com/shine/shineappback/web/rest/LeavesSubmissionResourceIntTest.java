@@ -3,7 +3,6 @@ package com.shine.shineappback.web.rest;
 import com.shine.shineappback.ShineAppBackendApp;
 
 import com.shine.shineappback.domain.LeavesSubmission;
-import com.shine.shineappback.domain.User;
 import com.shine.shineappback.repository.LeavesSubmissionRepository;
 import com.shine.shineappback.service.LeavesSubmissionService;
 import com.shine.shineappback.service.dto.LeavesSubmissionDTO;
@@ -25,14 +24,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
-import java.time.ZoneId;
 import java.util.List;
 
 
-import static com.shine.shineappback.web.rest.TestUtil.sameInstant;
 import static com.shine.shineappback.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -50,12 +44,6 @@ public class LeavesSubmissionResourceIntTest {
 
     private static final Boolean DEFAULT_SUBMITTED = false;
     private static final Boolean UPDATED_SUBMITTED = true;
-
-    private static final ZonedDateTime DEFAULT_DATE_MODIFICATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_MODIFICATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
-    private static final ZonedDateTime DEFAULT_DATE_CREATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_CREATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
     @Autowired
     private LeavesSubmissionRepository leavesSubmissionRepository;
@@ -103,14 +91,7 @@ public class LeavesSubmissionResourceIntTest {
      */
     public static LeavesSubmission createEntity(EntityManager em) {
         LeavesSubmission leavesSubmission = new LeavesSubmission()
-            .submitted(DEFAULT_SUBMITTED)
-            .dateModification(DEFAULT_DATE_MODIFICATION)
-            .dateCreation(DEFAULT_DATE_CREATION);
-        // Add required entity
-        User user = UserResourceIntTest.createEntity(em);
-        em.persist(user);
-        em.flush();
-        leavesSubmission.setUserCreation(user);
+            .submitted(DEFAULT_SUBMITTED);
         return leavesSubmission;
     }
 
@@ -136,8 +117,6 @@ public class LeavesSubmissionResourceIntTest {
         assertThat(leavesSubmissionList).hasSize(databaseSizeBeforeCreate + 1);
         LeavesSubmission testLeavesSubmission = leavesSubmissionList.get(leavesSubmissionList.size() - 1);
         assertThat(testLeavesSubmission.isSubmitted()).isEqualTo(DEFAULT_SUBMITTED);
-        assertThat(testLeavesSubmission.getDateModification()).isEqualTo(DEFAULT_DATE_MODIFICATION);
-        assertThat(testLeavesSubmission.getDateCreation()).isEqualTo(DEFAULT_DATE_CREATION);
     }
 
     @Test
@@ -162,25 +141,6 @@ public class LeavesSubmissionResourceIntTest {
 
     @Test
     @Transactional
-    public void checkDateCreationIsRequired() throws Exception {
-        int databaseSizeBeforeTest = leavesSubmissionRepository.findAll().size();
-        // set the field null
-        leavesSubmission.setDateCreation(null);
-
-        // Create the LeavesSubmission, which fails.
-        LeavesSubmissionDTO leavesSubmissionDTO = leavesSubmissionMapper.toDto(leavesSubmission);
-
-        restLeavesSubmissionMockMvc.perform(post("/api/leaves-submissions")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(leavesSubmissionDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<LeavesSubmission> leavesSubmissionList = leavesSubmissionRepository.findAll();
-        assertThat(leavesSubmissionList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void getAllLeavesSubmissions() throws Exception {
         // Initialize the database
         leavesSubmissionRepository.saveAndFlush(leavesSubmission);
@@ -190,9 +150,7 @@ public class LeavesSubmissionResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(leavesSubmission.getId().intValue())))
-            .andExpect(jsonPath("$.[*].submitted").value(hasItem(DEFAULT_SUBMITTED.booleanValue())))
-            .andExpect(jsonPath("$.[*].dateModification").value(hasItem(sameInstant(DEFAULT_DATE_MODIFICATION))))
-            .andExpect(jsonPath("$.[*].dateCreation").value(hasItem(sameInstant(DEFAULT_DATE_CREATION))));
+            .andExpect(jsonPath("$.[*].submitted").value(hasItem(DEFAULT_SUBMITTED.booleanValue())));
     }
     
 
@@ -207,9 +165,7 @@ public class LeavesSubmissionResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(leavesSubmission.getId().intValue()))
-            .andExpect(jsonPath("$.submitted").value(DEFAULT_SUBMITTED.booleanValue()))
-            .andExpect(jsonPath("$.dateModification").value(sameInstant(DEFAULT_DATE_MODIFICATION)))
-            .andExpect(jsonPath("$.dateCreation").value(sameInstant(DEFAULT_DATE_CREATION)));
+            .andExpect(jsonPath("$.submitted").value(DEFAULT_SUBMITTED.booleanValue()));
     }
     @Test
     @Transactional
@@ -232,9 +188,7 @@ public class LeavesSubmissionResourceIntTest {
         // Disconnect from session so that the updates on updatedLeavesSubmission are not directly saved in db
         em.detach(updatedLeavesSubmission);
         updatedLeavesSubmission
-            .submitted(UPDATED_SUBMITTED)
-            .dateModification(UPDATED_DATE_MODIFICATION)
-            .dateCreation(UPDATED_DATE_CREATION);
+            .submitted(UPDATED_SUBMITTED);
         LeavesSubmissionDTO leavesSubmissionDTO = leavesSubmissionMapper.toDto(updatedLeavesSubmission);
 
         restLeavesSubmissionMockMvc.perform(put("/api/leaves-submissions")
@@ -247,8 +201,6 @@ public class LeavesSubmissionResourceIntTest {
         assertThat(leavesSubmissionList).hasSize(databaseSizeBeforeUpdate);
         LeavesSubmission testLeavesSubmission = leavesSubmissionList.get(leavesSubmissionList.size() - 1);
         assertThat(testLeavesSubmission.isSubmitted()).isEqualTo(UPDATED_SUBMITTED);
-        assertThat(testLeavesSubmission.getDateModification()).isEqualTo(UPDATED_DATE_MODIFICATION);
-        assertThat(testLeavesSubmission.getDateCreation()).isEqualTo(UPDATED_DATE_CREATION);
     }
 
     @Test

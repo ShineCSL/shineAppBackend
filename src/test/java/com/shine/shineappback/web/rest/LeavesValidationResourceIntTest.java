@@ -3,7 +3,6 @@ package com.shine.shineappback.web.rest;
 import com.shine.shineappback.ShineAppBackendApp;
 
 import com.shine.shineappback.domain.LeavesValidation;
-import com.shine.shineappback.domain.User;
 import com.shine.shineappback.repository.LeavesValidationRepository;
 import com.shine.shineappback.service.LeavesValidationService;
 import com.shine.shineappback.service.dto.LeavesValidationDTO;
@@ -25,14 +24,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
-import java.time.ZoneId;
 import java.util.List;
 
 
-import static com.shine.shineappback.web.rest.TestUtil.sameInstant;
 import static com.shine.shineappback.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -50,12 +44,6 @@ public class LeavesValidationResourceIntTest {
 
     private static final Boolean DEFAULT_VALIDATED = false;
     private static final Boolean UPDATED_VALIDATED = true;
-
-    private static final ZonedDateTime DEFAULT_DATE_MODIFICATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_MODIFICATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
-    private static final ZonedDateTime DEFAULT_DATE_CREATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_CREATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
     @Autowired
     private LeavesValidationRepository leavesValidationRepository;
@@ -103,14 +91,7 @@ public class LeavesValidationResourceIntTest {
      */
     public static LeavesValidation createEntity(EntityManager em) {
         LeavesValidation leavesValidation = new LeavesValidation()
-            .validated(DEFAULT_VALIDATED)
-            .dateModification(DEFAULT_DATE_MODIFICATION)
-            .dateCreation(DEFAULT_DATE_CREATION);
-        // Add required entity
-        User user = UserResourceIntTest.createEntity(em);
-        em.persist(user);
-        em.flush();
-        leavesValidation.setUserCreation(user);
+            .validated(DEFAULT_VALIDATED);
         return leavesValidation;
     }
 
@@ -136,8 +117,6 @@ public class LeavesValidationResourceIntTest {
         assertThat(leavesValidationList).hasSize(databaseSizeBeforeCreate + 1);
         LeavesValidation testLeavesValidation = leavesValidationList.get(leavesValidationList.size() - 1);
         assertThat(testLeavesValidation.isValidated()).isEqualTo(DEFAULT_VALIDATED);
-        assertThat(testLeavesValidation.getDateModification()).isEqualTo(DEFAULT_DATE_MODIFICATION);
-        assertThat(testLeavesValidation.getDateCreation()).isEqualTo(DEFAULT_DATE_CREATION);
     }
 
     @Test
@@ -162,25 +141,6 @@ public class LeavesValidationResourceIntTest {
 
     @Test
     @Transactional
-    public void checkDateCreationIsRequired() throws Exception {
-        int databaseSizeBeforeTest = leavesValidationRepository.findAll().size();
-        // set the field null
-        leavesValidation.setDateCreation(null);
-
-        // Create the LeavesValidation, which fails.
-        LeavesValidationDTO leavesValidationDTO = leavesValidationMapper.toDto(leavesValidation);
-
-        restLeavesValidationMockMvc.perform(post("/api/leaves-validations")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(leavesValidationDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<LeavesValidation> leavesValidationList = leavesValidationRepository.findAll();
-        assertThat(leavesValidationList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void getAllLeavesValidations() throws Exception {
         // Initialize the database
         leavesValidationRepository.saveAndFlush(leavesValidation);
@@ -190,9 +150,7 @@ public class LeavesValidationResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(leavesValidation.getId().intValue())))
-            .andExpect(jsonPath("$.[*].validated").value(hasItem(DEFAULT_VALIDATED.booleanValue())))
-            .andExpect(jsonPath("$.[*].dateModification").value(hasItem(sameInstant(DEFAULT_DATE_MODIFICATION))))
-            .andExpect(jsonPath("$.[*].dateCreation").value(hasItem(sameInstant(DEFAULT_DATE_CREATION))));
+            .andExpect(jsonPath("$.[*].validated").value(hasItem(DEFAULT_VALIDATED.booleanValue())));
     }
     
 
@@ -207,9 +165,7 @@ public class LeavesValidationResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(leavesValidation.getId().intValue()))
-            .andExpect(jsonPath("$.validated").value(DEFAULT_VALIDATED.booleanValue()))
-            .andExpect(jsonPath("$.dateModification").value(sameInstant(DEFAULT_DATE_MODIFICATION)))
-            .andExpect(jsonPath("$.dateCreation").value(sameInstant(DEFAULT_DATE_CREATION)));
+            .andExpect(jsonPath("$.validated").value(DEFAULT_VALIDATED.booleanValue()));
     }
     @Test
     @Transactional
@@ -232,9 +188,7 @@ public class LeavesValidationResourceIntTest {
         // Disconnect from session so that the updates on updatedLeavesValidation are not directly saved in db
         em.detach(updatedLeavesValidation);
         updatedLeavesValidation
-            .validated(UPDATED_VALIDATED)
-            .dateModification(UPDATED_DATE_MODIFICATION)
-            .dateCreation(UPDATED_DATE_CREATION);
+            .validated(UPDATED_VALIDATED);
         LeavesValidationDTO leavesValidationDTO = leavesValidationMapper.toDto(updatedLeavesValidation);
 
         restLeavesValidationMockMvc.perform(put("/api/leaves-validations")
@@ -247,8 +201,6 @@ public class LeavesValidationResourceIntTest {
         assertThat(leavesValidationList).hasSize(databaseSizeBeforeUpdate);
         LeavesValidation testLeavesValidation = leavesValidationList.get(leavesValidationList.size() - 1);
         assertThat(testLeavesValidation.isValidated()).isEqualTo(UPDATED_VALIDATED);
-        assertThat(testLeavesValidation.getDateModification()).isEqualTo(UPDATED_DATE_MODIFICATION);
-        assertThat(testLeavesValidation.getDateCreation()).isEqualTo(UPDATED_DATE_CREATION);
     }
 
     @Test

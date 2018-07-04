@@ -1,28 +1,12 @@
 {
     "fluentMethods": true,
     "clientRootFolder": "",
-    "relationships": [
-        {
-            "relationshipName": "userCreation",
-            "otherEntityName": "user",
-            "relationshipType": "many-to-one",
-            "relationshipValidateRules": [
-                "required"
-            ],
-            "otherEntityField": "login",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "client"
-        },
-        {
-            "relationshipName": "userModification",
-            "otherEntityName": "user",
-            "relationshipType": "many-to-one",
-            "otherEntityField": "login",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "client"
-        }
-    ],
+    "relationships": [],
     "fields": [
+        {
+            "fieldName": "label",
+            "fieldType": "String"
+        },
         {
             "fieldName": "code",
             "fieldType": "String",
@@ -30,22 +14,7 @@
                 "required",
                 "pattern"
             ],
-            "fieldValidateRulesPattern": "^[A-Z0-9()[\\\\]+-_*/%]*$"
-        },
-        {
-            "fieldName": "label",
-            "fieldType": "String"
-        },
-        {
-            "fieldName": "dateCreation",
-            "fieldType": "ZonedDateTime",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
-        {
-            "fieldName": "dateModification",
-            "fieldType": "ZonedDateTime"
+            "fieldValidateRulesPattern": "^[A-Z0-9()\\[\\]#$+*%\\-_/\\\\]*$"
         }
     ],
     "changelogDate": "20180627132623",
@@ -54,5 +23,6 @@
     "service": "serviceClass",
     "entityTableName": "client",
     "jpaMetamodelFiltering": false,
-    "pagination": "pagination"
+    "pagination": "pagination",
+    "enableEntityAudit": true
 }

@@ -5,7 +5,6 @@ import com.shine.shineappback.ShineAppBackendApp;
 import com.shine.shineappback.domain.Activity;
 import com.shine.shineappback.domain.Task;
 import com.shine.shineappback.domain.User;
-import com.shine.shineappback.domain.User;
 import com.shine.shineappback.domain.Mission;
 import com.shine.shineappback.repository.ActivityRepository;
 import com.shine.shineappback.service.ActivityService;
@@ -29,14 +28,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
 import java.time.ZoneId;
 import java.util.List;
 
 
-import static com.shine.shineappback.web.rest.TestUtil.sameInstant;
 import static com.shine.shineappback.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -66,12 +61,6 @@ public class ActivityResourceIntTest {
 
     private static final Integer DEFAULT_YEAR = 1;
     private static final Integer UPDATED_YEAR = 2;
-
-    private static final ZonedDateTime DEFAULT_DATE_CREATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_CREATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
-    private static final ZonedDateTime DEFAULT_DATE_MODIFICATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_MODIFICATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
     @Autowired
     private ActivityRepository activityRepository;
@@ -123,9 +112,7 @@ public class ActivityResourceIntTest {
             .nbOfHours(DEFAULT_NB_OF_HOURS)
             .day(DEFAULT_DAY)
             .weekNumber(DEFAULT_WEEK_NUMBER)
-            .year(DEFAULT_YEAR)
-            .dateCreation(DEFAULT_DATE_CREATION)
-            .dateModification(DEFAULT_DATE_MODIFICATION);
+            .year(DEFAULT_YEAR);
         // Add required entity
         Task task = TaskResourceIntTest.createEntity(em);
         em.persist(task);
@@ -136,8 +123,6 @@ public class ActivityResourceIntTest {
         em.persist(user);
         em.flush();
         activity.setUser(user);
-        // Add required entity
-        activity.setUserCreation(user);
         // Add required entity
         Mission mission = MissionResourceIntTest.createEntity(em);
         em.persist(mission);
@@ -172,8 +157,6 @@ public class ActivityResourceIntTest {
         assertThat(testActivity.getDay()).isEqualTo(DEFAULT_DAY);
         assertThat(testActivity.getWeekNumber()).isEqualTo(DEFAULT_WEEK_NUMBER);
         assertThat(testActivity.getYear()).isEqualTo(DEFAULT_YEAR);
-        assertThat(testActivity.getDateCreation()).isEqualTo(DEFAULT_DATE_CREATION);
-        assertThat(testActivity.getDateModification()).isEqualTo(DEFAULT_DATE_MODIFICATION);
     }
 
     @Test
@@ -293,25 +276,6 @@ public class ActivityResourceIntTest {
 
     @Test
     @Transactional
-    public void checkDateCreationIsRequired() throws Exception {
-        int databaseSizeBeforeTest = activityRepository.findAll().size();
-        // set the field null
-        activity.setDateCreation(null);
-
-        // Create the Activity, which fails.
-        ActivityDTO activityDTO = activityMapper.toDto(activity);
-
-        restActivityMockMvc.perform(post("/api/activities")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(activityDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<Activity> activityList = activityRepository.findAll();
-        assertThat(activityList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void getAllActivities() throws Exception {
         // Initialize the database
         activityRepository.saveAndFlush(activity);
@@ -325,9 +289,7 @@ public class ActivityResourceIntTest {
             .andExpect(jsonPath("$.[*].nbOfHours").value(hasItem(DEFAULT_NB_OF_HOURS.doubleValue())))
             .andExpect(jsonPath("$.[*].day").value(hasItem(DEFAULT_DAY)))
             .andExpect(jsonPath("$.[*].weekNumber").value(hasItem(DEFAULT_WEEK_NUMBER)))
-            .andExpect(jsonPath("$.[*].year").value(hasItem(DEFAULT_YEAR)))
-            .andExpect(jsonPath("$.[*].dateCreation").value(hasItem(sameInstant(DEFAULT_DATE_CREATION))))
-            .andExpect(jsonPath("$.[*].dateModification").value(hasItem(sameInstant(DEFAULT_DATE_MODIFICATION))));
+            .andExpect(jsonPath("$.[*].year").value(hasItem(DEFAULT_YEAR)));
     }
     
 
@@ -346,9 +308,7 @@ public class ActivityResourceIntTest {
             .andExpect(jsonPath("$.nbOfHours").value(DEFAULT_NB_OF_HOURS.doubleValue()))
             .andExpect(jsonPath("$.day").value(DEFAULT_DAY))
             .andExpect(jsonPath("$.weekNumber").value(DEFAULT_WEEK_NUMBER))
-            .andExpect(jsonPath("$.year").value(DEFAULT_YEAR))
-            .andExpect(jsonPath("$.dateCreation").value(sameInstant(DEFAULT_DATE_CREATION)))
-            .andExpect(jsonPath("$.dateModification").value(sameInstant(DEFAULT_DATE_MODIFICATION)));
+            .andExpect(jsonPath("$.year").value(DEFAULT_YEAR));
     }
     @Test
     @Transactional
@@ -375,9 +335,7 @@ public class ActivityResourceIntTest {
             .nbOfHours(UPDATED_NB_OF_HOURS)
             .day(UPDATED_DAY)
             .weekNumber(UPDATED_WEEK_NUMBER)
-            .year(UPDATED_YEAR)
-            .dateCreation(UPDATED_DATE_CREATION)
-            .dateModification(UPDATED_DATE_MODIFICATION);
+            .year(UPDATED_YEAR);
         ActivityDTO activityDTO = activityMapper.toDto(updatedActivity);
 
         restActivityMockMvc.perform(put("/api/activities")
@@ -394,8 +352,6 @@ public class ActivityResourceIntTest {
         assertThat(testActivity.getDay()).isEqualTo(UPDATED_DAY);
         assertThat(testActivity.getWeekNumber()).isEqualTo(UPDATED_WEEK_NUMBER);
         assertThat(testActivity.getYear()).isEqualTo(UPDATED_YEAR);
-        assertThat(testActivity.getDateCreation()).isEqualTo(UPDATED_DATE_CREATION);
-        assertThat(testActivity.getDateModification()).isEqualTo(UPDATED_DATE_MODIFICATION);
     }
 
     @Test

@@ -8,18 +8,10 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity ActivityRejection and its DTO ActivityRejectionDTO.
  */
-@Mapper(componentModel = "spring", uses = {UserMapper.class})
+@Mapper(componentModel = "spring", uses = {})
 public interface ActivityRejectionMapper extends EntityMapper<ActivityRejectionDTO, ActivityRejection> {
 
-    @Mapping(source = "userCreation.id", target = "userCreationId")
-    @Mapping(source = "userCreation.login", target = "userCreationLogin")
-    @Mapping(source = "userModification.id", target = "userModificationId")
-    @Mapping(source = "userModification.login", target = "userModificationLogin")
-    ActivityRejectionDTO toDto(ActivityRejection activityRejection);
 
-    @Mapping(source = "userCreationId", target = "userCreation")
-    @Mapping(source = "userModificationId", target = "userModification")
-    ActivityRejection toEntity(ActivityRejectionDTO activityRejectionDTO);
 
     default ActivityRejection fromId(Long id) {
         if (id == null) {

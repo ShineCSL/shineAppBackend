@@ -7,7 +7,6 @@ import javax.validation.constraints.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -15,7 +14,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "invoice")
-public class Invoice implements Serializable {
+public class Invoice extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -38,13 +37,6 @@ public class Invoice implements Serializable {
     @Column(name = "date_invoice", nullable = false)
     private LocalDate dateInvoice;
 
-    @NotNull
-    @Column(name = "date_creation", nullable = false)
-    private ZonedDateTime dateCreation;
-
-    @Column(name = "date_modification")
-    private ZonedDateTime dateModification;
-
     @Lob
     @Column(name = "document")
     private byte[] document;
@@ -55,10 +47,14 @@ public class Invoice implements Serializable {
     @Column(name = "rate")
     private Double rate;
 
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     @NotNull
+    @JsonIgnoreProperties("")
+    private Currency currency;
+
+    @OneToOne
     @JoinColumn(unique = true)
-    private TypeInvoice typeInvoice;
+    private InvoiceRejection invoiceRejection;
 
     @OneToOne
     @JoinColumn(unique = true)
@@ -68,23 +64,10 @@ public class Invoice implements Serializable {
     @JoinColumn(unique = true)
     private InvoiceValidation invoiceValidation;
 
-    @OneToOne
-    @JoinColumn(unique = true)
-    private InvoiceRejection invoiceRejection;
-
     @ManyToOne(optional = false)
     @NotNull
     @JsonIgnoreProperties("")
-    private Currency currency;
-
-    @ManyToOne(optional = false)
-    @NotNull
-    @JsonIgnoreProperties("")
-    private User userCreation;
-
-    @ManyToOne
-    @JsonIgnoreProperties("")
-    private User userModification;
+    private TypeInvoice typeInvoice;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -147,32 +130,6 @@ public class Invoice implements Serializable {
         this.dateInvoice = dateInvoice;
     }
 
-    public ZonedDateTime getDateCreation() {
-        return dateCreation;
-    }
-
-    public Invoice dateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-        return this;
-    }
-
-    public void setDateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-    }
-
-    public ZonedDateTime getDateModification() {
-        return dateModification;
-    }
-
-    public Invoice dateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-        return this;
-    }
-
-    public void setDateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-    }
-
     public byte[] getDocument() {
         return document;
     }
@@ -212,17 +169,30 @@ public class Invoice implements Serializable {
         this.rate = rate;
     }
 
-    public TypeInvoice getTypeInvoice() {
-        return typeInvoice;
+    public Currency getCurrency() {
+        return currency;
     }
 
-    public Invoice typeInvoice(TypeInvoice typeInvoice) {
-        this.typeInvoice = typeInvoice;
+    public Invoice currency(Currency currency) {
+        this.currency = currency;
         return this;
     }
 
-    public void setTypeInvoice(TypeInvoice typeInvoice) {
-        this.typeInvoice = typeInvoice;
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
+    }
+
+    public InvoiceRejection getInvoiceRejection() {
+        return invoiceRejection;
+    }
+
+    public Invoice invoiceRejection(InvoiceRejection invoiceRejection) {
+        this.invoiceRejection = invoiceRejection;
+        return this;
+    }
+
+    public void setInvoiceRejection(InvoiceRejection invoiceRejection) {
+        this.invoiceRejection = invoiceRejection;
     }
 
     public InvoiceSubmission getInvoiceSubmission() {
@@ -251,56 +221,17 @@ public class Invoice implements Serializable {
         this.invoiceValidation = invoiceValidation;
     }
 
-    public InvoiceRejection getInvoiceRejection() {
-        return invoiceRejection;
+    public TypeInvoice getTypeInvoice() {
+        return typeInvoice;
     }
 
-    public Invoice invoiceRejection(InvoiceRejection invoiceRejection) {
-        this.invoiceRejection = invoiceRejection;
+    public Invoice typeInvoice(TypeInvoice typeInvoice) {
+        this.typeInvoice = typeInvoice;
         return this;
     }
 
-    public void setInvoiceRejection(InvoiceRejection invoiceRejection) {
-        this.invoiceRejection = invoiceRejection;
-    }
-
-    public Currency getCurrency() {
-        return currency;
-    }
-
-    public Invoice currency(Currency currency) {
-        this.currency = currency;
-        return this;
-    }
-
-    public void setCurrency(Currency currency) {
-        this.currency = currency;
-    }
-
-    public User getUserCreation() {
-        return userCreation;
-    }
-
-    public Invoice userCreation(User user) {
-        this.userCreation = user;
-        return this;
-    }
-
-    public void setUserCreation(User user) {
-        this.userCreation = user;
-    }
-
-    public User getUserModification() {
-        return userModification;
-    }
-
-    public Invoice userModification(User user) {
-        this.userModification = user;
-        return this;
-    }
-
-    public void setUserModification(User user) {
-        this.userModification = user;
+    public void setTypeInvoice(TypeInvoice typeInvoice) {
+        this.typeInvoice = typeInvoice;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -332,8 +263,6 @@ public class Invoice implements Serializable {
             ", description='" + getDescription() + "'" +
             ", amount=" + getAmount() +
             ", dateInvoice='" + getDateInvoice() + "'" +
-            ", dateCreation='" + getDateCreation() + "'" +
-            ", dateModification='" + getDateModification() + "'" +
             ", document='" + getDocument() + "'" +
             ", documentContentType='" + getDocumentContentType() + "'" +
             ", rate=" + getRate() +

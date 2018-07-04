@@ -12,25 +12,6 @@
             "otherEntityField": "login",
             "ownerSide": true,
             "otherEntityRelationshipName": "leaveConfig"
-        },
-        {
-            "relationshipName": "userCreation",
-            "otherEntityName": "user",
-            "relationshipType": "many-to-one",
-            "relationshipValidateRules": [
-                "required"
-            ],
-            "otherEntityField": "login",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "leaveConfig"
-        },
-        {
-            "relationshipName": "userModification",
-            "otherEntityName": "user",
-            "relationshipType": "many-to-one",
-            "otherEntityField": "login",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "leaveConfig"
         }
     ],
     "fields": [
@@ -45,17 +26,6 @@
         {
             "fieldName": "nbSpecialLeaves",
             "fieldType": "Integer"
-        },
-        {
-            "fieldName": "dateCreation",
-            "fieldType": "ZonedDateTime",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
-        {
-            "fieldName": "dateModification",
-            "fieldType": "ZonedDateTime"
         }
     ],
     "changelogDate": "20180627133031",
@@ -64,5 +34,6 @@
     "service": "serviceClass",
     "entityTableName": "leave_config",
     "jpaMetamodelFiltering": false,
-    "pagination": "pagination"
+    "pagination": "pagination",
+    "enableEntityAudit": true
 }

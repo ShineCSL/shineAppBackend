@@ -1,12 +1,10 @@
 package com.shine.shineappback.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -14,7 +12,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "currency")
-public class Currency implements Serializable {
+public class Currency extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -29,25 +27,9 @@ public class Currency implements Serializable {
     private String labelFr;
 
     @NotNull
-    @Column(name = "date_creation", nullable = false)
-    private ZonedDateTime dateCreation;
-
-    @Column(name = "date_modification")
-    private ZonedDateTime dateModification;
-
-    @NotNull
-    @Pattern(regexp = "^[A-Z0-9()[\\\\]+-_*/%]*$")
+    @Pattern(regexp = "^[A-Z0-9()\\[\\]#$€+*%\\-_/\\\\]*$")
     @Column(name = "code", nullable = false)
     private String code;
-
-    @ManyToOne(optional = false)
-    @NotNull
-    @JsonIgnoreProperties("")
-    private User userCreation;
-
-    @ManyToOne
-    @JsonIgnoreProperties("")
-    private User userModification;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -84,32 +66,6 @@ public class Currency implements Serializable {
         this.labelFr = labelFr;
     }
 
-    public ZonedDateTime getDateCreation() {
-        return dateCreation;
-    }
-
-    public Currency dateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-        return this;
-    }
-
-    public void setDateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-    }
-
-    public ZonedDateTime getDateModification() {
-        return dateModification;
-    }
-
-    public Currency dateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-        return this;
-    }
-
-    public void setDateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-    }
-
     public String getCode() {
         return code;
     }
@@ -121,32 +77,6 @@ public class Currency implements Serializable {
 
     public void setCode(String code) {
         this.code = code;
-    }
-
-    public User getUserCreation() {
-        return userCreation;
-    }
-
-    public Currency userCreation(User user) {
-        this.userCreation = user;
-        return this;
-    }
-
-    public void setUserCreation(User user) {
-        this.userCreation = user;
-    }
-
-    public User getUserModification() {
-        return userModification;
-    }
-
-    public Currency userModification(User user) {
-        this.userModification = user;
-        return this;
-    }
-
-    public void setUserModification(User user) {
-        this.userModification = user;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -176,8 +106,6 @@ public class Currency implements Serializable {
             "id=" + getId() +
             ", labelEn='" + getLabelEn() + "'" +
             ", labelFr='" + getLabelFr() + "'" +
-            ", dateCreation='" + getDateCreation() + "'" +
-            ", dateModification='" + getDateModification() + "'" +
             ", code='" + getCode() + "'" +
             "}";
     }

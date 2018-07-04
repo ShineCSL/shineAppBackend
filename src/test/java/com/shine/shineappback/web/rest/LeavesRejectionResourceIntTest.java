@@ -3,7 +3,6 @@ package com.shine.shineappback.web.rest;
 import com.shine.shineappback.ShineAppBackendApp;
 
 import com.shine.shineappback.domain.LeavesRejection;
-import com.shine.shineappback.domain.User;
 import com.shine.shineappback.repository.LeavesRejectionRepository;
 import com.shine.shineappback.service.LeavesRejectionService;
 import com.shine.shineappback.service.dto.LeavesRejectionDTO;
@@ -25,14 +24,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
-import java.time.ZoneId;
 import java.util.List;
 
 
-import static com.shine.shineappback.web.rest.TestUtil.sameInstant;
 import static com.shine.shineappback.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -50,12 +44,6 @@ public class LeavesRejectionResourceIntTest {
 
     private static final Boolean DEFAULT_REJECTED = false;
     private static final Boolean UPDATED_REJECTED = true;
-
-    private static final ZonedDateTime DEFAULT_DATE_MODIFICATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_MODIFICATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
-    private static final ZonedDateTime DEFAULT_DATE_CREATION = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_DATE_CREATION = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
     @Autowired
     private LeavesRejectionRepository leavesRejectionRepository;
@@ -103,14 +91,7 @@ public class LeavesRejectionResourceIntTest {
      */
     public static LeavesRejection createEntity(EntityManager em) {
         LeavesRejection leavesRejection = new LeavesRejection()
-            .rejected(DEFAULT_REJECTED)
-            .dateModification(DEFAULT_DATE_MODIFICATION)
-            .dateCreation(DEFAULT_DATE_CREATION);
-        // Add required entity
-        User user = UserResourceIntTest.createEntity(em);
-        em.persist(user);
-        em.flush();
-        leavesRejection.setUserCreation(user);
+            .rejected(DEFAULT_REJECTED);
         return leavesRejection;
     }
 
@@ -136,8 +117,6 @@ public class LeavesRejectionResourceIntTest {
         assertThat(leavesRejectionList).hasSize(databaseSizeBeforeCreate + 1);
         LeavesRejection testLeavesRejection = leavesRejectionList.get(leavesRejectionList.size() - 1);
         assertThat(testLeavesRejection.isRejected()).isEqualTo(DEFAULT_REJECTED);
-        assertThat(testLeavesRejection.getDateModification()).isEqualTo(DEFAULT_DATE_MODIFICATION);
-        assertThat(testLeavesRejection.getDateCreation()).isEqualTo(DEFAULT_DATE_CREATION);
     }
 
     @Test
@@ -162,25 +141,6 @@ public class LeavesRejectionResourceIntTest {
 
     @Test
     @Transactional
-    public void checkDateCreationIsRequired() throws Exception {
-        int databaseSizeBeforeTest = leavesRejectionRepository.findAll().size();
-        // set the field null
-        leavesRejection.setDateCreation(null);
-
-        // Create the LeavesRejection, which fails.
-        LeavesRejectionDTO leavesRejectionDTO = leavesRejectionMapper.toDto(leavesRejection);
-
-        restLeavesRejectionMockMvc.perform(post("/api/leaves-rejections")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(leavesRejectionDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<LeavesRejection> leavesRejectionList = leavesRejectionRepository.findAll();
-        assertThat(leavesRejectionList).hasSize(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     public void getAllLeavesRejections() throws Exception {
         // Initialize the database
         leavesRejectionRepository.saveAndFlush(leavesRejection);
@@ -190,9 +150,7 @@ public class LeavesRejectionResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(leavesRejection.getId().intValue())))
-            .andExpect(jsonPath("$.[*].rejected").value(hasItem(DEFAULT_REJECTED.booleanValue())))
-            .andExpect(jsonPath("$.[*].dateModification").value(hasItem(sameInstant(DEFAULT_DATE_MODIFICATION))))
-            .andExpect(jsonPath("$.[*].dateCreation").value(hasItem(sameInstant(DEFAULT_DATE_CREATION))));
+            .andExpect(jsonPath("$.[*].rejected").value(hasItem(DEFAULT_REJECTED.booleanValue())));
     }
     
 
@@ -207,9 +165,7 @@ public class LeavesRejectionResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(leavesRejection.getId().intValue()))
-            .andExpect(jsonPath("$.rejected").value(DEFAULT_REJECTED.booleanValue()))
-            .andExpect(jsonPath("$.dateModification").value(sameInstant(DEFAULT_DATE_MODIFICATION)))
-            .andExpect(jsonPath("$.dateCreation").value(sameInstant(DEFAULT_DATE_CREATION)));
+            .andExpect(jsonPath("$.rejected").value(DEFAULT_REJECTED.booleanValue()));
     }
     @Test
     @Transactional
@@ -232,9 +188,7 @@ public class LeavesRejectionResourceIntTest {
         // Disconnect from session so that the updates on updatedLeavesRejection are not directly saved in db
         em.detach(updatedLeavesRejection);
         updatedLeavesRejection
-            .rejected(UPDATED_REJECTED)
-            .dateModification(UPDATED_DATE_MODIFICATION)
-            .dateCreation(UPDATED_DATE_CREATION);
+            .rejected(UPDATED_REJECTED);
         LeavesRejectionDTO leavesRejectionDTO = leavesRejectionMapper.toDto(updatedLeavesRejection);
 
         restLeavesRejectionMockMvc.perform(put("/api/leaves-rejections")
@@ -247,8 +201,6 @@ public class LeavesRejectionResourceIntTest {
         assertThat(leavesRejectionList).hasSize(databaseSizeBeforeUpdate);
         LeavesRejection testLeavesRejection = leavesRejectionList.get(leavesRejectionList.size() - 1);
         assertThat(testLeavesRejection.isRejected()).isEqualTo(UPDATED_REJECTED);
-        assertThat(testLeavesRejection.getDateModification()).isEqualTo(UPDATED_DATE_MODIFICATION);
-        assertThat(testLeavesRejection.getDateCreation()).isEqualTo(UPDATED_DATE_CREATION);
     }
 
     @Test

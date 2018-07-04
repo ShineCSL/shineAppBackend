@@ -1,14 +1,12 @@
 package com.shine.shineappback.service.dto;
 
-import java.time.ZonedDateTime;
-import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * A DTO for the ActivitySubmission entity.
  */
-public class ActivitySubmissionDTO implements Serializable {
+public class ActivitySubmissionDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
 
@@ -17,19 +15,6 @@ public class ActivitySubmissionDTO implements Serializable {
     private Integer year;
 
     private Integer weekNumber;
-
-    @NotNull
-    private ZonedDateTime dateCreation;
-
-    private ZonedDateTime dateModification;
-
-    private Long userModificationId;
-
-    private String userModificationLogin;
-
-    private Long userCreationId;
-
-    private String userCreationLogin;
 
     public Long getId() {
         return id;
@@ -63,54 +48,6 @@ public class ActivitySubmissionDTO implements Serializable {
         this.weekNumber = weekNumber;
     }
 
-    public ZonedDateTime getDateCreation() {
-        return dateCreation;
-    }
-
-    public void setDateCreation(ZonedDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-    }
-
-    public ZonedDateTime getDateModification() {
-        return dateModification;
-    }
-
-    public void setDateModification(ZonedDateTime dateModification) {
-        this.dateModification = dateModification;
-    }
-
-    public Long getUserModificationId() {
-        return userModificationId;
-    }
-
-    public void setUserModificationId(Long userId) {
-        this.userModificationId = userId;
-    }
-
-    public String getUserModificationLogin() {
-        return userModificationLogin;
-    }
-
-    public void setUserModificationLogin(String userLogin) {
-        this.userModificationLogin = userLogin;
-    }
-
-    public Long getUserCreationId() {
-        return userCreationId;
-    }
-
-    public void setUserCreationId(Long userId) {
-        this.userCreationId = userId;
-    }
-
-    public String getUserCreationLogin() {
-        return userCreationLogin;
-    }
-
-    public void setUserCreationLogin(String userLogin) {
-        this.userCreationLogin = userLogin;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -139,12 +76,6 @@ public class ActivitySubmissionDTO implements Serializable {
             ", submitted='" + isSubmitted() + "'" +
             ", year=" + getYear() +
             ", weekNumber=" + getWeekNumber() +
-            ", dateCreation='" + getDateCreation() + "'" +
-            ", dateModification='" + getDateModification() + "'" +
-            ", userModification=" + getUserModificationId() +
-            ", userModification='" + getUserModificationLogin() + "'" +
-            ", userCreation=" + getUserCreationId() +
-            ", userCreation='" + getUserCreationLogin() + "'" +
             "}";
     }
 }

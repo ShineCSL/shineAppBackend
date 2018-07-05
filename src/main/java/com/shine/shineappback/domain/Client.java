@@ -20,13 +20,13 @@ public class Client extends AbstractAuditingEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "jhi_label")
-    private String label;
-
     @NotNull
     @Pattern(regexp = "^[A-Z0-9()\\[\\]#$+*%\\-_/\\\\]*$")
     @Column(name = "code", nullable = false)
     private String code;
+
+    @Column(name = "jhi_label")
+    private String label;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -35,19 +35,6 @@ public class Client extends AbstractAuditingEntity implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public Client label(String label) {
-        this.label = label;
-        return this;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
     }
 
     public String getCode() {
@@ -61,6 +48,19 @@ public class Client extends AbstractAuditingEntity implements Serializable {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public Client label(String label) {
+        this.label = label;
+        return this;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -88,8 +88,8 @@ public class Client extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "Client{" +
             "id=" + getId() +
-            ", label='" + getLabel() + "'" +
             ", code='" + getCode() + "'" +
+            ", label='" + getLabel() + "'" +
             "}";
     }
 }

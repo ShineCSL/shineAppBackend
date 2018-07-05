@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -49,7 +50,7 @@ public class InvoiceRejectionResource {
      */
     @PostMapping("/invoice-rejections")
     @Timed
-    public ResponseEntity<InvoiceRejectionDTO> createInvoiceRejection(@RequestBody InvoiceRejectionDTO invoiceRejectionDTO) throws URISyntaxException {
+    public ResponseEntity<InvoiceRejectionDTO> createInvoiceRejection(@Valid @RequestBody InvoiceRejectionDTO invoiceRejectionDTO) throws URISyntaxException {
         log.debug("REST request to save InvoiceRejection : {}", invoiceRejectionDTO);
         if (invoiceRejectionDTO.getId() != null) {
             throw new BadRequestAlertException("A new invoiceRejection cannot already have an ID", ENTITY_NAME, "idexists");
@@ -71,7 +72,7 @@ public class InvoiceRejectionResource {
      */
     @PutMapping("/invoice-rejections")
     @Timed
-    public ResponseEntity<InvoiceRejectionDTO> updateInvoiceRejection(@RequestBody InvoiceRejectionDTO invoiceRejectionDTO) throws URISyntaxException {
+    public ResponseEntity<InvoiceRejectionDTO> updateInvoiceRejection(@Valid @RequestBody InvoiceRejectionDTO invoiceRejectionDTO) throws URISyntaxException {
         log.debug("REST request to update InvoiceRejection : {}", invoiceRejectionDTO);
         if (invoiceRejectionDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");

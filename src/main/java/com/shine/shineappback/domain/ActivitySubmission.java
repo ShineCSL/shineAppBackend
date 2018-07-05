@@ -1,7 +1,9 @@
 package com.shine.shineappback.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -27,6 +29,11 @@ public class ActivitySubmission extends AbstractAuditingEntity implements Serial
 
     @Column(name = "week_number")
     private Integer weekNumber;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    @JsonIgnoreProperties("")
+    private User user;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -74,6 +81,19 @@ public class ActivitySubmission extends AbstractAuditingEntity implements Serial
 
     public void setWeekNumber(Integer weekNumber) {
         this.weekNumber = weekNumber;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public ActivitySubmission user(User user) {
+        this.user = user;
+        return this;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

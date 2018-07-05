@@ -14,10 +14,6 @@
     ],
     "fields": [
         {
-            "fieldName": "label",
-            "fieldType": "String"
-        },
-        {
             "fieldName": "code",
             "fieldType": "String",
             "fieldValidateRules": [
@@ -25,6 +21,10 @@
                 "pattern"
             ],
             "fieldValidateRulesPattern": "^[A-Z0-9()\\[\\]#$+*%\\-_/\\\\]*$"
+        },
+        {
+            "fieldName": "label",
+            "fieldType": "String"
         }
     ],
     "changelogDate": "20180629094716",

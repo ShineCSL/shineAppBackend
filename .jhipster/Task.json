@@ -4,8 +4,13 @@
     "relationships": [],
     "fields": [
         {
-            "fieldName": "leave",
-            "fieldType": "Boolean"
+            "fieldName": "code",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "pattern"
+            ],
+            "fieldValidateRulesPattern": "^[A-Z0-9()\\[\\]#$+*%\\-_/\\\\]*$"
         },
         {
             "fieldName": "labelEn",
@@ -16,13 +21,8 @@
             "fieldType": "String"
         },
         {
-            "fieldName": "code",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required",
-                "pattern"
-            ],
-            "fieldValidateRulesPattern": "^[A-Z0-9()\\[\\]#$+*%\\-_/\\\\]*$"
+            "fieldName": "leave",
+            "fieldType": "Boolean"
         }
     ],
     "changelogDate": "20180626101508",

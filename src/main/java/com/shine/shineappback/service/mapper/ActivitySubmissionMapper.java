@@ -8,10 +8,15 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity ActivitySubmission and its DTO ActivitySubmissionDTO.
  */
-@Mapper(componentModel = "spring", uses = {})
+@Mapper(componentModel = "spring", uses = {UserMapper.class})
 public interface ActivitySubmissionMapper extends EntityMapper<ActivitySubmissionDTO, ActivitySubmission> {
 
+    @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "user.login", target = "userLogin")
+    ActivitySubmissionDTO toDto(ActivitySubmission activitySubmission);
 
+    @Mapping(source = "userId", target = "user")
+    ActivitySubmission toEntity(ActivitySubmissionDTO activitySubmissionDTO);
 
     default ActivitySubmission fromId(Long id) {
         if (id == null) {

@@ -42,14 +42,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = ShineAppBackendApp.class)
 public class CurrencyResourceIntTest {
 
+    private static final String DEFAULT_CODE = "AAAAAAAAAA";
+    private static final String UPDATED_CODE = "BBBBBBBBBB";
+
     private static final String DEFAULT_LABEL_EN = "AAAAAAAAAA";
     private static final String UPDATED_LABEL_EN = "BBBBBBBBBB";
 
     private static final String DEFAULT_LABEL_FR = "AAAAAAAAAA";
     private static final String UPDATED_LABEL_FR = "BBBBBBBBBB";
-
-    private static final String DEFAULT_CODE = "AAAAAAAAAA";
-    private static final String UPDATED_CODE = "BBBBBBBBBB";
 
     @Autowired
     private CurrencyRepository currencyRepository;
@@ -97,9 +97,9 @@ public class CurrencyResourceIntTest {
      */
     public static Currency createEntity(EntityManager em) {
         Currency currency = new Currency()
+            .code(DEFAULT_CODE)
             .labelEn(DEFAULT_LABEL_EN)
-            .labelFr(DEFAULT_LABEL_FR)
-            .code(DEFAULT_CODE);
+            .labelFr(DEFAULT_LABEL_FR);
         return currency;
     }
 
@@ -124,9 +124,9 @@ public class CurrencyResourceIntTest {
         List<Currency> currencyList = currencyRepository.findAll();
         assertThat(currencyList).hasSize(databaseSizeBeforeCreate + 1);
         Currency testCurrency = currencyList.get(currencyList.size() - 1);
+        assertThat(testCurrency.getCode()).isEqualTo(DEFAULT_CODE);
         assertThat(testCurrency.getLabelEn()).isEqualTo(DEFAULT_LABEL_EN);
         assertThat(testCurrency.getLabelFr()).isEqualTo(DEFAULT_LABEL_FR);
-        assertThat(testCurrency.getCode()).isEqualTo(DEFAULT_CODE);
     }
 
     @Test
@@ -179,9 +179,9 @@ public class CurrencyResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(currency.getId().intValue())))
+            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
             .andExpect(jsonPath("$.[*].labelEn").value(hasItem(DEFAULT_LABEL_EN.toString())))
-            .andExpect(jsonPath("$.[*].labelFr").value(hasItem(DEFAULT_LABEL_FR.toString())))
-            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())));
+            .andExpect(jsonPath("$.[*].labelFr").value(hasItem(DEFAULT_LABEL_FR.toString())));
     }
     
 
@@ -196,9 +196,9 @@ public class CurrencyResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(currency.getId().intValue()))
+            .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()))
             .andExpect(jsonPath("$.labelEn").value(DEFAULT_LABEL_EN.toString()))
-            .andExpect(jsonPath("$.labelFr").value(DEFAULT_LABEL_FR.toString()))
-            .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()));
+            .andExpect(jsonPath("$.labelFr").value(DEFAULT_LABEL_FR.toString()));
     }
     @Test
     @Transactional
@@ -221,9 +221,9 @@ public class CurrencyResourceIntTest {
         // Disconnect from session so that the updates on updatedCurrency are not directly saved in db
         em.detach(updatedCurrency);
         updatedCurrency
+            .code(UPDATED_CODE)
             .labelEn(UPDATED_LABEL_EN)
-            .labelFr(UPDATED_LABEL_FR)
-            .code(UPDATED_CODE);
+            .labelFr(UPDATED_LABEL_FR);
         CurrencyDTO currencyDTO = currencyMapper.toDto(updatedCurrency);
 
         restCurrencyMockMvc.perform(put("/api/currencies")
@@ -235,9 +235,9 @@ public class CurrencyResourceIntTest {
         List<Currency> currencyList = currencyRepository.findAll();
         assertThat(currencyList).hasSize(databaseSizeBeforeUpdate);
         Currency testCurrency = currencyList.get(currencyList.size() - 1);
+        assertThat(testCurrency.getCode()).isEqualTo(UPDATED_CODE);
         assertThat(testCurrency.getLabelEn()).isEqualTo(UPDATED_LABEL_EN);
         assertThat(testCurrency.getLabelFr()).isEqualTo(UPDATED_LABEL_FR);
-        assertThat(testCurrency.getCode()).isEqualTo(UPDATED_CODE);
     }
 
     @Test

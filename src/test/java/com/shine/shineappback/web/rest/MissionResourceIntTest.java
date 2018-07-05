@@ -43,11 +43,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = ShineAppBackendApp.class)
 public class MissionResourceIntTest {
 
-    private static final String DEFAULT_LABEL = "AAAAAAAAAA";
-    private static final String UPDATED_LABEL = "BBBBBBBBBB";
-
     private static final String DEFAULT_CODE = "AAAAAAAAAA";
     private static final String UPDATED_CODE = "BBBBBBBBBB";
+
+    private static final String DEFAULT_LABEL = "AAAAAAAAAA";
+    private static final String UPDATED_LABEL = "BBBBBBBBBB";
 
     @Autowired
     private MissionRepository missionRepository;
@@ -95,8 +95,8 @@ public class MissionResourceIntTest {
      */
     public static Mission createEntity(EntityManager em) {
         Mission mission = new Mission()
-            .label(DEFAULT_LABEL)
-            .code(DEFAULT_CODE);
+            .code(DEFAULT_CODE)
+            .label(DEFAULT_LABEL);
         // Add required entity
         Client client = ClientResourceIntTest.createEntity(em);
         em.persist(client);
@@ -126,8 +126,8 @@ public class MissionResourceIntTest {
         List<Mission> missionList = missionRepository.findAll();
         assertThat(missionList).hasSize(databaseSizeBeforeCreate + 1);
         Mission testMission = missionList.get(missionList.size() - 1);
-        assertThat(testMission.getLabel()).isEqualTo(DEFAULT_LABEL);
         assertThat(testMission.getCode()).isEqualTo(DEFAULT_CODE);
+        assertThat(testMission.getLabel()).isEqualTo(DEFAULT_LABEL);
     }
 
     @Test
@@ -180,8 +180,8 @@ public class MissionResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(mission.getId().intValue())))
-            .andExpect(jsonPath("$.[*].label").value(hasItem(DEFAULT_LABEL.toString())))
-            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())));
+            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
+            .andExpect(jsonPath("$.[*].label").value(hasItem(DEFAULT_LABEL.toString())));
     }
     
 
@@ -196,8 +196,8 @@ public class MissionResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(mission.getId().intValue()))
-            .andExpect(jsonPath("$.label").value(DEFAULT_LABEL.toString()))
-            .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()));
+            .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()))
+            .andExpect(jsonPath("$.label").value(DEFAULT_LABEL.toString()));
     }
     @Test
     @Transactional
@@ -220,8 +220,8 @@ public class MissionResourceIntTest {
         // Disconnect from session so that the updates on updatedMission are not directly saved in db
         em.detach(updatedMission);
         updatedMission
-            .label(UPDATED_LABEL)
-            .code(UPDATED_CODE);
+            .code(UPDATED_CODE)
+            .label(UPDATED_LABEL);
         MissionDTO missionDTO = missionMapper.toDto(updatedMission);
 
         restMissionMockMvc.perform(put("/api/missions")
@@ -233,8 +233,8 @@ public class MissionResourceIntTest {
         List<Mission> missionList = missionRepository.findAll();
         assertThat(missionList).hasSize(databaseSizeBeforeUpdate);
         Mission testMission = missionList.get(missionList.size() - 1);
-        assertThat(testMission.getLabel()).isEqualTo(UPDATED_LABEL);
         assertThat(testMission.getCode()).isEqualTo(UPDATED_CODE);
+        assertThat(testMission.getLabel()).isEqualTo(UPDATED_LABEL);
     }
 
     @Test

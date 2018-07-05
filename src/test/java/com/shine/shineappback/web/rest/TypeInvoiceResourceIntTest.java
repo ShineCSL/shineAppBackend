@@ -42,14 +42,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = ShineAppBackendApp.class)
 public class TypeInvoiceResourceIntTest {
 
+    private static final String DEFAULT_CODE = "AAAAAAAAAA";
+    private static final String UPDATED_CODE = "BBBBBBBBBB";
+
     private static final String DEFAULT_LABEL_EN = "AAAAAAAAAA";
     private static final String UPDATED_LABEL_EN = "BBBBBBBBBB";
 
     private static final String DEFAULT_LABEL_FR = "AAAAAAAAAA";
     private static final String UPDATED_LABEL_FR = "BBBBBBBBBB";
-
-    private static final String DEFAULT_CODE = "AAAAAAAAAA";
-    private static final String UPDATED_CODE = "BBBBBBBBBB";
 
     @Autowired
     private TypeInvoiceRepository typeInvoiceRepository;
@@ -97,9 +97,9 @@ public class TypeInvoiceResourceIntTest {
      */
     public static TypeInvoice createEntity(EntityManager em) {
         TypeInvoice typeInvoice = new TypeInvoice()
+            .code(DEFAULT_CODE)
             .labelEn(DEFAULT_LABEL_EN)
-            .labelFr(DEFAULT_LABEL_FR)
-            .code(DEFAULT_CODE);
+            .labelFr(DEFAULT_LABEL_FR);
         return typeInvoice;
     }
 
@@ -124,9 +124,9 @@ public class TypeInvoiceResourceIntTest {
         List<TypeInvoice> typeInvoiceList = typeInvoiceRepository.findAll();
         assertThat(typeInvoiceList).hasSize(databaseSizeBeforeCreate + 1);
         TypeInvoice testTypeInvoice = typeInvoiceList.get(typeInvoiceList.size() - 1);
+        assertThat(testTypeInvoice.getCode()).isEqualTo(DEFAULT_CODE);
         assertThat(testTypeInvoice.getLabelEn()).isEqualTo(DEFAULT_LABEL_EN);
         assertThat(testTypeInvoice.getLabelFr()).isEqualTo(DEFAULT_LABEL_FR);
-        assertThat(testTypeInvoice.getCode()).isEqualTo(DEFAULT_CODE);
     }
 
     @Test
@@ -179,9 +179,9 @@ public class TypeInvoiceResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(typeInvoice.getId().intValue())))
+            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
             .andExpect(jsonPath("$.[*].labelEn").value(hasItem(DEFAULT_LABEL_EN.toString())))
-            .andExpect(jsonPath("$.[*].labelFr").value(hasItem(DEFAULT_LABEL_FR.toString())))
-            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())));
+            .andExpect(jsonPath("$.[*].labelFr").value(hasItem(DEFAULT_LABEL_FR.toString())));
     }
     
 
@@ -196,9 +196,9 @@ public class TypeInvoiceResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(typeInvoice.getId().intValue()))
+            .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()))
             .andExpect(jsonPath("$.labelEn").value(DEFAULT_LABEL_EN.toString()))
-            .andExpect(jsonPath("$.labelFr").value(DEFAULT_LABEL_FR.toString()))
-            .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()));
+            .andExpect(jsonPath("$.labelFr").value(DEFAULT_LABEL_FR.toString()));
     }
     @Test
     @Transactional
@@ -221,9 +221,9 @@ public class TypeInvoiceResourceIntTest {
         // Disconnect from session so that the updates on updatedTypeInvoice are not directly saved in db
         em.detach(updatedTypeInvoice);
         updatedTypeInvoice
+            .code(UPDATED_CODE)
             .labelEn(UPDATED_LABEL_EN)
-            .labelFr(UPDATED_LABEL_FR)
-            .code(UPDATED_CODE);
+            .labelFr(UPDATED_LABEL_FR);
         TypeInvoiceDTO typeInvoiceDTO = typeInvoiceMapper.toDto(updatedTypeInvoice);
 
         restTypeInvoiceMockMvc.perform(put("/api/type-invoices")
@@ -235,9 +235,9 @@ public class TypeInvoiceResourceIntTest {
         List<TypeInvoice> typeInvoiceList = typeInvoiceRepository.findAll();
         assertThat(typeInvoiceList).hasSize(databaseSizeBeforeUpdate);
         TypeInvoice testTypeInvoice = typeInvoiceList.get(typeInvoiceList.size() - 1);
+        assertThat(testTypeInvoice.getCode()).isEqualTo(UPDATED_CODE);
         assertThat(testTypeInvoice.getLabelEn()).isEqualTo(UPDATED_LABEL_EN);
         assertThat(testTypeInvoice.getLabelFr()).isEqualTo(UPDATED_LABEL_FR);
-        assertThat(testTypeInvoice.getCode()).isEqualTo(UPDATED_CODE);
     }
 
     @Test

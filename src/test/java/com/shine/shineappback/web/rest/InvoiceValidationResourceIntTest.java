@@ -3,6 +3,7 @@ package com.shine.shineappback.web.rest;
 import com.shine.shineappback.ShineAppBackendApp;
 
 import com.shine.shineappback.domain.InvoiceValidation;
+import com.shine.shineappback.domain.User;
 import com.shine.shineappback.repository.InvoiceValidationRepository;
 import com.shine.shineappback.service.InvoiceValidationService;
 import com.shine.shineappback.service.dto.InvoiceValidationDTO;
@@ -24,6 +25,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 
@@ -44,6 +47,9 @@ public class InvoiceValidationResourceIntTest {
 
     private static final Boolean DEFAULT_VALIDATED = false;
     private static final Boolean UPDATED_VALIDATED = true;
+
+    private static final LocalDate DEFAULT_DATE_INVOICE = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_DATE_INVOICE = LocalDate.now(ZoneId.systemDefault());
 
     @Autowired
     private InvoiceValidationRepository invoiceValidationRepository;
@@ -91,7 +97,13 @@ public class InvoiceValidationResourceIntTest {
      */
     public static InvoiceValidation createEntity(EntityManager em) {
         InvoiceValidation invoiceValidation = new InvoiceValidation()
-            .validated(DEFAULT_VALIDATED);
+            .validated(DEFAULT_VALIDATED)
+            .dateInvoice(DEFAULT_DATE_INVOICE);
+        // Add required entity
+        User user = UserResourceIntTest.createEntity(em);
+        em.persist(user);
+        em.flush();
+        invoiceValidation.setUser(user);
         return invoiceValidation;
     }
 
@@ -117,6 +129,7 @@ public class InvoiceValidationResourceIntTest {
         assertThat(invoiceValidationList).hasSize(databaseSizeBeforeCreate + 1);
         InvoiceValidation testInvoiceValidation = invoiceValidationList.get(invoiceValidationList.size() - 1);
         assertThat(testInvoiceValidation.isValidated()).isEqualTo(DEFAULT_VALIDATED);
+        assertThat(testInvoiceValidation.getDateInvoice()).isEqualTo(DEFAULT_DATE_INVOICE);
     }
 
     @Test
@@ -141,6 +154,25 @@ public class InvoiceValidationResourceIntTest {
 
     @Test
     @Transactional
+    public void checkDateInvoiceIsRequired() throws Exception {
+        int databaseSizeBeforeTest = invoiceValidationRepository.findAll().size();
+        // set the field null
+        invoiceValidation.setDateInvoice(null);
+
+        // Create the InvoiceValidation, which fails.
+        InvoiceValidationDTO invoiceValidationDTO = invoiceValidationMapper.toDto(invoiceValidation);
+
+        restInvoiceValidationMockMvc.perform(post("/api/invoice-validations")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(invoiceValidationDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<InvoiceValidation> invoiceValidationList = invoiceValidationRepository.findAll();
+        assertThat(invoiceValidationList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllInvoiceValidations() throws Exception {
         // Initialize the database
         invoiceValidationRepository.saveAndFlush(invoiceValidation);
@@ -150,7 +182,8 @@ public class InvoiceValidationResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(invoiceValidation.getId().intValue())))
-            .andExpect(jsonPath("$.[*].validated").value(hasItem(DEFAULT_VALIDATED.booleanValue())));
+            .andExpect(jsonPath("$.[*].validated").value(hasItem(DEFAULT_VALIDATED.booleanValue())))
+            .andExpect(jsonPath("$.[*].dateInvoice").value(hasItem(DEFAULT_DATE_INVOICE.toString())));
     }
     
 
@@ -165,7 +198,8 @@ public class InvoiceValidationResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(invoiceValidation.getId().intValue()))
-            .andExpect(jsonPath("$.validated").value(DEFAULT_VALIDATED.booleanValue()));
+            .andExpect(jsonPath("$.validated").value(DEFAULT_VALIDATED.booleanValue()))
+            .andExpect(jsonPath("$.dateInvoice").value(DEFAULT_DATE_INVOICE.toString()));
     }
     @Test
     @Transactional
@@ -188,7 +222,8 @@ public class InvoiceValidationResourceIntTest {
         // Disconnect from session so that the updates on updatedInvoiceValidation are not directly saved in db
         em.detach(updatedInvoiceValidation);
         updatedInvoiceValidation
-            .validated(UPDATED_VALIDATED);
+            .validated(UPDATED_VALIDATED)
+            .dateInvoice(UPDATED_DATE_INVOICE);
         InvoiceValidationDTO invoiceValidationDTO = invoiceValidationMapper.toDto(updatedInvoiceValidation);
 
         restInvoiceValidationMockMvc.perform(put("/api/invoice-validations")
@@ -201,6 +236,7 @@ public class InvoiceValidationResourceIntTest {
         assertThat(invoiceValidationList).hasSize(databaseSizeBeforeUpdate);
         InvoiceValidation testInvoiceValidation = invoiceValidationList.get(invoiceValidationList.size() - 1);
         assertThat(testInvoiceValidation.isValidated()).isEqualTo(UPDATED_VALIDATED);
+        assertThat(testInvoiceValidation.getDateInvoice()).isEqualTo(UPDATED_DATE_INVOICE);
     }
 
     @Test

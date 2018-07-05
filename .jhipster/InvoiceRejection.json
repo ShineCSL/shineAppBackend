@@ -8,12 +8,30 @@
             "relationshipType": "one-to-one",
             "ownerSide": false,
             "otherEntityRelationshipName": "invoiceRejection"
+        },
+        {
+            "relationshipName": "user",
+            "otherEntityName": "user",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "login",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "invoiceRejection"
         }
     ],
     "fields": [
         {
             "fieldName": "rejected",
             "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "dateInvoice",
+            "fieldType": "LocalDate",
+            "fieldValidateRules": [
+                "required"
+            ]
         }
     ],
     "changelogDate": "20180627104521",

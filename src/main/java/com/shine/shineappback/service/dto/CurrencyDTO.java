@@ -11,13 +11,13 @@ public class CurrencyDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
 
-    private String labelEn;
-
-    private String labelFr;
-
     @NotNull
     @Pattern(regexp = "^[A-Z0-9()\\[\\]#$€+*%\\-_/\\\\]*$")
     private String code;
+
+    private String labelEn;
+
+    private String labelFr;
 
     public Long getId() {
         return id;
@@ -25,6 +25,14 @@ public class CurrencyDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getLabelEn() {
@@ -41,14 +49,6 @@ public class CurrencyDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setLabelFr(String labelFr) {
         this.labelFr = labelFr;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     @Override
@@ -76,9 +76,9 @@ public class CurrencyDTO extends AbstractAuditingDTO implements Serializable {
     public String toString() {
         return "CurrencyDTO{" +
             "id=" + getId() +
+            ", code='" + getCode() + "'" +
             ", labelEn='" + getLabelEn() + "'" +
             ", labelFr='" + getLabelFr() + "'" +
-            ", code='" + getCode() + "'" +
             "}";
     }
 }

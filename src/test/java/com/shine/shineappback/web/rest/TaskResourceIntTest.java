@@ -42,8 +42,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = ShineAppBackendApp.class)
 public class TaskResourceIntTest {
 
-    private static final Boolean DEFAULT_LEAVE = false;
-    private static final Boolean UPDATED_LEAVE = true;
+    private static final String DEFAULT_CODE = "AAAAAAAAAA";
+    private static final String UPDATED_CODE = "BBBBBBBBBB";
 
     private static final String DEFAULT_LABEL_EN = "AAAAAAAAAA";
     private static final String UPDATED_LABEL_EN = "BBBBBBBBBB";
@@ -51,8 +51,8 @@ public class TaskResourceIntTest {
     private static final String DEFAULT_LABEL_FR = "AAAAAAAAAA";
     private static final String UPDATED_LABEL_FR = "BBBBBBBBBB";
 
-    private static final String DEFAULT_CODE = "AAAAAAAAAA";
-    private static final String UPDATED_CODE = "BBBBBBBBBB";
+    private static final Boolean DEFAULT_LEAVE = false;
+    private static final Boolean UPDATED_LEAVE = true;
 
     @Autowired
     private TaskRepository taskRepository;
@@ -100,10 +100,10 @@ public class TaskResourceIntTest {
      */
     public static Task createEntity(EntityManager em) {
         Task task = new Task()
-            .leave(DEFAULT_LEAVE)
+            .code(DEFAULT_CODE)
             .labelEn(DEFAULT_LABEL_EN)
             .labelFr(DEFAULT_LABEL_FR)
-            .code(DEFAULT_CODE);
+            .leave(DEFAULT_LEAVE);
         return task;
     }
 
@@ -128,10 +128,10 @@ public class TaskResourceIntTest {
         List<Task> taskList = taskRepository.findAll();
         assertThat(taskList).hasSize(databaseSizeBeforeCreate + 1);
         Task testTask = taskList.get(taskList.size() - 1);
-        assertThat(testTask.isLeave()).isEqualTo(DEFAULT_LEAVE);
+        assertThat(testTask.getCode()).isEqualTo(DEFAULT_CODE);
         assertThat(testTask.getLabelEn()).isEqualTo(DEFAULT_LABEL_EN);
         assertThat(testTask.getLabelFr()).isEqualTo(DEFAULT_LABEL_FR);
-        assertThat(testTask.getCode()).isEqualTo(DEFAULT_CODE);
+        assertThat(testTask.isLeave()).isEqualTo(DEFAULT_LEAVE);
     }
 
     @Test
@@ -184,10 +184,10 @@ public class TaskResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(task.getId().intValue())))
-            .andExpect(jsonPath("$.[*].leave").value(hasItem(DEFAULT_LEAVE.booleanValue())))
+            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
             .andExpect(jsonPath("$.[*].labelEn").value(hasItem(DEFAULT_LABEL_EN.toString())))
             .andExpect(jsonPath("$.[*].labelFr").value(hasItem(DEFAULT_LABEL_FR.toString())))
-            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())));
+            .andExpect(jsonPath("$.[*].leave").value(hasItem(DEFAULT_LEAVE.booleanValue())));
     }
     
 
@@ -202,10 +202,10 @@ public class TaskResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(task.getId().intValue()))
-            .andExpect(jsonPath("$.leave").value(DEFAULT_LEAVE.booleanValue()))
+            .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()))
             .andExpect(jsonPath("$.labelEn").value(DEFAULT_LABEL_EN.toString()))
             .andExpect(jsonPath("$.labelFr").value(DEFAULT_LABEL_FR.toString()))
-            .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()));
+            .andExpect(jsonPath("$.leave").value(DEFAULT_LEAVE.booleanValue()));
     }
     @Test
     @Transactional
@@ -228,10 +228,10 @@ public class TaskResourceIntTest {
         // Disconnect from session so that the updates on updatedTask are not directly saved in db
         em.detach(updatedTask);
         updatedTask
-            .leave(UPDATED_LEAVE)
+            .code(UPDATED_CODE)
             .labelEn(UPDATED_LABEL_EN)
             .labelFr(UPDATED_LABEL_FR)
-            .code(UPDATED_CODE);
+            .leave(UPDATED_LEAVE);
         TaskDTO taskDTO = taskMapper.toDto(updatedTask);
 
         restTaskMockMvc.perform(put("/api/tasks")
@@ -243,10 +243,10 @@ public class TaskResourceIntTest {
         List<Task> taskList = taskRepository.findAll();
         assertThat(taskList).hasSize(databaseSizeBeforeUpdate);
         Task testTask = taskList.get(taskList.size() - 1);
-        assertThat(testTask.isLeave()).isEqualTo(UPDATED_LEAVE);
+        assertThat(testTask.getCode()).isEqualTo(UPDATED_CODE);
         assertThat(testTask.getLabelEn()).isEqualTo(UPDATED_LABEL_EN);
         assertThat(testTask.getLabelFr()).isEqualTo(UPDATED_LABEL_FR);
-        assertThat(testTask.getCode()).isEqualTo(UPDATED_CODE);
+        assertThat(testTask.isLeave()).isEqualTo(UPDATED_LEAVE);
     }
 
     @Test

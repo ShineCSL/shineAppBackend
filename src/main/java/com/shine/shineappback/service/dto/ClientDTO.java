@@ -11,11 +11,11 @@ public class ClientDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
 
-    private String label;
-
     @NotNull
     @Pattern(regexp = "^[A-Z0-9()\\[\\]#$+*%\\-_/\\\\]*$")
     private String code;
+
+    private String label;
 
     public Long getId() {
         return id;
@@ -25,20 +25,20 @@ public class ClientDTO extends AbstractAuditingDTO implements Serializable {
         this.id = id;
     }
 
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
     public String getCode() {
         return code;
     }
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     @Override
@@ -66,8 +66,8 @@ public class ClientDTO extends AbstractAuditingDTO implements Serializable {
     public String toString() {
         return "ClientDTO{" +
             "id=" + getId() +
-            ", label='" + getLabel() + "'" +
             ", code='" + getCode() + "'" +
+            ", label='" + getLabel() + "'" +
             "}";
     }
 }

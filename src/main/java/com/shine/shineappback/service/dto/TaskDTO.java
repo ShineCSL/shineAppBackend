@@ -11,15 +11,15 @@ public class TaskDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long id;
 
-    private Boolean leave;
+    @NotNull
+    @Pattern(regexp = "^[A-Z0-9()\\[\\]#$+*%\\-_/\\\\]*$")
+    private String code;
 
     private String labelEn;
 
     private String labelFr;
 
-    @NotNull
-    @Pattern(regexp = "^[A-Z0-9()\\[\\]#$+*%\\-_/\\\\]*$")
-    private String code;
+    private Boolean leave;
 
     public Long getId() {
         return id;
@@ -29,12 +29,12 @@ public class TaskDTO extends AbstractAuditingDTO implements Serializable {
         this.id = id;
     }
 
-    public Boolean isLeave() {
-        return leave;
+    public String getCode() {
+        return code;
     }
 
-    public void setLeave(Boolean leave) {
-        this.leave = leave;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getLabelEn() {
@@ -53,12 +53,12 @@ public class TaskDTO extends AbstractAuditingDTO implements Serializable {
         this.labelFr = labelFr;
     }
 
-    public String getCode() {
-        return code;
+    public Boolean isLeave() {
+        return leave;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setLeave(Boolean leave) {
+        this.leave = leave;
     }
 
     @Override
@@ -86,10 +86,10 @@ public class TaskDTO extends AbstractAuditingDTO implements Serializable {
     public String toString() {
         return "TaskDTO{" +
             "id=" + getId() +
-            ", leave='" + isLeave() + "'" +
+            ", code='" + getCode() + "'" +
             ", labelEn='" + getLabelEn() + "'" +
             ", labelFr='" + getLabelFr() + "'" +
-            ", code='" + getCode() + "'" +
+            ", leave='" + isLeave() + "'" +
             "}";
     }
 }

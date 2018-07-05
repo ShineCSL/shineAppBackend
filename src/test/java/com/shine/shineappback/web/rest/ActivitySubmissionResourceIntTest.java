@@ -3,6 +3,7 @@ package com.shine.shineappback.web.rest;
 import com.shine.shineappback.ShineAppBackendApp;
 
 import com.shine.shineappback.domain.ActivitySubmission;
+import com.shine.shineappback.domain.User;
 import com.shine.shineappback.repository.ActivitySubmissionRepository;
 import com.shine.shineappback.service.ActivitySubmissionService;
 import com.shine.shineappback.service.dto.ActivitySubmissionDTO;
@@ -100,6 +101,11 @@ public class ActivitySubmissionResourceIntTest {
             .submitted(DEFAULT_SUBMITTED)
             .year(DEFAULT_YEAR)
             .weekNumber(DEFAULT_WEEK_NUMBER);
+        // Add required entity
+        User user = UserResourceIntTest.createEntity(em);
+        em.persist(user);
+        em.flush();
+        activitySubmission.setUser(user);
         return activitySubmission;
     }
 

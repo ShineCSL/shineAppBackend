@@ -4,6 +4,7 @@ import com.shine.shineappback.domain.ActivityRejection;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 
 /**
  * Spring Data  repository for the ActivityRejection entity.
@@ -11,5 +12,8 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface ActivityRejectionRepository extends JpaRepository<ActivityRejection, Long> {
+
+    @Query("select activity_rejection from ActivityRejection activity_rejection where activity_rejection.user.login = ?#{principal.username}")
+    List<ActivityRejection> findByUserIsCurrentUser();
 
 }

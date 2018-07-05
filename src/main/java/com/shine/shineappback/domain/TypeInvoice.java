@@ -20,16 +20,16 @@ public class TypeInvoice extends AbstractAuditingEntity implements Serializable 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
+    @Pattern(regexp = "^[A-Z0-9()\\[\\]#$+*%\\-_/\\\\]*$")
+    @Column(name = "code", nullable = false)
+    private String code;
+
     @Column(name = "label_en")
     private String labelEn;
 
     @Column(name = "label_fr")
     private String labelFr;
-
-    @NotNull
-    @Pattern(regexp = "^[A-Z0-9()\\[\\]#$+*%\\-_/\\\\]*$")
-    @Column(name = "code", nullable = false)
-    private String code;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -38,6 +38,19 @@ public class TypeInvoice extends AbstractAuditingEntity implements Serializable 
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public TypeInvoice code(String code) {
+        this.code = code;
+        return this;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getLabelEn() {
@@ -65,19 +78,6 @@ public class TypeInvoice extends AbstractAuditingEntity implements Serializable 
     public void setLabelFr(String labelFr) {
         this.labelFr = labelFr;
     }
-
-    public String getCode() {
-        return code;
-    }
-
-    public TypeInvoice code(String code) {
-        this.code = code;
-        return this;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
@@ -104,9 +104,9 @@ public class TypeInvoice extends AbstractAuditingEntity implements Serializable 
     public String toString() {
         return "TypeInvoice{" +
             "id=" + getId() +
+            ", code='" + getCode() + "'" +
             ", labelEn='" + getLabelEn() + "'" +
             ", labelFr='" + getLabelFr() + "'" +
-            ", code='" + getCode() + "'" +
             "}";
     }
 }

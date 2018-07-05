@@ -26,13 +26,21 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="date_invoice" type="date">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="user_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
         
     </changeSet>
     
     <!-- Added the entity audit columns -->
-    <changeSet id="20180704074210-audit-1" author="jhipster-entity-audit">
+    <changeSet id="20180705054809-audit-1" author="jhipster-entity-audit">
         <addColumn tableName="invoice_rejection">
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>
@@ -44,6 +52,5 @@
             <column name="last_modified_date" type="timestamp"/>
         </addColumn>
     </changeSet>
-    
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

@@ -3,6 +3,7 @@ package com.shine.shineappback.web.rest;
 import com.shine.shineappback.ShineAppBackendApp;
 
 import com.shine.shineappback.domain.InvoiceRejection;
+import com.shine.shineappback.domain.User;
 import com.shine.shineappback.repository.InvoiceRejectionRepository;
 import com.shine.shineappback.service.InvoiceRejectionService;
 import com.shine.shineappback.service.dto.InvoiceRejectionDTO;
@@ -24,6 +25,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 
@@ -44,6 +47,9 @@ public class InvoiceRejectionResourceIntTest {
 
     private static final Boolean DEFAULT_REJECTED = false;
     private static final Boolean UPDATED_REJECTED = true;
+
+    private static final LocalDate DEFAULT_DATE_INVOICE = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_DATE_INVOICE = LocalDate.now(ZoneId.systemDefault());
 
     @Autowired
     private InvoiceRejectionRepository invoiceRejectionRepository;
@@ -91,7 +97,13 @@ public class InvoiceRejectionResourceIntTest {
      */
     public static InvoiceRejection createEntity(EntityManager em) {
         InvoiceRejection invoiceRejection = new InvoiceRejection()
-            .rejected(DEFAULT_REJECTED);
+            .rejected(DEFAULT_REJECTED)
+            .dateInvoice(DEFAULT_DATE_INVOICE);
+        // Add required entity
+        User user = UserResourceIntTest.createEntity(em);
+        em.persist(user);
+        em.flush();
+        invoiceRejection.setUser(user);
         return invoiceRejection;
     }
 
@@ -117,6 +129,7 @@ public class InvoiceRejectionResourceIntTest {
         assertThat(invoiceRejectionList).hasSize(databaseSizeBeforeCreate + 1);
         InvoiceRejection testInvoiceRejection = invoiceRejectionList.get(invoiceRejectionList.size() - 1);
         assertThat(testInvoiceRejection.isRejected()).isEqualTo(DEFAULT_REJECTED);
+        assertThat(testInvoiceRejection.getDateInvoice()).isEqualTo(DEFAULT_DATE_INVOICE);
     }
 
     @Test
@@ -141,6 +154,25 @@ public class InvoiceRejectionResourceIntTest {
 
     @Test
     @Transactional
+    public void checkDateInvoiceIsRequired() throws Exception {
+        int databaseSizeBeforeTest = invoiceRejectionRepository.findAll().size();
+        // set the field null
+        invoiceRejection.setDateInvoice(null);
+
+        // Create the InvoiceRejection, which fails.
+        InvoiceRejectionDTO invoiceRejectionDTO = invoiceRejectionMapper.toDto(invoiceRejection);
+
+        restInvoiceRejectionMockMvc.perform(post("/api/invoice-rejections")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(invoiceRejectionDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<InvoiceRejection> invoiceRejectionList = invoiceRejectionRepository.findAll();
+        assertThat(invoiceRejectionList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllInvoiceRejections() throws Exception {
         // Initialize the database
         invoiceRejectionRepository.saveAndFlush(invoiceRejection);
@@ -150,7 +182,8 @@ public class InvoiceRejectionResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(invoiceRejection.getId().intValue())))
-            .andExpect(jsonPath("$.[*].rejected").value(hasItem(DEFAULT_REJECTED.booleanValue())));
+            .andExpect(jsonPath("$.[*].rejected").value(hasItem(DEFAULT_REJECTED.booleanValue())))
+            .andExpect(jsonPath("$.[*].dateInvoice").value(hasItem(DEFAULT_DATE_INVOICE.toString())));
     }
     
 
@@ -165,7 +198,8 @@ public class InvoiceRejectionResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(invoiceRejection.getId().intValue()))
-            .andExpect(jsonPath("$.rejected").value(DEFAULT_REJECTED.booleanValue()));
+            .andExpect(jsonPath("$.rejected").value(DEFAULT_REJECTED.booleanValue()))
+            .andExpect(jsonPath("$.dateInvoice").value(DEFAULT_DATE_INVOICE.toString()));
     }
     @Test
     @Transactional
@@ -188,7 +222,8 @@ public class InvoiceRejectionResourceIntTest {
         // Disconnect from session so that the updates on updatedInvoiceRejection are not directly saved in db
         em.detach(updatedInvoiceRejection);
         updatedInvoiceRejection
-            .rejected(UPDATED_REJECTED);
+            .rejected(UPDATED_REJECTED)
+            .dateInvoice(UPDATED_DATE_INVOICE);
         InvoiceRejectionDTO invoiceRejectionDTO = invoiceRejectionMapper.toDto(updatedInvoiceRejection);
 
         restInvoiceRejectionMockMvc.perform(put("/api/invoice-rejections")
@@ -201,6 +236,7 @@ public class InvoiceRejectionResourceIntTest {
         assertThat(invoiceRejectionList).hasSize(databaseSizeBeforeUpdate);
         InvoiceRejection testInvoiceRejection = invoiceRejectionList.get(invoiceRejectionList.size() - 1);
         assertThat(testInvoiceRejection.isRejected()).isEqualTo(UPDATED_REJECTED);
+        assertThat(testInvoiceRejection.getDateInvoice()).isEqualTo(UPDATED_DATE_INVOICE);
     }
 
     @Test

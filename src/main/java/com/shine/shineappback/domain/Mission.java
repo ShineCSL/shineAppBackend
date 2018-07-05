@@ -21,13 +21,13 @@ public class Mission extends AbstractAuditingEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "jhi_label")
-    private String label;
-
     @NotNull
     @Pattern(regexp = "^[A-Z0-9()\\[\\]#$+*%\\-_/\\\\]*$")
     @Column(name = "code", nullable = false)
     private String code;
+
+    @Column(name = "jhi_label")
+    private String label;
 
     @ManyToOne(optional = false)
     @NotNull
@@ -43,19 +43,6 @@ public class Mission extends AbstractAuditingEntity implements Serializable {
         this.id = id;
     }
 
-    public String getLabel() {
-        return label;
-    }
-
-    public Mission label(String label) {
-        this.label = label;
-        return this;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
     public String getCode() {
         return code;
     }
@@ -67,6 +54,19 @@ public class Mission extends AbstractAuditingEntity implements Serializable {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public Mission label(String label) {
+        this.label = label;
+        return this;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public Client getClient() {
@@ -107,8 +107,8 @@ public class Mission extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "Mission{" +
             "id=" + getId() +
-            ", label='" + getLabel() + "'" +
             ", code='" + getCode() + "'" +
+            ", label='" + getLabel() + "'" +
             "}";
     }
 }

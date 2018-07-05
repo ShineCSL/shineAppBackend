@@ -3,6 +3,7 @@ package com.shine.shineappback.web.rest;
 import com.shine.shineappback.ShineAppBackendApp;
 
 import com.shine.shineappback.domain.ActivityValidation;
+import com.shine.shineappback.domain.User;
 import com.shine.shineappback.repository.ActivityValidationRepository;
 import com.shine.shineappback.service.ActivityValidationService;
 import com.shine.shineappback.service.dto.ActivityValidationDTO;
@@ -100,6 +101,11 @@ public class ActivityValidationResourceIntTest {
             .weekNumber(DEFAULT_WEEK_NUMBER)
             .year(DEFAULT_YEAR)
             .validated(DEFAULT_VALIDATED);
+        // Add required entity
+        User user = UserResourceIntTest.createEntity(em);
+        em.persist(user);
+        em.flush();
+        activityValidation.setUser(user);
         return activityValidation;
     }
 

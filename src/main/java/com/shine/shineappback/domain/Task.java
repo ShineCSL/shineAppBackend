@@ -20,8 +20,10 @@ public class Task extends AbstractAuditingEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "jhi_leave")
-    private Boolean leave;
+    @NotNull
+    @Pattern(regexp = "^[A-Z0-9()\\[\\]#$+*%\\-_/\\\\]*$")
+    @Column(name = "code", nullable = false)
+    private String code;
 
     @Column(name = "label_en")
     private String labelEn;
@@ -29,10 +31,8 @@ public class Task extends AbstractAuditingEntity implements Serializable {
     @Column(name = "label_fr")
     private String labelFr;
 
-    @NotNull
-    @Pattern(regexp = "^[A-Z0-9()\\[\\]#$+*%\\-_/\\\\]*$")
-    @Column(name = "code", nullable = false)
-    private String code;
+    @Column(name = "jhi_leave")
+    private Boolean leave;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -43,17 +43,17 @@ public class Task extends AbstractAuditingEntity implements Serializable {
         this.id = id;
     }
 
-    public Boolean isLeave() {
-        return leave;
+    public String getCode() {
+        return code;
     }
 
-    public Task leave(Boolean leave) {
-        this.leave = leave;
+    public Task code(String code) {
+        this.code = code;
         return this;
     }
 
-    public void setLeave(Boolean leave) {
-        this.leave = leave;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getLabelEn() {
@@ -82,17 +82,17 @@ public class Task extends AbstractAuditingEntity implements Serializable {
         this.labelFr = labelFr;
     }
 
-    public String getCode() {
-        return code;
+    public Boolean isLeave() {
+        return leave;
     }
 
-    public Task code(String code) {
-        this.code = code;
+    public Task leave(Boolean leave) {
+        this.leave = leave;
         return this;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setLeave(Boolean leave) {
+        this.leave = leave;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -120,10 +120,10 @@ public class Task extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "Task{" +
             "id=" + getId() +
-            ", leave='" + isLeave() + "'" +
+            ", code='" + getCode() + "'" +
             ", labelEn='" + getLabelEn() + "'" +
             ", labelFr='" + getLabelFr() + "'" +
-            ", code='" + getCode() + "'" +
+            ", leave='" + isLeave() + "'" +
             "}";
     }
 }

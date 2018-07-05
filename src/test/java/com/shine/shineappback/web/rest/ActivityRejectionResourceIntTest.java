@@ -3,6 +3,7 @@ package com.shine.shineappback.web.rest;
 import com.shine.shineappback.ShineAppBackendApp;
 
 import com.shine.shineappback.domain.ActivityRejection;
+import com.shine.shineappback.domain.User;
 import com.shine.shineappback.repository.ActivityRejectionRepository;
 import com.shine.shineappback.service.ActivityRejectionService;
 import com.shine.shineappback.service.dto.ActivityRejectionDTO;
@@ -100,6 +101,11 @@ public class ActivityRejectionResourceIntTest {
             .rejected(DEFAULT_REJECTED)
             .weekNumber(DEFAULT_WEEK_NUMBER)
             .year(DEFAULT_YEAR);
+        // Add required entity
+        User user = UserResourceIntTest.createEntity(em);
+        em.persist(user);
+        em.flush();
+        activityRejection.setUser(user);
         return activityRejection;
     }
 

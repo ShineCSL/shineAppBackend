@@ -1,5 +1,6 @@
 package com.shine.shineappback.service.dto;
 
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -15,6 +16,10 @@ public class ActivitySubmissionDTO extends AbstractAuditingDTO implements Serial
     private Integer year;
 
     private Integer weekNumber;
+
+    private Long userId;
+
+    private String userLogin;
 
     public Long getId() {
         return id;
@@ -48,6 +53,22 @@ public class ActivitySubmissionDTO extends AbstractAuditingDTO implements Serial
         this.weekNumber = weekNumber;
     }
 
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getUserLogin() {
+        return userLogin;
+    }
+
+    public void setUserLogin(String userLogin) {
+        this.userLogin = userLogin;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -76,6 +97,8 @@ public class ActivitySubmissionDTO extends AbstractAuditingDTO implements Serial
             ", submitted='" + isSubmitted() + "'" +
             ", year=" + getYear() +
             ", weekNumber=" + getWeekNumber() +
+            ", user=" + getUserId() +
+            ", user='" + getUserLogin() + "'" +
             "}";
     }
 }

@@ -42,11 +42,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = ShineAppBackendApp.class)
 public class ClientResourceIntTest {
 
-    private static final String DEFAULT_LABEL = "AAAAAAAAAA";
-    private static final String UPDATED_LABEL = "BBBBBBBBBB";
-
     private static final String DEFAULT_CODE = "AAAAAAAAAA";
     private static final String UPDATED_CODE = "BBBBBBBBBB";
+
+    private static final String DEFAULT_LABEL = "AAAAAAAAAA";
+    private static final String UPDATED_LABEL = "BBBBBBBBBB";
 
     @Autowired
     private ClientRepository clientRepository;
@@ -94,8 +94,8 @@ public class ClientResourceIntTest {
      */
     public static Client createEntity(EntityManager em) {
         Client client = new Client()
-            .label(DEFAULT_LABEL)
-            .code(DEFAULT_CODE);
+            .code(DEFAULT_CODE)
+            .label(DEFAULT_LABEL);
         return client;
     }
 
@@ -120,8 +120,8 @@ public class ClientResourceIntTest {
         List<Client> clientList = clientRepository.findAll();
         assertThat(clientList).hasSize(databaseSizeBeforeCreate + 1);
         Client testClient = clientList.get(clientList.size() - 1);
-        assertThat(testClient.getLabel()).isEqualTo(DEFAULT_LABEL);
         assertThat(testClient.getCode()).isEqualTo(DEFAULT_CODE);
+        assertThat(testClient.getLabel()).isEqualTo(DEFAULT_LABEL);
     }
 
     @Test
@@ -174,8 +174,8 @@ public class ClientResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(client.getId().intValue())))
-            .andExpect(jsonPath("$.[*].label").value(hasItem(DEFAULT_LABEL.toString())))
-            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())));
+            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
+            .andExpect(jsonPath("$.[*].label").value(hasItem(DEFAULT_LABEL.toString())));
     }
     
 
@@ -190,8 +190,8 @@ public class ClientResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(client.getId().intValue()))
-            .andExpect(jsonPath("$.label").value(DEFAULT_LABEL.toString()))
-            .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()));
+            .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()))
+            .andExpect(jsonPath("$.label").value(DEFAULT_LABEL.toString()));
     }
     @Test
     @Transactional
@@ -214,8 +214,8 @@ public class ClientResourceIntTest {
         // Disconnect from session so that the updates on updatedClient are not directly saved in db
         em.detach(updatedClient);
         updatedClient
-            .label(UPDATED_LABEL)
-            .code(UPDATED_CODE);
+            .code(UPDATED_CODE)
+            .label(UPDATED_LABEL);
         ClientDTO clientDTO = clientMapper.toDto(updatedClient);
 
         restClientMockMvc.perform(put("/api/clients")
@@ -227,8 +227,8 @@ public class ClientResourceIntTest {
         List<Client> clientList = clientRepository.findAll();
         assertThat(clientList).hasSize(databaseSizeBeforeUpdate);
         Client testClient = clientList.get(clientList.size() - 1);
-        assertThat(testClient.getLabel()).isEqualTo(UPDATED_LABEL);
         assertThat(testClient.getCode()).isEqualTo(UPDATED_CODE);
+        assertThat(testClient.getLabel()).isEqualTo(UPDATED_LABEL);
     }
 
     @Test

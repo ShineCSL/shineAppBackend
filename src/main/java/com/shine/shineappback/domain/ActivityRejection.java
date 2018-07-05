@@ -1,5 +1,6 @@
 package com.shine.shineappback.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -30,6 +31,11 @@ public class ActivityRejection extends AbstractAuditingEntity implements Seriali
     @NotNull
     @Column(name = "jhi_year", nullable = false)
     private Integer year;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    @JsonIgnoreProperties("")
+    private User user;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -77,6 +83,19 @@ public class ActivityRejection extends AbstractAuditingEntity implements Seriali
 
     public void setYear(Integer year) {
         this.year = year;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public ActivityRejection user(User user) {
+        this.user = user;
+        return this;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

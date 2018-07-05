@@ -8,15 +8,9 @@
     -->
     <changeSet id="20180627104521-2" author="jhipster">
         
-        <addForeignKeyConstraint baseColumnNames="user_creation_id"
+        <addForeignKeyConstraint baseColumnNames="user_id"
                                  baseTableName="invoice_rejection"
-                                 constraintName="fk_invoice_rejection_user_creation_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="jhi_user"/>
-
-        <addForeignKeyConstraint baseColumnNames="user_modification_id"
-                                 baseTableName="invoice_rejection"
-                                 constraintName="fk_invoice_rejection_user_modification_id"
+                                 constraintName="fk_invoice_rejection_user_id"
                                  referencedColumnNames="id"
                                  referencedTableName="jhi_user"/>
 

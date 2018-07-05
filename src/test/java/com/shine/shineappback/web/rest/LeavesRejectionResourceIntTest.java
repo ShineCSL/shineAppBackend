@@ -3,6 +3,7 @@ package com.shine.shineappback.web.rest;
 import com.shine.shineappback.ShineAppBackendApp;
 
 import com.shine.shineappback.domain.LeavesRejection;
+import com.shine.shineappback.domain.User;
 import com.shine.shineappback.repository.LeavesRejectionRepository;
 import com.shine.shineappback.service.LeavesRejectionService;
 import com.shine.shineappback.service.dto.LeavesRejectionDTO;
@@ -24,6 +25,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 
@@ -44,6 +47,9 @@ public class LeavesRejectionResourceIntTest {
 
     private static final Boolean DEFAULT_REJECTED = false;
     private static final Boolean UPDATED_REJECTED = true;
+
+    private static final LocalDate DEFAULT_LEAVES_DATE = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_LEAVES_DATE = LocalDate.now(ZoneId.systemDefault());
 
     @Autowired
     private LeavesRejectionRepository leavesRejectionRepository;
@@ -91,7 +97,13 @@ public class LeavesRejectionResourceIntTest {
      */
     public static LeavesRejection createEntity(EntityManager em) {
         LeavesRejection leavesRejection = new LeavesRejection()
-            .rejected(DEFAULT_REJECTED);
+            .rejected(DEFAULT_REJECTED)
+            .leavesDate(DEFAULT_LEAVES_DATE);
+        // Add required entity
+        User user = UserResourceIntTest.createEntity(em);
+        em.persist(user);
+        em.flush();
+        leavesRejection.setUser(user);
         return leavesRejection;
     }
 
@@ -117,6 +129,7 @@ public class LeavesRejectionResourceIntTest {
         assertThat(leavesRejectionList).hasSize(databaseSizeBeforeCreate + 1);
         LeavesRejection testLeavesRejection = leavesRejectionList.get(leavesRejectionList.size() - 1);
         assertThat(testLeavesRejection.isRejected()).isEqualTo(DEFAULT_REJECTED);
+        assertThat(testLeavesRejection.getLeavesDate()).isEqualTo(DEFAULT_LEAVES_DATE);
     }
 
     @Test
@@ -141,6 +154,25 @@ public class LeavesRejectionResourceIntTest {
 
     @Test
     @Transactional
+    public void checkLeavesDateIsRequired() throws Exception {
+        int databaseSizeBeforeTest = leavesRejectionRepository.findAll().size();
+        // set the field null
+        leavesRejection.setLeavesDate(null);
+
+        // Create the LeavesRejection, which fails.
+        LeavesRejectionDTO leavesRejectionDTO = leavesRejectionMapper.toDto(leavesRejection);
+
+        restLeavesRejectionMockMvc.perform(post("/api/leaves-rejections")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(leavesRejectionDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<LeavesRejection> leavesRejectionList = leavesRejectionRepository.findAll();
+        assertThat(leavesRejectionList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllLeavesRejections() throws Exception {
         // Initialize the database
         leavesRejectionRepository.saveAndFlush(leavesRejection);
@@ -150,7 +182,8 @@ public class LeavesRejectionResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(leavesRejection.getId().intValue())))
-            .andExpect(jsonPath("$.[*].rejected").value(hasItem(DEFAULT_REJECTED.booleanValue())));
+            .andExpect(jsonPath("$.[*].rejected").value(hasItem(DEFAULT_REJECTED.booleanValue())))
+            .andExpect(jsonPath("$.[*].leavesDate").value(hasItem(DEFAULT_LEAVES_DATE.toString())));
     }
     
 
@@ -165,7 +198,8 @@ public class LeavesRejectionResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(leavesRejection.getId().intValue()))
-            .andExpect(jsonPath("$.rejected").value(DEFAULT_REJECTED.booleanValue()));
+            .andExpect(jsonPath("$.rejected").value(DEFAULT_REJECTED.booleanValue()))
+            .andExpect(jsonPath("$.leavesDate").value(DEFAULT_LEAVES_DATE.toString()));
     }
     @Test
     @Transactional
@@ -188,7 +222,8 @@ public class LeavesRejectionResourceIntTest {
         // Disconnect from session so that the updates on updatedLeavesRejection are not directly saved in db
         em.detach(updatedLeavesRejection);
         updatedLeavesRejection
-            .rejected(UPDATED_REJECTED);
+            .rejected(UPDATED_REJECTED)
+            .leavesDate(UPDATED_LEAVES_DATE);
         LeavesRejectionDTO leavesRejectionDTO = leavesRejectionMapper.toDto(updatedLeavesRejection);
 
         restLeavesRejectionMockMvc.perform(put("/api/leaves-rejections")
@@ -201,6 +236,7 @@ public class LeavesRejectionResourceIntTest {
         assertThat(leavesRejectionList).hasSize(databaseSizeBeforeUpdate);
         LeavesRejection testLeavesRejection = leavesRejectionList.get(leavesRejectionList.size() - 1);
         assertThat(testLeavesRejection.isRejected()).isEqualTo(UPDATED_REJECTED);
+        assertThat(testLeavesRejection.getLeavesDate()).isEqualTo(UPDATED_LEAVES_DATE);
     }
 
     @Test

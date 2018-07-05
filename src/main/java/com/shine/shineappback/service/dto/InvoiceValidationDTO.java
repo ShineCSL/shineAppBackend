@@ -1,5 +1,7 @@
 package com.shine.shineappback.service.dto;
 
+import java.time.LocalDate;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -11,6 +13,13 @@ public class InvoiceValidationDTO extends AbstractAuditingDTO implements Seriali
     private Long id;
 
     private Boolean validated;
+
+    @NotNull
+    private LocalDate dateInvoice;
+
+    private Long userId;
+
+    private String userLogin;
 
     public Long getId() {
         return id;
@@ -26,6 +35,30 @@ public class InvoiceValidationDTO extends AbstractAuditingDTO implements Seriali
 
     public void setValidated(Boolean validated) {
         this.validated = validated;
+    }
+
+    public LocalDate getDateInvoice() {
+        return dateInvoice;
+    }
+
+    public void setDateInvoice(LocalDate dateInvoice) {
+        this.dateInvoice = dateInvoice;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getUserLogin() {
+        return userLogin;
+    }
+
+    public void setUserLogin(String userLogin) {
+        this.userLogin = userLogin;
     }
 
     @Override
@@ -54,6 +87,9 @@ public class InvoiceValidationDTO extends AbstractAuditingDTO implements Seriali
         return "InvoiceValidationDTO{" +
             "id=" + getId() +
             ", validated='" + isValidated() + "'" +
+            ", dateInvoice='" + getDateInvoice() + "'" +
+            ", user=" + getUserId() +
+            ", user='" + getUserLogin() + "'" +
             "}";
     }
 }

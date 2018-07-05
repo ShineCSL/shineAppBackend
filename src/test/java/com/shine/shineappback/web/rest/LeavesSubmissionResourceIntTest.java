@@ -3,6 +3,7 @@ package com.shine.shineappback.web.rest;
 import com.shine.shineappback.ShineAppBackendApp;
 
 import com.shine.shineappback.domain.LeavesSubmission;
+import com.shine.shineappback.domain.User;
 import com.shine.shineappback.repository.LeavesSubmissionRepository;
 import com.shine.shineappback.service.LeavesSubmissionService;
 import com.shine.shineappback.service.dto.LeavesSubmissionDTO;
@@ -24,6 +25,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 
@@ -44,6 +47,9 @@ public class LeavesSubmissionResourceIntTest {
 
     private static final Boolean DEFAULT_SUBMITTED = false;
     private static final Boolean UPDATED_SUBMITTED = true;
+
+    private static final LocalDate DEFAULT_LEAVES_DATE = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_LEAVES_DATE = LocalDate.now(ZoneId.systemDefault());
 
     @Autowired
     private LeavesSubmissionRepository leavesSubmissionRepository;
@@ -91,7 +97,13 @@ public class LeavesSubmissionResourceIntTest {
      */
     public static LeavesSubmission createEntity(EntityManager em) {
         LeavesSubmission leavesSubmission = new LeavesSubmission()
-            .submitted(DEFAULT_SUBMITTED);
+            .submitted(DEFAULT_SUBMITTED)
+            .leavesDate(DEFAULT_LEAVES_DATE);
+        // Add required entity
+        User user = UserResourceIntTest.createEntity(em);
+        em.persist(user);
+        em.flush();
+        leavesSubmission.setUser(user);
         return leavesSubmission;
     }
 
@@ -117,6 +129,7 @@ public class LeavesSubmissionResourceIntTest {
         assertThat(leavesSubmissionList).hasSize(databaseSizeBeforeCreate + 1);
         LeavesSubmission testLeavesSubmission = leavesSubmissionList.get(leavesSubmissionList.size() - 1);
         assertThat(testLeavesSubmission.isSubmitted()).isEqualTo(DEFAULT_SUBMITTED);
+        assertThat(testLeavesSubmission.getLeavesDate()).isEqualTo(DEFAULT_LEAVES_DATE);
     }
 
     @Test
@@ -141,6 +154,25 @@ public class LeavesSubmissionResourceIntTest {
 
     @Test
     @Transactional
+    public void checkLeavesDateIsRequired() throws Exception {
+        int databaseSizeBeforeTest = leavesSubmissionRepository.findAll().size();
+        // set the field null
+        leavesSubmission.setLeavesDate(null);
+
+        // Create the LeavesSubmission, which fails.
+        LeavesSubmissionDTO leavesSubmissionDTO = leavesSubmissionMapper.toDto(leavesSubmission);
+
+        restLeavesSubmissionMockMvc.perform(post("/api/leaves-submissions")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(leavesSubmissionDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<LeavesSubmission> leavesSubmissionList = leavesSubmissionRepository.findAll();
+        assertThat(leavesSubmissionList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     public void getAllLeavesSubmissions() throws Exception {
         // Initialize the database
         leavesSubmissionRepository.saveAndFlush(leavesSubmission);
@@ -150,7 +182,8 @@ public class LeavesSubmissionResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(leavesSubmission.getId().intValue())))
-            .andExpect(jsonPath("$.[*].submitted").value(hasItem(DEFAULT_SUBMITTED.booleanValue())));
+            .andExpect(jsonPath("$.[*].submitted").value(hasItem(DEFAULT_SUBMITTED.booleanValue())))
+            .andExpect(jsonPath("$.[*].leavesDate").value(hasItem(DEFAULT_LEAVES_DATE.toString())));
     }
     
 
@@ -165,7 +198,8 @@ public class LeavesSubmissionResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(leavesSubmission.getId().intValue()))
-            .andExpect(jsonPath("$.submitted").value(DEFAULT_SUBMITTED.booleanValue()));
+            .andExpect(jsonPath("$.submitted").value(DEFAULT_SUBMITTED.booleanValue()))
+            .andExpect(jsonPath("$.leavesDate").value(DEFAULT_LEAVES_DATE.toString()));
     }
     @Test
     @Transactional
@@ -188,7 +222,8 @@ public class LeavesSubmissionResourceIntTest {
         // Disconnect from session so that the updates on updatedLeavesSubmission are not directly saved in db
         em.detach(updatedLeavesSubmission);
         updatedLeavesSubmission
-            .submitted(UPDATED_SUBMITTED);
+            .submitted(UPDATED_SUBMITTED)
+            .leavesDate(UPDATED_LEAVES_DATE);
         LeavesSubmissionDTO leavesSubmissionDTO = leavesSubmissionMapper.toDto(updatedLeavesSubmission);
 
         restLeavesSubmissionMockMvc.perform(put("/api/leaves-submissions")
@@ -201,6 +236,7 @@ public class LeavesSubmissionResourceIntTest {
         assertThat(leavesSubmissionList).hasSize(databaseSizeBeforeUpdate);
         LeavesSubmission testLeavesSubmission = leavesSubmissionList.get(leavesSubmissionList.size() - 1);
         assertThat(testLeavesSubmission.isSubmitted()).isEqualTo(UPDATED_SUBMITTED);
+        assertThat(testLeavesSubmission.getLeavesDate()).isEqualTo(UPDATED_LEAVES_DATE);
     }
 
     @Test

@@ -8,12 +8,30 @@
             "relationshipType": "one-to-one",
             "ownerSide": false,
             "otherEntityRelationshipName": "invoiceSubmission"
+        },
+        {
+            "relationshipName": "user",
+            "otherEntityName": "user",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "login",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "invoiceSubmission"
         }
     ],
     "fields": [
         {
             "fieldName": "submitted",
             "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "dateInvoice",
+            "fieldType": "LocalDate",
+            "fieldValidateRules": [
+                "required"
+            ]
         }
     ],
     "changelogDate": "20180627103339",

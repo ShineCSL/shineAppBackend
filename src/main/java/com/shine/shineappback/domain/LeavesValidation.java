@@ -1,10 +1,13 @@
 package com.shine.shineappback.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Objects;
 
 /**
@@ -23,9 +26,18 @@ public class LeavesValidation extends AbstractAuditingEntity implements Serializ
     @Column(name = "validated")
     private Boolean validated;
 
+    @NotNull
+    @Column(name = "leaves_date", nullable = false)
+    private LocalDate leavesDate;
+
     @OneToOne(mappedBy = "leavesValidation")
     @JsonIgnore
     private Leaves leaves;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    @JsonIgnoreProperties("")
+    private User user;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -49,6 +61,19 @@ public class LeavesValidation extends AbstractAuditingEntity implements Serializ
         this.validated = validated;
     }
 
+    public LocalDate getLeavesDate() {
+        return leavesDate;
+    }
+
+    public LeavesValidation leavesDate(LocalDate leavesDate) {
+        this.leavesDate = leavesDate;
+        return this;
+    }
+
+    public void setLeavesDate(LocalDate leavesDate) {
+        this.leavesDate = leavesDate;
+    }
+
     public Leaves getLeaves() {
         return leaves;
     }
@@ -60,6 +85,19 @@ public class LeavesValidation extends AbstractAuditingEntity implements Serializ
 
     public void setLeaves(Leaves leaves) {
         this.leaves = leaves;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public LeavesValidation user(User user) {
+        this.user = user;
+        return this;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
@@ -88,6 +126,7 @@ public class LeavesValidation extends AbstractAuditingEntity implements Serializ
         return "LeavesValidation{" +
             "id=" + getId() +
             ", validated='" + isValidated() + "'" +
+            ", leavesDate='" + getLeavesDate() + "'" +
             "}";
     }
 }

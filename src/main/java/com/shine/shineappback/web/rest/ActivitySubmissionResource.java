@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -48,7 +49,7 @@ public class ActivitySubmissionResource {
      */
     @PostMapping("/activity-submissions")
     @Timed
-    public ResponseEntity<ActivitySubmissionDTO> createActivitySubmission(@RequestBody ActivitySubmissionDTO activitySubmissionDTO) throws URISyntaxException {
+    public ResponseEntity<ActivitySubmissionDTO> createActivitySubmission(@Valid @RequestBody ActivitySubmissionDTO activitySubmissionDTO) throws URISyntaxException {
         log.debug("REST request to save ActivitySubmission : {}", activitySubmissionDTO);
         if (activitySubmissionDTO.getId() != null) {
             throw new BadRequestAlertException("A new activitySubmission cannot already have an ID", ENTITY_NAME, "idexists");
@@ -70,7 +71,7 @@ public class ActivitySubmissionResource {
      */
     @PutMapping("/activity-submissions")
     @Timed
-    public ResponseEntity<ActivitySubmissionDTO> updateActivitySubmission(@RequestBody ActivitySubmissionDTO activitySubmissionDTO) throws URISyntaxException {
+    public ResponseEntity<ActivitySubmissionDTO> updateActivitySubmission(@Valid @RequestBody ActivitySubmissionDTO activitySubmissionDTO) throws URISyntaxException {
         log.debug("REST request to update ActivitySubmission : {}", activitySubmissionDTO);
         if (activitySubmissionDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");

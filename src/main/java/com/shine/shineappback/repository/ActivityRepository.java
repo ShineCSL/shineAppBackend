@@ -11,7 +11,7 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface ActivityRepository extends JpaRepository<Activity, Long> {
+public interface ActivityRepository extends JpaRepository<Activity, Long>, JpaSpecificationExecutor<Activity> {
 
     @Query("select activity from Activity activity where activity.user.login = ?#{principal.username}")
     List<Activity> findByUserIsCurrentUser();

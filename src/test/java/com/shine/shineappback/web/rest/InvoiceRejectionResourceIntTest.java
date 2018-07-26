@@ -51,6 +51,9 @@ public class InvoiceRejectionResourceIntTest {
     private static final LocalDate DEFAULT_DATE_INVOICE = LocalDate.ofEpochDay(0L);
     private static final LocalDate UPDATED_DATE_INVOICE = LocalDate.now(ZoneId.systemDefault());
 
+    private static final String DEFAULT_COMMENT = "AAAAAAAAAA";
+    private static final String UPDATED_COMMENT = "BBBBBBBBBB";
+
     @Autowired
     private InvoiceRejectionRepository invoiceRejectionRepository;
 
@@ -98,7 +101,8 @@ public class InvoiceRejectionResourceIntTest {
     public static InvoiceRejection createEntity(EntityManager em) {
         InvoiceRejection invoiceRejection = new InvoiceRejection()
             .rejected(DEFAULT_REJECTED)
-            .dateInvoice(DEFAULT_DATE_INVOICE);
+            .dateInvoice(DEFAULT_DATE_INVOICE)
+            .comment(DEFAULT_COMMENT);
         // Add required entity
         User user = UserResourceIntTest.createEntity(em);
         em.persist(user);
@@ -130,6 +134,7 @@ public class InvoiceRejectionResourceIntTest {
         InvoiceRejection testInvoiceRejection = invoiceRejectionList.get(invoiceRejectionList.size() - 1);
         assertThat(testInvoiceRejection.isRejected()).isEqualTo(DEFAULT_REJECTED);
         assertThat(testInvoiceRejection.getDateInvoice()).isEqualTo(DEFAULT_DATE_INVOICE);
+        assertThat(testInvoiceRejection.getComment()).isEqualTo(DEFAULT_COMMENT);
     }
 
     @Test
@@ -183,7 +188,8 @@ public class InvoiceRejectionResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(invoiceRejection.getId().intValue())))
             .andExpect(jsonPath("$.[*].rejected").value(hasItem(DEFAULT_REJECTED.booleanValue())))
-            .andExpect(jsonPath("$.[*].dateInvoice").value(hasItem(DEFAULT_DATE_INVOICE.toString())));
+            .andExpect(jsonPath("$.[*].dateInvoice").value(hasItem(DEFAULT_DATE_INVOICE.toString())))
+            .andExpect(jsonPath("$.[*].comment").value(hasItem(DEFAULT_COMMENT.toString())));
     }
     
 
@@ -199,7 +205,8 @@ public class InvoiceRejectionResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(invoiceRejection.getId().intValue()))
             .andExpect(jsonPath("$.rejected").value(DEFAULT_REJECTED.booleanValue()))
-            .andExpect(jsonPath("$.dateInvoice").value(DEFAULT_DATE_INVOICE.toString()));
+            .andExpect(jsonPath("$.dateInvoice").value(DEFAULT_DATE_INVOICE.toString()))
+            .andExpect(jsonPath("$.comment").value(DEFAULT_COMMENT.toString()));
     }
     @Test
     @Transactional
@@ -223,7 +230,8 @@ public class InvoiceRejectionResourceIntTest {
         em.detach(updatedInvoiceRejection);
         updatedInvoiceRejection
             .rejected(UPDATED_REJECTED)
-            .dateInvoice(UPDATED_DATE_INVOICE);
+            .dateInvoice(UPDATED_DATE_INVOICE)
+            .comment(UPDATED_COMMENT);
         InvoiceRejectionDTO invoiceRejectionDTO = invoiceRejectionMapper.toDto(updatedInvoiceRejection);
 
         restInvoiceRejectionMockMvc.perform(put("/api/invoice-rejections")
@@ -237,6 +245,7 @@ public class InvoiceRejectionResourceIntTest {
         InvoiceRejection testInvoiceRejection = invoiceRejectionList.get(invoiceRejectionList.size() - 1);
         assertThat(testInvoiceRejection.isRejected()).isEqualTo(UPDATED_REJECTED);
         assertThat(testInvoiceRejection.getDateInvoice()).isEqualTo(UPDATED_DATE_INVOICE);
+        assertThat(testInvoiceRejection.getComment()).isEqualTo(UPDATED_COMMENT);
     }
 
     @Test

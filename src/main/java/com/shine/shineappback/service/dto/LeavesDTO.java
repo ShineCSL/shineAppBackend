@@ -8,15 +8,22 @@ import java.util.Objects;
 /**
  * A DTO for the Leaves entity.
  */
-public class LeavesDTO extends AbstractAuditingDTO implements Serializable {
+public class LeavesDTO implements Serializable {
 
     private Long id;
 
-    @NotNull
-    private LocalDate leaveDate;
+    private Boolean fullDay;
 
     @NotNull
-    private Double nbOfHours;
+    private LocalDate leavesFrom;
+
+    @NotNull
+    private LocalDate leavesTo;
+
+    @NotNull
+    @Min(value = 0)
+    @Max(value = 12)
+    private Integer nbOfHours;
 
     private Integer year;
 
@@ -26,6 +33,9 @@ public class LeavesDTO extends AbstractAuditingDTO implements Serializable {
 
     @NotNull
     private Integer day;
+
+    @NotNull
+    private Integer month;
 
     private Long userId;
 
@@ -55,19 +65,35 @@ public class LeavesDTO extends AbstractAuditingDTO implements Serializable {
         this.id = id;
     }
 
-    public LocalDate getLeaveDate() {
-        return leaveDate;
+    public Boolean isFullDay() {
+        return fullDay;
     }
 
-    public void setLeaveDate(LocalDate leaveDate) {
-        this.leaveDate = leaveDate;
+    public void setFullDay(Boolean fullDay) {
+        this.fullDay = fullDay;
     }
 
-    public Double getNbOfHours() {
+    public LocalDate getLeavesFrom() {
+        return leavesFrom;
+    }
+
+    public void setLeavesFrom(LocalDate leavesFrom) {
+        this.leavesFrom = leavesFrom;
+    }
+
+    public LocalDate getLeavesTo() {
+        return leavesTo;
+    }
+
+    public void setLeavesTo(LocalDate leavesTo) {
+        this.leavesTo = leavesTo;
+    }
+
+    public Integer getNbOfHours() {
         return nbOfHours;
     }
 
-    public void setNbOfHours(Double nbOfHours) {
+    public void setNbOfHours(Integer nbOfHours) {
         this.nbOfHours = nbOfHours;
     }
 
@@ -101,6 +127,14 @@ public class LeavesDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setDay(Integer day) {
         this.day = day;
+    }
+
+    public Integer getMonth() {
+        return month;
+    }
+
+    public void setMonth(Integer month) {
+        this.month = month;
     }
 
     public Long getUserId() {
@@ -208,12 +242,15 @@ public class LeavesDTO extends AbstractAuditingDTO implements Serializable {
     public String toString() {
         return "LeavesDTO{" +
             "id=" + getId() +
-            ", leaveDate='" + getLeaveDate() + "'" +
+            ", fullDay='" + isFullDay() + "'" +
+            ", leavesFrom='" + getLeavesFrom() + "'" +
+            ", leavesTo='" + getLeavesTo() + "'" +
             ", nbOfHours=" + getNbOfHours() +
             ", year=" + getYear() +
             ", weekNumber=" + getWeekNumber() +
             ", comment='" + getComment() + "'" +
             ", day=" + getDay() +
+            ", month=" + getMonth() +
             ", user=" + getUserId() +
             ", user='" + getUserLogin() + "'" +
             ", task=" + getTaskId() +

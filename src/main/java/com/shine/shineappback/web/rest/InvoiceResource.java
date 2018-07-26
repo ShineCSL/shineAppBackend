@@ -6,6 +6,8 @@ import com.shine.shineappback.web.rest.errors.BadRequestAlertException;
 import com.shine.shineappback.web.rest.util.HeaderUtil;
 import com.shine.shineappback.web.rest.util.PaginationUtil;
 import com.shine.shineappback.service.dto.InvoiceDTO;
+import com.shine.shineappback.service.dto.InvoiceCriteria;
+import com.shine.shineappback.service.InvoiceQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +38,11 @@ public class InvoiceResource {
 
     private final InvoiceService invoiceService;
 
-    public InvoiceResource(InvoiceService invoiceService) {
+    private final InvoiceQueryService invoiceQueryService;
+
+    public InvoiceResource(InvoiceService invoiceService, InvoiceQueryService invoiceQueryService) {
         this.invoiceService = invoiceService;
+        this.invoiceQueryService = invoiceQueryService;
     }
 
     /**
@@ -86,13 +91,14 @@ public class InvoiceResource {
      * GET  /invoices : get all the invoices.
      *
      * @param pageable the pagination information
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of invoices in body
      */
     @GetMapping("/invoices")
     @Timed
-    public ResponseEntity<List<InvoiceDTO>> getAllInvoices(Pageable pageable) {
-        log.debug("REST request to get a page of Invoices");
-        Page<InvoiceDTO> page = invoiceService.findAll(pageable);
+    public ResponseEntity<List<InvoiceDTO>> getAllInvoices(InvoiceCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get Invoices by criteria: {}", criteria);
+        Page<InvoiceDTO> page = invoiceQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/invoices");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

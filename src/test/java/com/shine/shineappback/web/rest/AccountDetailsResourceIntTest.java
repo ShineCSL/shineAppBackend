@@ -3,12 +3,16 @@ package com.shine.shineappback.web.rest;
 import com.shine.shineappback.ShineAppBackendApp;
 
 import com.shine.shineappback.domain.AccountDetails;
+import com.shine.shineappback.domain.Client;
+import com.shine.shineappback.domain.Invoice;
 import com.shine.shineappback.domain.Currency;
 import com.shine.shineappback.repository.AccountDetailsRepository;
 import com.shine.shineappback.service.AccountDetailsService;
 import com.shine.shineappback.service.dto.AccountDetailsDTO;
 import com.shine.shineappback.service.mapper.AccountDetailsMapper;
 import com.shine.shineappback.web.rest.errors.ExceptionTranslator;
+import com.shine.shineappback.service.dto.AccountDetailsCriteria;
+import com.shine.shineappback.service.AccountDetailsQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -70,6 +74,9 @@ public class AccountDetailsResourceIntTest {
     private AccountDetailsService accountDetailsService;
 
     @Autowired
+    private AccountDetailsQueryService accountDetailsQueryService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -88,7 +95,7 @@ public class AccountDetailsResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final AccountDetailsResource accountDetailsResource = new AccountDetailsResource(accountDetailsService);
+        final AccountDetailsResource accountDetailsResource = new AccountDetailsResource(accountDetailsService, accountDetailsQueryService);
         this.restAccountDetailsMockMvc = MockMvcBuilders.standaloneSetup(accountDetailsResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -258,6 +265,284 @@ public class AccountDetailsResourceIntTest {
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
             .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()));
     }
+
+    @Test
+    @Transactional
+    public void getAllAccountDetailsByAmountIsEqualToSomething() throws Exception {
+        // Initialize the database
+        accountDetailsRepository.saveAndFlush(accountDetails);
+
+        // Get all the accountDetailsList where amount equals to DEFAULT_AMOUNT
+        defaultAccountDetailsShouldBeFound("amount.equals=" + DEFAULT_AMOUNT);
+
+        // Get all the accountDetailsList where amount equals to UPDATED_AMOUNT
+        defaultAccountDetailsShouldNotBeFound("amount.equals=" + UPDATED_AMOUNT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAccountDetailsByAmountIsInShouldWork() throws Exception {
+        // Initialize the database
+        accountDetailsRepository.saveAndFlush(accountDetails);
+
+        // Get all the accountDetailsList where amount in DEFAULT_AMOUNT or UPDATED_AMOUNT
+        defaultAccountDetailsShouldBeFound("amount.in=" + DEFAULT_AMOUNT + "," + UPDATED_AMOUNT);
+
+        // Get all the accountDetailsList where amount equals to UPDATED_AMOUNT
+        defaultAccountDetailsShouldNotBeFound("amount.in=" + UPDATED_AMOUNT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAccountDetailsByAmountIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        accountDetailsRepository.saveAndFlush(accountDetails);
+
+        // Get all the accountDetailsList where amount is not null
+        defaultAccountDetailsShouldBeFound("amount.specified=true");
+
+        // Get all the accountDetailsList where amount is null
+        defaultAccountDetailsShouldNotBeFound("amount.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllAccountDetailsByRateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        accountDetailsRepository.saveAndFlush(accountDetails);
+
+        // Get all the accountDetailsList where rate equals to DEFAULT_RATE
+        defaultAccountDetailsShouldBeFound("rate.equals=" + DEFAULT_RATE);
+
+        // Get all the accountDetailsList where rate equals to UPDATED_RATE
+        defaultAccountDetailsShouldNotBeFound("rate.equals=" + UPDATED_RATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAccountDetailsByRateIsInShouldWork() throws Exception {
+        // Initialize the database
+        accountDetailsRepository.saveAndFlush(accountDetails);
+
+        // Get all the accountDetailsList where rate in DEFAULT_RATE or UPDATED_RATE
+        defaultAccountDetailsShouldBeFound("rate.in=" + DEFAULT_RATE + "," + UPDATED_RATE);
+
+        // Get all the accountDetailsList where rate equals to UPDATED_RATE
+        defaultAccountDetailsShouldNotBeFound("rate.in=" + UPDATED_RATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAccountDetailsByRateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        accountDetailsRepository.saveAndFlush(accountDetails);
+
+        // Get all the accountDetailsList where rate is not null
+        defaultAccountDetailsShouldBeFound("rate.specified=true");
+
+        // Get all the accountDetailsList where rate is null
+        defaultAccountDetailsShouldNotBeFound("rate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllAccountDetailsByLabelIsEqualToSomething() throws Exception {
+        // Initialize the database
+        accountDetailsRepository.saveAndFlush(accountDetails);
+
+        // Get all the accountDetailsList where label equals to DEFAULT_LABEL
+        defaultAccountDetailsShouldBeFound("label.equals=" + DEFAULT_LABEL);
+
+        // Get all the accountDetailsList where label equals to UPDATED_LABEL
+        defaultAccountDetailsShouldNotBeFound("label.equals=" + UPDATED_LABEL);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAccountDetailsByLabelIsInShouldWork() throws Exception {
+        // Initialize the database
+        accountDetailsRepository.saveAndFlush(accountDetails);
+
+        // Get all the accountDetailsList where label in DEFAULT_LABEL or UPDATED_LABEL
+        defaultAccountDetailsShouldBeFound("label.in=" + DEFAULT_LABEL + "," + UPDATED_LABEL);
+
+        // Get all the accountDetailsList where label equals to UPDATED_LABEL
+        defaultAccountDetailsShouldNotBeFound("label.in=" + UPDATED_LABEL);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAccountDetailsByLabelIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        accountDetailsRepository.saveAndFlush(accountDetails);
+
+        // Get all the accountDetailsList where label is not null
+        defaultAccountDetailsShouldBeFound("label.specified=true");
+
+        // Get all the accountDetailsList where label is null
+        defaultAccountDetailsShouldNotBeFound("label.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllAccountDetailsByDescriptionIsEqualToSomething() throws Exception {
+        // Initialize the database
+        accountDetailsRepository.saveAndFlush(accountDetails);
+
+        // Get all the accountDetailsList where description equals to DEFAULT_DESCRIPTION
+        defaultAccountDetailsShouldBeFound("description.equals=" + DEFAULT_DESCRIPTION);
+
+        // Get all the accountDetailsList where description equals to UPDATED_DESCRIPTION
+        defaultAccountDetailsShouldNotBeFound("description.equals=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAccountDetailsByDescriptionIsInShouldWork() throws Exception {
+        // Initialize the database
+        accountDetailsRepository.saveAndFlush(accountDetails);
+
+        // Get all the accountDetailsList where description in DEFAULT_DESCRIPTION or UPDATED_DESCRIPTION
+        defaultAccountDetailsShouldBeFound("description.in=" + DEFAULT_DESCRIPTION + "," + UPDATED_DESCRIPTION);
+
+        // Get all the accountDetailsList where description equals to UPDATED_DESCRIPTION
+        defaultAccountDetailsShouldNotBeFound("description.in=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAccountDetailsByDescriptionIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        accountDetailsRepository.saveAndFlush(accountDetails);
+
+        // Get all the accountDetailsList where description is not null
+        defaultAccountDetailsShouldBeFound("description.specified=true");
+
+        // Get all the accountDetailsList where description is null
+        defaultAccountDetailsShouldNotBeFound("description.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllAccountDetailsByTypeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        accountDetailsRepository.saveAndFlush(accountDetails);
+
+        // Get all the accountDetailsList where type equals to DEFAULT_TYPE
+        defaultAccountDetailsShouldBeFound("type.equals=" + DEFAULT_TYPE);
+
+        // Get all the accountDetailsList where type equals to UPDATED_TYPE
+        defaultAccountDetailsShouldNotBeFound("type.equals=" + UPDATED_TYPE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAccountDetailsByTypeIsInShouldWork() throws Exception {
+        // Initialize the database
+        accountDetailsRepository.saveAndFlush(accountDetails);
+
+        // Get all the accountDetailsList where type in DEFAULT_TYPE or UPDATED_TYPE
+        defaultAccountDetailsShouldBeFound("type.in=" + DEFAULT_TYPE + "," + UPDATED_TYPE);
+
+        // Get all the accountDetailsList where type equals to UPDATED_TYPE
+        defaultAccountDetailsShouldNotBeFound("type.in=" + UPDATED_TYPE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAccountDetailsByTypeIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        accountDetailsRepository.saveAndFlush(accountDetails);
+
+        // Get all the accountDetailsList where type is not null
+        defaultAccountDetailsShouldBeFound("type.specified=true");
+
+        // Get all the accountDetailsList where type is null
+        defaultAccountDetailsShouldNotBeFound("type.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllAccountDetailsByClientIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Client client = ClientResourceIntTest.createEntity(em);
+        em.persist(client);
+        em.flush();
+        accountDetails.setClient(client);
+        accountDetailsRepository.saveAndFlush(accountDetails);
+        Long clientId = client.getId();
+
+        // Get all the accountDetailsList where client equals to clientId
+        defaultAccountDetailsShouldBeFound("clientId.equals=" + clientId);
+
+        // Get all the accountDetailsList where client equals to clientId + 1
+        defaultAccountDetailsShouldNotBeFound("clientId.equals=" + (clientId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllAccountDetailsByInvoiceIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Invoice invoice = InvoiceResourceIntTest.createEntity(em);
+        em.persist(invoice);
+        em.flush();
+        accountDetails.setInvoice(invoice);
+        accountDetailsRepository.saveAndFlush(accountDetails);
+        Long invoiceId = invoice.getId();
+
+        // Get all the accountDetailsList where invoice equals to invoiceId
+        defaultAccountDetailsShouldBeFound("invoiceId.equals=" + invoiceId);
+
+        // Get all the accountDetailsList where invoice equals to invoiceId + 1
+        defaultAccountDetailsShouldNotBeFound("invoiceId.equals=" + (invoiceId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllAccountDetailsByCurrencyIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Currency currency = CurrencyResourceIntTest.createEntity(em);
+        em.persist(currency);
+        em.flush();
+        accountDetails.setCurrency(currency);
+        accountDetailsRepository.saveAndFlush(accountDetails);
+        Long currencyId = currency.getId();
+
+        // Get all the accountDetailsList where currency equals to currencyId
+        defaultAccountDetailsShouldBeFound("currencyId.equals=" + currencyId);
+
+        // Get all the accountDetailsList where currency equals to currencyId + 1
+        defaultAccountDetailsShouldNotBeFound("currencyId.equals=" + (currencyId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultAccountDetailsShouldBeFound(String filter) throws Exception {
+        restAccountDetailsMockMvc.perform(get("/api/account-details?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(accountDetails.getId().intValue())))
+            .andExpect(jsonPath("$.[*].amount").value(hasItem(DEFAULT_AMOUNT.doubleValue())))
+            .andExpect(jsonPath("$.[*].rate").value(hasItem(DEFAULT_RATE.doubleValue())))
+            .andExpect(jsonPath("$.[*].label").value(hasItem(DEFAULT_LABEL.toString())))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
+            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultAccountDetailsShouldNotBeFound(String filter) throws Exception {
+        restAccountDetailsMockMvc.perform(get("/api/account-details?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+    }
+
     @Test
     @Transactional
     public void getNonExistingAccountDetails() throws Exception {

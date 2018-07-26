@@ -32,6 +32,9 @@ public class ActivityRejection extends AbstractAuditingEntity implements Seriali
     @Column(name = "jhi_year", nullable = false)
     private Integer year;
 
+    @Column(name = "jhi_comment")
+    private String comment;
+
     @ManyToOne(optional = false)
     @NotNull
     @JsonIgnoreProperties("")
@@ -85,6 +88,19 @@ public class ActivityRejection extends AbstractAuditingEntity implements Seriali
         this.year = year;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public ActivityRejection comment(String comment) {
+        this.comment = comment;
+        return this;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     public User getUser() {
         return user;
     }
@@ -126,6 +142,7 @@ public class ActivityRejection extends AbstractAuditingEntity implements Seriali
             ", rejected='" + isRejected() + "'" +
             ", weekNumber=" + getWeekNumber() +
             ", year=" + getYear() +
+            ", comment='" + getComment() + "'" +
             "}";
     }
 }

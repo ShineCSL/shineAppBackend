@@ -17,6 +17,8 @@ public class InvoiceRejectionDTO extends AbstractAuditingDTO implements Serializ
     @NotNull
     private LocalDate dateInvoice;
 
+    private String comment;
+
     private Long userId;
 
     private String userLogin;
@@ -43,6 +45,14 @@ public class InvoiceRejectionDTO extends AbstractAuditingDTO implements Serializ
 
     public void setDateInvoice(LocalDate dateInvoice) {
         this.dateInvoice = dateInvoice;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public Long getUserId() {
@@ -88,6 +98,7 @@ public class InvoiceRejectionDTO extends AbstractAuditingDTO implements Serializ
             "id=" + getId() +
             ", rejected='" + isRejected() + "'" +
             ", dateInvoice='" + getDateInvoice() + "'" +
+            ", comment='" + getComment() + "'" +
             ", user=" + getUserId() +
             ", user='" + getUserLogin() + "'" +
             "}";

@@ -30,6 +30,9 @@ public class InvoiceRejection extends AbstractAuditingEntity implements Serializ
     @Column(name = "date_invoice", nullable = false)
     private LocalDate dateInvoice;
 
+    @Column(name = "jhi_comment")
+    private String comment;
+
     @OneToOne(mappedBy = "invoiceRejection")
     @JsonIgnore
     private Invoice invoice;
@@ -72,6 +75,19 @@ public class InvoiceRejection extends AbstractAuditingEntity implements Serializ
 
     public void setDateInvoice(LocalDate dateInvoice) {
         this.dateInvoice = dateInvoice;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public InvoiceRejection comment(String comment) {
+        this.comment = comment;
+        return this;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public Invoice getInvoice() {
@@ -127,6 +143,7 @@ public class InvoiceRejection extends AbstractAuditingEntity implements Serializ
             "id=" + getId() +
             ", rejected='" + isRejected() + "'" +
             ", dateInvoice='" + getDateInvoice() + "'" +
+            ", comment='" + getComment() + "'" +
             "}";
     }
 }

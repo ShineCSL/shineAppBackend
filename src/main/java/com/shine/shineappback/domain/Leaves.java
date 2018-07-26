@@ -14,7 +14,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "leaves")
-public class Leaves extends AbstractAuditingEntity implements Serializable {
+public class Leaves implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -22,13 +22,22 @@ public class Leaves extends AbstractAuditingEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @Column(name = "leave_date", nullable = false)
-    private LocalDate leaveDate;
+    @Column(name = "full_day")
+    private Boolean fullDay;
 
     @NotNull
+    @Column(name = "leaves_from", nullable = false)
+    private LocalDate leavesFrom;
+
+    @NotNull
+    @Column(name = "leaves_to", nullable = false)
+    private LocalDate leavesTo;
+
+    @NotNull
+    @Min(value = 0)
+    @Max(value = 12)
     @Column(name = "nb_of_hours", nullable = false)
-    private Double nbOfHours;
+    private Integer nbOfHours;
 
     @Column(name = "jhi_year")
     private Integer year;
@@ -42,6 +51,10 @@ public class Leaves extends AbstractAuditingEntity implements Serializable {
     @NotNull
     @Column(name = "day", nullable = false)
     private Integer day;
+
+    @NotNull
+    @Column(name = "month", nullable = false)
+    private Integer month;
 
     @ManyToOne(optional = false)
     @NotNull
@@ -74,29 +87,55 @@ public class Leaves extends AbstractAuditingEntity implements Serializable {
         this.id = id;
     }
 
-    public LocalDate getLeaveDate() {
-        return leaveDate;
+    public Boolean isFullDay() {
+        return fullDay;
     }
 
-    public Leaves leaveDate(LocalDate leaveDate) {
-        this.leaveDate = leaveDate;
+    public Leaves fullDay(Boolean fullDay) {
+        this.fullDay = fullDay;
         return this;
     }
 
-    public void setLeaveDate(LocalDate leaveDate) {
-        this.leaveDate = leaveDate;
+    public void setFullDay(Boolean fullDay) {
+        this.fullDay = fullDay;
     }
 
-    public Double getNbOfHours() {
+    public LocalDate getLeavesFrom() {
+        return leavesFrom;
+    }
+
+    public Leaves leavesFrom(LocalDate leavesFrom) {
+        this.leavesFrom = leavesFrom;
+        return this;
+    }
+
+    public void setLeavesFrom(LocalDate leavesFrom) {
+        this.leavesFrom = leavesFrom;
+    }
+
+    public LocalDate getLeavesTo() {
+        return leavesTo;
+    }
+
+    public Leaves leavesTo(LocalDate leavesTo) {
+        this.leavesTo = leavesTo;
+        return this;
+    }
+
+    public void setLeavesTo(LocalDate leavesTo) {
+        this.leavesTo = leavesTo;
+    }
+
+    public Integer getNbOfHours() {
         return nbOfHours;
     }
 
-    public Leaves nbOfHours(Double nbOfHours) {
+    public Leaves nbOfHours(Integer nbOfHours) {
         this.nbOfHours = nbOfHours;
         return this;
     }
 
-    public void setNbOfHours(Double nbOfHours) {
+    public void setNbOfHours(Integer nbOfHours) {
         this.nbOfHours = nbOfHours;
     }
 
@@ -150,6 +189,19 @@ public class Leaves extends AbstractAuditingEntity implements Serializable {
 
     public void setDay(Integer day) {
         this.day = day;
+    }
+
+    public Integer getMonth() {
+        return month;
+    }
+
+    public Leaves month(Integer month) {
+        this.month = month;
+        return this;
+    }
+
+    public void setMonth(Integer month) {
+        this.month = month;
     }
 
     public User getUser() {
@@ -242,12 +294,15 @@ public class Leaves extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "Leaves{" +
             "id=" + getId() +
-            ", leaveDate='" + getLeaveDate() + "'" +
+            ", fullDay='" + isFullDay() + "'" +
+            ", leavesFrom='" + getLeavesFrom() + "'" +
+            ", leavesTo='" + getLeavesTo() + "'" +
             ", nbOfHours=" + getNbOfHours() +
             ", year=" + getYear() +
             ", weekNumber=" + getWeekNumber() +
             ", comment='" + getComment() + "'" +
             ", day=" + getDay() +
+            ", month=" + getMonth() +
             "}";
     }
 }

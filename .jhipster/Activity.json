@@ -86,6 +86,13 @@
             "fieldValidateRules": [
                 "required"
             ]
+        },
+        {
+            "fieldName": "month",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required"
+            ]
         }
     ],
     "changelogDate": "20180627115804",
@@ -93,7 +100,7 @@
     "searchEngine": false,
     "service": "serviceClass",
     "entityTableName": "activity",
-    "jpaMetamodelFiltering": false,
+    "jpaMetamodelFiltering": true,
     "pagination": "pagination",
     "enableEntityAudit": true
 }

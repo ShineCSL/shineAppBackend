@@ -16,4 +16,7 @@ public interface LeaveConfigRepository extends JpaRepository<LeaveConfig, Long> 
     @Query("select leave_config from LeaveConfig leave_config where leave_config.user.login = ?#{principal.username}")
     List<LeaveConfig> findByUserIsCurrentUser();
 
+    @Query("select leave_config from LeaveConfig leave_config where leave_config.approver.login = ?#{principal.username}")
+    List<LeaveConfig> findByApproverIsCurrentUser();
+
 }

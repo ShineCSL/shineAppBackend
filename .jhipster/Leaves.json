@@ -49,7 +49,18 @@
     ],
     "fields": [
         {
-            "fieldName": "leaveDate",
+            "fieldName": "fullDay",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "leavesFrom",
+            "fieldType": "LocalDate",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "leavesTo",
             "fieldType": "LocalDate",
             "fieldValidateRules": [
                 "required"
@@ -57,10 +68,14 @@
         },
         {
             "fieldName": "nbOfHours",
-            "fieldType": "Double",
+            "fieldType": "Integer",
             "fieldValidateRules": [
-                "required"
-            ]
+                "required",
+                "min",
+                "max"
+            ],
+            "fieldValidateRulesMin": "0",
+            "fieldValidateRulesMax": "12"
         },
         {
             "fieldName": "year",
@@ -80,6 +95,13 @@
             "fieldValidateRules": [
                 "required"
             ]
+        },
+        {
+            "fieldName": "month",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required"
+            ]
         }
     ],
     "changelogDate": "20180626113418",
@@ -87,7 +109,6 @@
     "searchEngine": false,
     "service": "serviceClass",
     "entityTableName": "leaves",
-    "jpaMetamodelFiltering": false,
-    "pagination": "pagination",
-    "enableEntityAudit": true
+    "jpaMetamodelFiltering": true,
+    "pagination": "pagination"
 }

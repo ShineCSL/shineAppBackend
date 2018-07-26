@@ -27,6 +27,9 @@ public class ActivityDTO extends AbstractAuditingDTO implements Serializable {
     @NotNull
     private Integer year;
 
+    @NotNull
+    private Integer month;
+
     private Long taskId;
 
     private String taskCode;
@@ -97,6 +100,14 @@ public class ActivityDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setYear(Integer year) {
         this.year = year;
+    }
+
+    public Integer getMonth() {
+        return month;
+    }
+
+    public void setMonth(Integer month) {
+        this.month = month;
     }
 
     public Long getTaskId() {
@@ -225,6 +236,7 @@ public class ActivityDTO extends AbstractAuditingDTO implements Serializable {
             ", day=" + getDay() +
             ", weekNumber=" + getWeekNumber() +
             ", year=" + getYear() +
+            ", month=" + getMonth() +
             ", task=" + getTaskId() +
             ", task='" + getTaskCode() + "'" +
             ", user=" + getUserId() +

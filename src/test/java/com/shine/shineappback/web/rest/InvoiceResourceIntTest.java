@@ -4,12 +4,17 @@ import com.shine.shineappback.ShineAppBackendApp;
 
 import com.shine.shineappback.domain.Invoice;
 import com.shine.shineappback.domain.Currency;
+import com.shine.shineappback.domain.InvoiceRejection;
+import com.shine.shineappback.domain.InvoiceSubmission;
+import com.shine.shineappback.domain.InvoiceValidation;
 import com.shine.shineappback.domain.TypeInvoice;
 import com.shine.shineappback.repository.InvoiceRepository;
 import com.shine.shineappback.service.InvoiceService;
 import com.shine.shineappback.service.dto.InvoiceDTO;
 import com.shine.shineappback.service.mapper.InvoiceMapper;
 import com.shine.shineappback.web.rest.errors.ExceptionTranslator;
+import com.shine.shineappback.service.dto.InvoiceCriteria;
+import com.shine.shineappback.service.InvoiceQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -79,6 +84,9 @@ public class InvoiceResourceIntTest {
     private InvoiceService invoiceService;
 
     @Autowired
+    private InvoiceQueryService invoiceQueryService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -97,7 +105,7 @@ public class InvoiceResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final InvoiceResource invoiceResource = new InvoiceResource(invoiceService);
+        final InvoiceResource invoiceResource = new InvoiceResource(invoiceService, invoiceQueryService);
         this.restInvoiceMockMvc = MockMvcBuilders.standaloneSetup(invoiceResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -280,6 +288,351 @@ public class InvoiceResourceIntTest {
             .andExpect(jsonPath("$.document").value(Base64Utils.encodeToString(DEFAULT_DOCUMENT)))
             .andExpect(jsonPath("$.rate").value(DEFAULT_RATE.doubleValue()));
     }
+
+    @Test
+    @Transactional
+    public void getAllInvoicesByLabelIsEqualToSomething() throws Exception {
+        // Initialize the database
+        invoiceRepository.saveAndFlush(invoice);
+
+        // Get all the invoiceList where label equals to DEFAULT_LABEL
+        defaultInvoiceShouldBeFound("label.equals=" + DEFAULT_LABEL);
+
+        // Get all the invoiceList where label equals to UPDATED_LABEL
+        defaultInvoiceShouldNotBeFound("label.equals=" + UPDATED_LABEL);
+    }
+
+    @Test
+    @Transactional
+    public void getAllInvoicesByLabelIsInShouldWork() throws Exception {
+        // Initialize the database
+        invoiceRepository.saveAndFlush(invoice);
+
+        // Get all the invoiceList where label in DEFAULT_LABEL or UPDATED_LABEL
+        defaultInvoiceShouldBeFound("label.in=" + DEFAULT_LABEL + "," + UPDATED_LABEL);
+
+        // Get all the invoiceList where label equals to UPDATED_LABEL
+        defaultInvoiceShouldNotBeFound("label.in=" + UPDATED_LABEL);
+    }
+
+    @Test
+    @Transactional
+    public void getAllInvoicesByLabelIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        invoiceRepository.saveAndFlush(invoice);
+
+        // Get all the invoiceList where label is not null
+        defaultInvoiceShouldBeFound("label.specified=true");
+
+        // Get all the invoiceList where label is null
+        defaultInvoiceShouldNotBeFound("label.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllInvoicesByDescriptionIsEqualToSomething() throws Exception {
+        // Initialize the database
+        invoiceRepository.saveAndFlush(invoice);
+
+        // Get all the invoiceList where description equals to DEFAULT_DESCRIPTION
+        defaultInvoiceShouldBeFound("description.equals=" + DEFAULT_DESCRIPTION);
+
+        // Get all the invoiceList where description equals to UPDATED_DESCRIPTION
+        defaultInvoiceShouldNotBeFound("description.equals=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    public void getAllInvoicesByDescriptionIsInShouldWork() throws Exception {
+        // Initialize the database
+        invoiceRepository.saveAndFlush(invoice);
+
+        // Get all the invoiceList where description in DEFAULT_DESCRIPTION or UPDATED_DESCRIPTION
+        defaultInvoiceShouldBeFound("description.in=" + DEFAULT_DESCRIPTION + "," + UPDATED_DESCRIPTION);
+
+        // Get all the invoiceList where description equals to UPDATED_DESCRIPTION
+        defaultInvoiceShouldNotBeFound("description.in=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    public void getAllInvoicesByDescriptionIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        invoiceRepository.saveAndFlush(invoice);
+
+        // Get all the invoiceList where description is not null
+        defaultInvoiceShouldBeFound("description.specified=true");
+
+        // Get all the invoiceList where description is null
+        defaultInvoiceShouldNotBeFound("description.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllInvoicesByAmountIsEqualToSomething() throws Exception {
+        // Initialize the database
+        invoiceRepository.saveAndFlush(invoice);
+
+        // Get all the invoiceList where amount equals to DEFAULT_AMOUNT
+        defaultInvoiceShouldBeFound("amount.equals=" + DEFAULT_AMOUNT);
+
+        // Get all the invoiceList where amount equals to UPDATED_AMOUNT
+        defaultInvoiceShouldNotBeFound("amount.equals=" + UPDATED_AMOUNT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllInvoicesByAmountIsInShouldWork() throws Exception {
+        // Initialize the database
+        invoiceRepository.saveAndFlush(invoice);
+
+        // Get all the invoiceList where amount in DEFAULT_AMOUNT or UPDATED_AMOUNT
+        defaultInvoiceShouldBeFound("amount.in=" + DEFAULT_AMOUNT + "," + UPDATED_AMOUNT);
+
+        // Get all the invoiceList where amount equals to UPDATED_AMOUNT
+        defaultInvoiceShouldNotBeFound("amount.in=" + UPDATED_AMOUNT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllInvoicesByAmountIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        invoiceRepository.saveAndFlush(invoice);
+
+        // Get all the invoiceList where amount is not null
+        defaultInvoiceShouldBeFound("amount.specified=true");
+
+        // Get all the invoiceList where amount is null
+        defaultInvoiceShouldNotBeFound("amount.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllInvoicesByDateInvoiceIsEqualToSomething() throws Exception {
+        // Initialize the database
+        invoiceRepository.saveAndFlush(invoice);
+
+        // Get all the invoiceList where dateInvoice equals to DEFAULT_DATE_INVOICE
+        defaultInvoiceShouldBeFound("dateInvoice.equals=" + DEFAULT_DATE_INVOICE);
+
+        // Get all the invoiceList where dateInvoice equals to UPDATED_DATE_INVOICE
+        defaultInvoiceShouldNotBeFound("dateInvoice.equals=" + UPDATED_DATE_INVOICE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllInvoicesByDateInvoiceIsInShouldWork() throws Exception {
+        // Initialize the database
+        invoiceRepository.saveAndFlush(invoice);
+
+        // Get all the invoiceList where dateInvoice in DEFAULT_DATE_INVOICE or UPDATED_DATE_INVOICE
+        defaultInvoiceShouldBeFound("dateInvoice.in=" + DEFAULT_DATE_INVOICE + "," + UPDATED_DATE_INVOICE);
+
+        // Get all the invoiceList where dateInvoice equals to UPDATED_DATE_INVOICE
+        defaultInvoiceShouldNotBeFound("dateInvoice.in=" + UPDATED_DATE_INVOICE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllInvoicesByDateInvoiceIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        invoiceRepository.saveAndFlush(invoice);
+
+        // Get all the invoiceList where dateInvoice is not null
+        defaultInvoiceShouldBeFound("dateInvoice.specified=true");
+
+        // Get all the invoiceList where dateInvoice is null
+        defaultInvoiceShouldNotBeFound("dateInvoice.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllInvoicesByDateInvoiceIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        invoiceRepository.saveAndFlush(invoice);
+
+        // Get all the invoiceList where dateInvoice greater than or equals to DEFAULT_DATE_INVOICE
+        defaultInvoiceShouldBeFound("dateInvoice.greaterOrEqualThan=" + DEFAULT_DATE_INVOICE);
+
+        // Get all the invoiceList where dateInvoice greater than or equals to UPDATED_DATE_INVOICE
+        defaultInvoiceShouldNotBeFound("dateInvoice.greaterOrEqualThan=" + UPDATED_DATE_INVOICE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllInvoicesByDateInvoiceIsLessThanSomething() throws Exception {
+        // Initialize the database
+        invoiceRepository.saveAndFlush(invoice);
+
+        // Get all the invoiceList where dateInvoice less than or equals to DEFAULT_DATE_INVOICE
+        defaultInvoiceShouldNotBeFound("dateInvoice.lessThan=" + DEFAULT_DATE_INVOICE);
+
+        // Get all the invoiceList where dateInvoice less than or equals to UPDATED_DATE_INVOICE
+        defaultInvoiceShouldBeFound("dateInvoice.lessThan=" + UPDATED_DATE_INVOICE);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllInvoicesByRateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        invoiceRepository.saveAndFlush(invoice);
+
+        // Get all the invoiceList where rate equals to DEFAULT_RATE
+        defaultInvoiceShouldBeFound("rate.equals=" + DEFAULT_RATE);
+
+        // Get all the invoiceList where rate equals to UPDATED_RATE
+        defaultInvoiceShouldNotBeFound("rate.equals=" + UPDATED_RATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllInvoicesByRateIsInShouldWork() throws Exception {
+        // Initialize the database
+        invoiceRepository.saveAndFlush(invoice);
+
+        // Get all the invoiceList where rate in DEFAULT_RATE or UPDATED_RATE
+        defaultInvoiceShouldBeFound("rate.in=" + DEFAULT_RATE + "," + UPDATED_RATE);
+
+        // Get all the invoiceList where rate equals to UPDATED_RATE
+        defaultInvoiceShouldNotBeFound("rate.in=" + UPDATED_RATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllInvoicesByRateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        invoiceRepository.saveAndFlush(invoice);
+
+        // Get all the invoiceList where rate is not null
+        defaultInvoiceShouldBeFound("rate.specified=true");
+
+        // Get all the invoiceList where rate is null
+        defaultInvoiceShouldNotBeFound("rate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllInvoicesByCurrencyIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Currency currency = CurrencyResourceIntTest.createEntity(em);
+        em.persist(currency);
+        em.flush();
+        invoice.setCurrency(currency);
+        invoiceRepository.saveAndFlush(invoice);
+        Long currencyId = currency.getId();
+
+        // Get all the invoiceList where currency equals to currencyId
+        defaultInvoiceShouldBeFound("currencyId.equals=" + currencyId);
+
+        // Get all the invoiceList where currency equals to currencyId + 1
+        defaultInvoiceShouldNotBeFound("currencyId.equals=" + (currencyId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllInvoicesByInvoiceRejectionIsEqualToSomething() throws Exception {
+        // Initialize the database
+        InvoiceRejection invoiceRejection = InvoiceRejectionResourceIntTest.createEntity(em);
+        em.persist(invoiceRejection);
+        em.flush();
+        invoice.setInvoiceRejection(invoiceRejection);
+        invoiceRepository.saveAndFlush(invoice);
+        Long invoiceRejectionId = invoiceRejection.getId();
+
+        // Get all the invoiceList where invoiceRejection equals to invoiceRejectionId
+        defaultInvoiceShouldBeFound("invoiceRejectionId.equals=" + invoiceRejectionId);
+
+        // Get all the invoiceList where invoiceRejection equals to invoiceRejectionId + 1
+        defaultInvoiceShouldNotBeFound("invoiceRejectionId.equals=" + (invoiceRejectionId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllInvoicesByInvoiceSubmissionIsEqualToSomething() throws Exception {
+        // Initialize the database
+        InvoiceSubmission invoiceSubmission = InvoiceSubmissionResourceIntTest.createEntity(em);
+        em.persist(invoiceSubmission);
+        em.flush();
+        invoice.setInvoiceSubmission(invoiceSubmission);
+        invoiceRepository.saveAndFlush(invoice);
+        Long invoiceSubmissionId = invoiceSubmission.getId();
+
+        // Get all the invoiceList where invoiceSubmission equals to invoiceSubmissionId
+        defaultInvoiceShouldBeFound("invoiceSubmissionId.equals=" + invoiceSubmissionId);
+
+        // Get all the invoiceList where invoiceSubmission equals to invoiceSubmissionId + 1
+        defaultInvoiceShouldNotBeFound("invoiceSubmissionId.equals=" + (invoiceSubmissionId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllInvoicesByInvoiceValidationIsEqualToSomething() throws Exception {
+        // Initialize the database
+        InvoiceValidation invoiceValidation = InvoiceValidationResourceIntTest.createEntity(em);
+        em.persist(invoiceValidation);
+        em.flush();
+        invoice.setInvoiceValidation(invoiceValidation);
+        invoiceRepository.saveAndFlush(invoice);
+        Long invoiceValidationId = invoiceValidation.getId();
+
+        // Get all the invoiceList where invoiceValidation equals to invoiceValidationId
+        defaultInvoiceShouldBeFound("invoiceValidationId.equals=" + invoiceValidationId);
+
+        // Get all the invoiceList where invoiceValidation equals to invoiceValidationId + 1
+        defaultInvoiceShouldNotBeFound("invoiceValidationId.equals=" + (invoiceValidationId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllInvoicesByTypeInvoiceIsEqualToSomething() throws Exception {
+        // Initialize the database
+        TypeInvoice typeInvoice = TypeInvoiceResourceIntTest.createEntity(em);
+        em.persist(typeInvoice);
+        em.flush();
+        invoice.setTypeInvoice(typeInvoice);
+        invoiceRepository.saveAndFlush(invoice);
+        Long typeInvoiceId = typeInvoice.getId();
+
+        // Get all the invoiceList where typeInvoice equals to typeInvoiceId
+        defaultInvoiceShouldBeFound("typeInvoiceId.equals=" + typeInvoiceId);
+
+        // Get all the invoiceList where typeInvoice equals to typeInvoiceId + 1
+        defaultInvoiceShouldNotBeFound("typeInvoiceId.equals=" + (typeInvoiceId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultInvoiceShouldBeFound(String filter) throws Exception {
+        restInvoiceMockMvc.perform(get("/api/invoices?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(invoice.getId().intValue())))
+            .andExpect(jsonPath("$.[*].label").value(hasItem(DEFAULT_LABEL.toString())))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
+            .andExpect(jsonPath("$.[*].amount").value(hasItem(DEFAULT_AMOUNT.doubleValue())))
+            .andExpect(jsonPath("$.[*].dateInvoice").value(hasItem(DEFAULT_DATE_INVOICE.toString())))
+            .andExpect(jsonPath("$.[*].documentContentType").value(hasItem(DEFAULT_DOCUMENT_CONTENT_TYPE)))
+            .andExpect(jsonPath("$.[*].document").value(hasItem(Base64Utils.encodeToString(DEFAULT_DOCUMENT))))
+            .andExpect(jsonPath("$.[*].rate").value(hasItem(DEFAULT_RATE.doubleValue())));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultInvoiceShouldNotBeFound(String filter) throws Exception {
+        restInvoiceMockMvc.perform(get("/api/invoices?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+    }
+
     @Test
     @Transactional
     public void getNonExistingInvoice() throws Exception {

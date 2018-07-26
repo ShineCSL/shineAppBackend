@@ -52,6 +52,9 @@ public class ActivityRejectionResourceIntTest {
     private static final Integer DEFAULT_YEAR = 1;
     private static final Integer UPDATED_YEAR = 2;
 
+    private static final String DEFAULT_COMMENT = "AAAAAAAAAA";
+    private static final String UPDATED_COMMENT = "BBBBBBBBBB";
+
     @Autowired
     private ActivityRejectionRepository activityRejectionRepository;
 
@@ -100,7 +103,8 @@ public class ActivityRejectionResourceIntTest {
         ActivityRejection activityRejection = new ActivityRejection()
             .rejected(DEFAULT_REJECTED)
             .weekNumber(DEFAULT_WEEK_NUMBER)
-            .year(DEFAULT_YEAR);
+            .year(DEFAULT_YEAR)
+            .comment(DEFAULT_COMMENT);
         // Add required entity
         User user = UserResourceIntTest.createEntity(em);
         em.persist(user);
@@ -133,6 +137,7 @@ public class ActivityRejectionResourceIntTest {
         assertThat(testActivityRejection.isRejected()).isEqualTo(DEFAULT_REJECTED);
         assertThat(testActivityRejection.getWeekNumber()).isEqualTo(DEFAULT_WEEK_NUMBER);
         assertThat(testActivityRejection.getYear()).isEqualTo(DEFAULT_YEAR);
+        assertThat(testActivityRejection.getComment()).isEqualTo(DEFAULT_COMMENT);
     }
 
     @Test
@@ -206,7 +211,8 @@ public class ActivityRejectionResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(activityRejection.getId().intValue())))
             .andExpect(jsonPath("$.[*].rejected").value(hasItem(DEFAULT_REJECTED.booleanValue())))
             .andExpect(jsonPath("$.[*].weekNumber").value(hasItem(DEFAULT_WEEK_NUMBER)))
-            .andExpect(jsonPath("$.[*].year").value(hasItem(DEFAULT_YEAR)));
+            .andExpect(jsonPath("$.[*].year").value(hasItem(DEFAULT_YEAR)))
+            .andExpect(jsonPath("$.[*].comment").value(hasItem(DEFAULT_COMMENT.toString())));
     }
     
 
@@ -223,7 +229,8 @@ public class ActivityRejectionResourceIntTest {
             .andExpect(jsonPath("$.id").value(activityRejection.getId().intValue()))
             .andExpect(jsonPath("$.rejected").value(DEFAULT_REJECTED.booleanValue()))
             .andExpect(jsonPath("$.weekNumber").value(DEFAULT_WEEK_NUMBER))
-            .andExpect(jsonPath("$.year").value(DEFAULT_YEAR));
+            .andExpect(jsonPath("$.year").value(DEFAULT_YEAR))
+            .andExpect(jsonPath("$.comment").value(DEFAULT_COMMENT.toString()));
     }
     @Test
     @Transactional
@@ -248,7 +255,8 @@ public class ActivityRejectionResourceIntTest {
         updatedActivityRejection
             .rejected(UPDATED_REJECTED)
             .weekNumber(UPDATED_WEEK_NUMBER)
-            .year(UPDATED_YEAR);
+            .year(UPDATED_YEAR)
+            .comment(UPDATED_COMMENT);
         ActivityRejectionDTO activityRejectionDTO = activityRejectionMapper.toDto(updatedActivityRejection);
 
         restActivityRejectionMockMvc.perform(put("/api/activity-rejections")
@@ -263,6 +271,7 @@ public class ActivityRejectionResourceIntTest {
         assertThat(testActivityRejection.isRejected()).isEqualTo(UPDATED_REJECTED);
         assertThat(testActivityRejection.getWeekNumber()).isEqualTo(UPDATED_WEEK_NUMBER);
         assertThat(testActivityRejection.getYear()).isEqualTo(UPDATED_YEAR);
+        assertThat(testActivityRejection.getComment()).isEqualTo(UPDATED_COMMENT);
     }
 
     @Test

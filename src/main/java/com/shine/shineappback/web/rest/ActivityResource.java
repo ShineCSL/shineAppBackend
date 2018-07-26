@@ -6,6 +6,8 @@ import com.shine.shineappback.web.rest.errors.BadRequestAlertException;
 import com.shine.shineappback.web.rest.util.HeaderUtil;
 import com.shine.shineappback.web.rest.util.PaginationUtil;
 import com.shine.shineappback.service.dto.ActivityDTO;
+import com.shine.shineappback.service.dto.ActivityCriteria;
+import com.shine.shineappback.service.ActivityQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +38,11 @@ public class ActivityResource {
 
     private final ActivityService activityService;
 
-    public ActivityResource(ActivityService activityService) {
+    private final ActivityQueryService activityQueryService;
+
+    public ActivityResource(ActivityService activityService, ActivityQueryService activityQueryService) {
         this.activityService = activityService;
+        this.activityQueryService = activityQueryService;
     }
 
     /**
@@ -86,13 +91,14 @@ public class ActivityResource {
      * GET  /activities : get all the activities.
      *
      * @param pageable the pagination information
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of activities in body
      */
     @GetMapping("/activities")
     @Timed
-    public ResponseEntity<List<ActivityDTO>> getAllActivities(Pageable pageable) {
-        log.debug("REST request to get a page of Activities");
-        Page<ActivityDTO> page = activityService.findAll(pageable);
+    public ResponseEntity<List<ActivityDTO>> getAllActivities(ActivityCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get Activities by criteria: {}", criteria);
+        Page<ActivityDTO> page = activityQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/activities");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

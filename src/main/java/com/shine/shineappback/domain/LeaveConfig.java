@@ -35,6 +35,10 @@ public class LeaveConfig extends AbstractAuditingEntity implements Serializable 
     @JsonIgnoreProperties("")
     private User user;
 
+    @ManyToOne
+    @JsonIgnoreProperties("")
+    private User approver;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -94,6 +98,19 @@ public class LeaveConfig extends AbstractAuditingEntity implements Serializable 
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public User getApprover() {
+        return approver;
+    }
+
+    public LeaveConfig approver(User user) {
+        this.approver = user;
+        return this;
+    }
+
+    public void setApprover(User user) {
+        this.approver = user;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

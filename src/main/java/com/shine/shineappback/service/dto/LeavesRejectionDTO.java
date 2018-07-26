@@ -17,6 +17,8 @@ public class LeavesRejectionDTO extends AbstractAuditingDTO implements Serializa
     @NotNull
     private LocalDate leavesDate;
 
+    private String comment;
+
     private Long userId;
 
     private String userLogin;
@@ -43,6 +45,14 @@ public class LeavesRejectionDTO extends AbstractAuditingDTO implements Serializa
 
     public void setLeavesDate(LocalDate leavesDate) {
         this.leavesDate = leavesDate;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public Long getUserId() {
@@ -88,6 +98,7 @@ public class LeavesRejectionDTO extends AbstractAuditingDTO implements Serializa
             "id=" + getId() +
             ", rejected='" + isRejected() + "'" +
             ", leavesDate='" + getLeavesDate() + "'" +
+            ", comment='" + getComment() + "'" +
             ", user=" + getUserId() +
             ", user='" + getUserLogin() + "'" +
             "}";

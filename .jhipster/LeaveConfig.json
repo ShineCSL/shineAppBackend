@@ -12,6 +12,14 @@
             "otherEntityField": "login",
             "ownerSide": true,
             "otherEntityRelationshipName": "leaveConfig"
+        },
+        {
+            "relationshipName": "approver",
+            "otherEntityName": "user",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "login",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "leaveConfig"
         }
     ],
     "fields": [

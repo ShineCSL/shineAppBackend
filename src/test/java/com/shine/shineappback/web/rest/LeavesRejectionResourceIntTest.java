@@ -51,6 +51,9 @@ public class LeavesRejectionResourceIntTest {
     private static final LocalDate DEFAULT_LEAVES_DATE = LocalDate.ofEpochDay(0L);
     private static final LocalDate UPDATED_LEAVES_DATE = LocalDate.now(ZoneId.systemDefault());
 
+    private static final String DEFAULT_COMMENT = "AAAAAAAAAA";
+    private static final String UPDATED_COMMENT = "BBBBBBBBBB";
+
     @Autowired
     private LeavesRejectionRepository leavesRejectionRepository;
 
@@ -98,7 +101,8 @@ public class LeavesRejectionResourceIntTest {
     public static LeavesRejection createEntity(EntityManager em) {
         LeavesRejection leavesRejection = new LeavesRejection()
             .rejected(DEFAULT_REJECTED)
-            .leavesDate(DEFAULT_LEAVES_DATE);
+            .leavesDate(DEFAULT_LEAVES_DATE)
+            .comment(DEFAULT_COMMENT);
         // Add required entity
         User user = UserResourceIntTest.createEntity(em);
         em.persist(user);
@@ -130,6 +134,7 @@ public class LeavesRejectionResourceIntTest {
         LeavesRejection testLeavesRejection = leavesRejectionList.get(leavesRejectionList.size() - 1);
         assertThat(testLeavesRejection.isRejected()).isEqualTo(DEFAULT_REJECTED);
         assertThat(testLeavesRejection.getLeavesDate()).isEqualTo(DEFAULT_LEAVES_DATE);
+        assertThat(testLeavesRejection.getComment()).isEqualTo(DEFAULT_COMMENT);
     }
 
     @Test
@@ -183,7 +188,8 @@ public class LeavesRejectionResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(leavesRejection.getId().intValue())))
             .andExpect(jsonPath("$.[*].rejected").value(hasItem(DEFAULT_REJECTED.booleanValue())))
-            .andExpect(jsonPath("$.[*].leavesDate").value(hasItem(DEFAULT_LEAVES_DATE.toString())));
+            .andExpect(jsonPath("$.[*].leavesDate").value(hasItem(DEFAULT_LEAVES_DATE.toString())))
+            .andExpect(jsonPath("$.[*].comment").value(hasItem(DEFAULT_COMMENT.toString())));
     }
     
 
@@ -199,7 +205,8 @@ public class LeavesRejectionResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(leavesRejection.getId().intValue()))
             .andExpect(jsonPath("$.rejected").value(DEFAULT_REJECTED.booleanValue()))
-            .andExpect(jsonPath("$.leavesDate").value(DEFAULT_LEAVES_DATE.toString()));
+            .andExpect(jsonPath("$.leavesDate").value(DEFAULT_LEAVES_DATE.toString()))
+            .andExpect(jsonPath("$.comment").value(DEFAULT_COMMENT.toString()));
     }
     @Test
     @Transactional
@@ -223,7 +230,8 @@ public class LeavesRejectionResourceIntTest {
         em.detach(updatedLeavesRejection);
         updatedLeavesRejection
             .rejected(UPDATED_REJECTED)
-            .leavesDate(UPDATED_LEAVES_DATE);
+            .leavesDate(UPDATED_LEAVES_DATE)
+            .comment(UPDATED_COMMENT);
         LeavesRejectionDTO leavesRejectionDTO = leavesRejectionMapper.toDto(updatedLeavesRejection);
 
         restLeavesRejectionMockMvc.perform(put("/api/leaves-rejections")
@@ -237,6 +245,7 @@ public class LeavesRejectionResourceIntTest {
         LeavesRejection testLeavesRejection = leavesRejectionList.get(leavesRejectionList.size() - 1);
         assertThat(testLeavesRejection.isRejected()).isEqualTo(UPDATED_REJECTED);
         assertThat(testLeavesRejection.getLeavesDate()).isEqualTo(UPDATED_LEAVES_DATE);
+        assertThat(testLeavesRejection.getComment()).isEqualTo(UPDATED_COMMENT);
     }
 
     @Test

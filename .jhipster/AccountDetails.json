@@ -62,7 +62,7 @@
     "searchEngine": false,
     "service": "serviceClass",
     "entityTableName": "account_details",
-    "jpaMetamodelFiltering": false,
+    "jpaMetamodelFiltering": true,
     "pagination": "pagination",
     "enableEntityAudit": true
 }

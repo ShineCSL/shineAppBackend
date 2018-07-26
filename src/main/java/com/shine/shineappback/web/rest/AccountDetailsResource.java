@@ -6,6 +6,8 @@ import com.shine.shineappback.web.rest.errors.BadRequestAlertException;
 import com.shine.shineappback.web.rest.util.HeaderUtil;
 import com.shine.shineappback.web.rest.util.PaginationUtil;
 import com.shine.shineappback.service.dto.AccountDetailsDTO;
+import com.shine.shineappback.service.dto.AccountDetailsCriteria;
+import com.shine.shineappback.service.AccountDetailsQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +38,11 @@ public class AccountDetailsResource {
 
     private final AccountDetailsService accountDetailsService;
 
-    public AccountDetailsResource(AccountDetailsService accountDetailsService) {
+    private final AccountDetailsQueryService accountDetailsQueryService;
+
+    public AccountDetailsResource(AccountDetailsService accountDetailsService, AccountDetailsQueryService accountDetailsQueryService) {
         this.accountDetailsService = accountDetailsService;
+        this.accountDetailsQueryService = accountDetailsQueryService;
     }
 
     /**
@@ -86,13 +91,14 @@ public class AccountDetailsResource {
      * GET  /account-details : get all the accountDetails.
      *
      * @param pageable the pagination information
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of accountDetails in body
      */
     @GetMapping("/account-details")
     @Timed
-    public ResponseEntity<List<AccountDetailsDTO>> getAllAccountDetails(Pageable pageable) {
-        log.debug("REST request to get a page of AccountDetails");
-        Page<AccountDetailsDTO> page = accountDetailsService.findAll(pageable);
+    public ResponseEntity<List<AccountDetailsDTO>> getAllAccountDetails(AccountDetailsCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get AccountDetails by criteria: {}", criteria);
+        Page<AccountDetailsDTO> page = accountDetailsQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/account-details");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

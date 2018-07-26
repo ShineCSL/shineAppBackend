@@ -86,7 +86,7 @@
     "searchEngine": false,
     "service": "serviceClass",
     "entityTableName": "invoice",
-    "jpaMetamodelFiltering": false,
+    "jpaMetamodelFiltering": true,
     "pagination": "pagination",
     "enableEntityAudit": true
 }

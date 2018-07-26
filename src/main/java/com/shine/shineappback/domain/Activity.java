@@ -42,6 +42,10 @@ public class Activity extends AbstractAuditingEntity implements Serializable {
     @Column(name = "jhi_year", nullable = false)
     private Integer year;
 
+    @NotNull
+    @Column(name = "month", nullable = false)
+    private Integer month;
+
     @ManyToOne(optional = false)
     @NotNull
     @JsonIgnoreProperties("")
@@ -141,6 +145,19 @@ public class Activity extends AbstractAuditingEntity implements Serializable {
 
     public void setYear(Integer year) {
         this.year = year;
+    }
+
+    public Integer getMonth() {
+        return month;
+    }
+
+    public Activity month(Integer month) {
+        this.month = month;
+        return this;
+    }
+
+    public void setMonth(Integer month) {
+        this.month = month;
     }
 
     public Task getTask() {
@@ -251,6 +268,7 @@ public class Activity extends AbstractAuditingEntity implements Serializable {
             ", day=" + getDay() +
             ", weekNumber=" + getWeekNumber() +
             ", year=" + getYear() +
+            ", month=" + getMonth() +
             "}";
     }
 }

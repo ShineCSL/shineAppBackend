@@ -21,6 +21,10 @@ public class LeaveConfigDTO extends AbstractAuditingDTO implements Serializable 
 
     private String userLogin;
 
+    private Long approverId;
+
+    private String approverLogin;
+
     public Long getId() {
         return id;
     }
@@ -69,6 +73,22 @@ public class LeaveConfigDTO extends AbstractAuditingDTO implements Serializable 
         this.userLogin = userLogin;
     }
 
+    public Long getApproverId() {
+        return approverId;
+    }
+
+    public void setApproverId(Long userId) {
+        this.approverId = userId;
+    }
+
+    public String getApproverLogin() {
+        return approverLogin;
+    }
+
+    public void setApproverLogin(String userLogin) {
+        this.approverLogin = userLogin;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -99,6 +119,8 @@ public class LeaveConfigDTO extends AbstractAuditingDTO implements Serializable 
             ", nbSpecialLeaves=" + getNbSpecialLeaves() +
             ", user=" + getUserId() +
             ", user='" + getUserLogin() + "'" +
+            ", approver=" + getApproverId() +
+            ", approver='" + getApproverLogin() + "'" +
             "}";
     }
 }

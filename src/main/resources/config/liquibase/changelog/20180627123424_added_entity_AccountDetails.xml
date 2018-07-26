@@ -58,7 +58,7 @@
     </changeSet>
     
     <!-- Added the entity audit columns -->
-    <changeSet id="20180704110037-audit-1" author="jhipster-entity-audit">
+    <changeSet id="20180706115338-audit-1" author="jhipster-entity-audit">
         <addColumn tableName="account_details">
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>

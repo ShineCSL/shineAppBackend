@@ -30,6 +30,9 @@ public class LeavesRejection extends AbstractAuditingEntity implements Serializa
     @Column(name = "leaves_date", nullable = false)
     private LocalDate leavesDate;
 
+    @Column(name = "jhi_comment")
+    private String comment;
+
     @OneToOne(mappedBy = "leavesRejection")
     @JsonIgnore
     private Leaves leaves;
@@ -72,6 +75,19 @@ public class LeavesRejection extends AbstractAuditingEntity implements Serializa
 
     public void setLeavesDate(LocalDate leavesDate) {
         this.leavesDate = leavesDate;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public LeavesRejection comment(String comment) {
+        this.comment = comment;
+        return this;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public Leaves getLeaves() {
@@ -127,6 +143,7 @@ public class LeavesRejection extends AbstractAuditingEntity implements Serializa
             "id=" + getId() +
             ", rejected='" + isRejected() + "'" +
             ", leavesDate='" + getLeavesDate() + "'" +
+            ", comment='" + getComment() + "'" +
             "}";
     }
 }

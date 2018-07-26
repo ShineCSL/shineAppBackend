@@ -11,7 +11,7 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface LeavesRepository extends JpaRepository<Leaves, Long> {
+public interface LeavesRepository extends JpaRepository<Leaves, Long>, JpaSpecificationExecutor<Leaves> {
 
     @Query("select leaves from Leaves leaves where leaves.user.login = ?#{principal.username}")
     List<Leaves> findByUserIsCurrentUser();

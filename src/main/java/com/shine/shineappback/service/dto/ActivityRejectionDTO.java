@@ -19,6 +19,8 @@ public class ActivityRejectionDTO extends AbstractAuditingDTO implements Seriali
     @NotNull
     private Integer year;
 
+    private String comment;
+
     private Long userId;
 
     private String userLogin;
@@ -53,6 +55,14 @@ public class ActivityRejectionDTO extends AbstractAuditingDTO implements Seriali
 
     public void setYear(Integer year) {
         this.year = year;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public Long getUserId() {
@@ -99,6 +109,7 @@ public class ActivityRejectionDTO extends AbstractAuditingDTO implements Seriali
             ", rejected='" + isRejected() + "'" +
             ", weekNumber=" + getWeekNumber() +
             ", year=" + getYear() +
+            ", comment='" + getComment() + "'" +
             ", user=" + getUserId() +
             ", user='" + getUserLogin() + "'" +
             "}";

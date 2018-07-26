@@ -32,6 +32,10 @@
             "fieldValidateRules": [
                 "required"
             ]
+        },
+        {
+            "fieldName": "comment",
+            "fieldType": "String"
         }
     ],
     "changelogDate": "20180627093752",

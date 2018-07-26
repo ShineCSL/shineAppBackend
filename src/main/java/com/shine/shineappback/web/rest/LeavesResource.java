@@ -6,6 +6,8 @@ import com.shine.shineappback.web.rest.errors.BadRequestAlertException;
 import com.shine.shineappback.web.rest.util.HeaderUtil;
 import com.shine.shineappback.web.rest.util.PaginationUtil;
 import com.shine.shineappback.service.dto.LeavesDTO;
+import com.shine.shineappback.service.dto.LeavesCriteria;
+import com.shine.shineappback.service.LeavesQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +38,11 @@ public class LeavesResource {
 
     private final LeavesService leavesService;
 
-    public LeavesResource(LeavesService leavesService) {
+    private final LeavesQueryService leavesQueryService;
+
+    public LeavesResource(LeavesService leavesService, LeavesQueryService leavesQueryService) {
         this.leavesService = leavesService;
+        this.leavesQueryService = leavesQueryService;
     }
 
     /**
@@ -86,13 +91,14 @@ public class LeavesResource {
      * GET  /leaves : get all the leaves.
      *
      * @param pageable the pagination information
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of leaves in body
      */
     @GetMapping("/leaves")
     @Timed
-    public ResponseEntity<List<LeavesDTO>> getAllLeaves(Pageable pageable) {
-        log.debug("REST request to get a page of Leaves");
-        Page<LeavesDTO> page = leavesService.findAll(pageable);
+    public ResponseEntity<List<LeavesDTO>> getAllLeaves(LeavesCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get Leaves by criteria: {}", criteria);
+        Page<LeavesDTO> page = leavesQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/leaves");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

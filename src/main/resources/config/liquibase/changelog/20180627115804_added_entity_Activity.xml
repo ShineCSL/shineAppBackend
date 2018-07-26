@@ -42,6 +42,10 @@
                 <constraints nullable="false" />
             </column>
 
+            <column name="month" type="integer">
+                <constraints nullable="false" />
+            </column>
+
             <column name="task_id" type="bigint">
                 <constraints nullable="false" />
             </column>
@@ -72,7 +76,7 @@
     </changeSet>
     
     <!-- Added the entity audit columns -->
-    <changeSet id="20180704074210-audit-1" author="jhipster-entity-audit">
+    <changeSet id="20180706115338-audit-1" author="jhipster-entity-audit">
         <addColumn tableName="activity">
             <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>
@@ -84,6 +88,5 @@
             <column name="last_modified_date" type="timestamp"/>
         </addColumn>
     </changeSet>
-    
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

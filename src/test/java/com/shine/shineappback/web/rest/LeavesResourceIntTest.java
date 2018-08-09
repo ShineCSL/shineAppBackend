@@ -60,8 +60,8 @@ public class LeavesResourceIntTest {
     private static final LocalDate DEFAULT_LEAVES_TO = LocalDate.ofEpochDay(0L);
     private static final LocalDate UPDATED_LEAVES_TO = LocalDate.now(ZoneId.systemDefault());
 
-    private static final Integer DEFAULT_NB_OF_HOURS = 0;
-    private static final Integer UPDATED_NB_OF_HOURS = 1;
+    private static final Integer DEFAULT_NB_OF_HOURS = 1;
+    private static final Integer UPDATED_NB_OF_HOURS = 2;
 
     private static final Integer DEFAULT_YEAR = 1;
     private static final Integer UPDATED_YEAR = 2;
@@ -111,7 +111,7 @@ public class LeavesResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final LeavesResource leavesResource = new LeavesResource(leavesService, leavesQueryService);
+        final LeavesResource leavesResource = new LeavesResource(leavesService, leavesQueryService, leavesRepository);
         this.restLeavesMockMvc = MockMvcBuilders.standaloneSetup(leavesResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -560,8 +560,8 @@ public class LeavesResourceIntTest {
         // Get all the leavesList where nbOfHours greater than or equals to DEFAULT_NB_OF_HOURS
         defaultLeavesShouldBeFound("nbOfHours.greaterOrEqualThan=" + DEFAULT_NB_OF_HOURS);
 
-        // Get all the leavesList where nbOfHours greater than or equals to (DEFAULT_NB_OF_HOURS + 1)
-        defaultLeavesShouldNotBeFound("nbOfHours.greaterOrEqualThan=" + (DEFAULT_NB_OF_HOURS + 1));
+        // Get all the leavesList where nbOfHours greater than or equals to UPDATED_NB_OF_HOURS
+        defaultLeavesShouldNotBeFound("nbOfHours.greaterOrEqualThan=" + UPDATED_NB_OF_HOURS);
     }
 
     @Test
@@ -573,8 +573,8 @@ public class LeavesResourceIntTest {
         // Get all the leavesList where nbOfHours less than or equals to DEFAULT_NB_OF_HOURS
         defaultLeavesShouldNotBeFound("nbOfHours.lessThan=" + DEFAULT_NB_OF_HOURS);
 
-        // Get all the leavesList where nbOfHours less than or equals to (DEFAULT_NB_OF_HOURS + 1)
-        defaultLeavesShouldBeFound("nbOfHours.lessThan=" + (DEFAULT_NB_OF_HOURS + 1));
+        // Get all the leavesList where nbOfHours less than or equals to UPDATED_NB_OF_HOURS
+        defaultLeavesShouldBeFound("nbOfHours.lessThan=" + UPDATED_NB_OF_HOURS);
     }
 
 

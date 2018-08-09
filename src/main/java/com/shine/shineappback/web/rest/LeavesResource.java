@@ -7,6 +7,7 @@ import com.shine.shineappback.web.rest.util.HeaderUtil;
 import com.shine.shineappback.web.rest.util.PaginationUtil;
 import com.shine.shineappback.service.dto.LeavesDTO;
 import com.shine.shineappback.service.dto.LeavesCriteria;
+import com.shine.shineappback.repository.LeavesRepository;
 import com.shine.shineappback.service.LeavesQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -39,10 +40,14 @@ public class LeavesResource {
     private final LeavesService leavesService;
 
     private final LeavesQueryService leavesQueryService;
+    
+    private final LeavesRepository leavesRepository;
 
-    public LeavesResource(LeavesService leavesService, LeavesQueryService leavesQueryService) {
+    public LeavesResource(LeavesService leavesService, LeavesQueryService leavesQueryService, 
+    		LeavesRepository leavesRepository) {
         this.leavesService = leavesService;
         this.leavesQueryService = leavesQueryService;
+        this.leavesRepository = leavesRepository;
     }
 
     /**
@@ -129,5 +134,21 @@ public class LeavesResource {
         log.debug("REST request to delete Leaves : {}", id);
         leavesService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+    
+    /**
+     * GET  /leaves : get all the leaves.
+     *
+     * @param pageable the pagination information
+     * @param criteria the criterias which the requested entities should match
+     * @return the ResponseEntity with status 200 (OK) and the list of leaves in body
+     */
+    @GetMapping("/leaves/sumhours/{userLogin}/{year}/{taskCode}")
+    @Timed
+    public ResponseEntity<Integer> getSumHoursByUserYearAndTask(@PathVariable String userLogin, @PathVariable int year, 
+    		@PathVariable String taskCode) {
+        log.debug("REST request to get sum nb of hours: {}");
+        Integer sumNbOfHours = leavesRepository.sumHoursByUserYearAndTask(userLogin, year, taskCode);
+        return ResponseEntity.ok().body(sumNbOfHours);
     }
 }

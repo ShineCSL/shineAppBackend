@@ -11,7 +11,7 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface LeaveConfigRepository extends JpaRepository<LeaveConfig, Long> {
+public interface LeaveConfigRepository extends JpaRepository<LeaveConfig, Long>, JpaSpecificationExecutor<LeaveConfig> {
 
     @Query("select leave_config from LeaveConfig leave_config where leave_config.user.login = ?#{principal.username}")
     List<LeaveConfig> findByUserIsCurrentUser();

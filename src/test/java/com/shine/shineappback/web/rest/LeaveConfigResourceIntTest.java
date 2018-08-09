@@ -4,11 +4,14 @@ import com.shine.shineappback.ShineAppBackendApp;
 
 import com.shine.shineappback.domain.LeaveConfig;
 import com.shine.shineappback.domain.User;
+import com.shine.shineappback.domain.User;
 import com.shine.shineappback.repository.LeaveConfigRepository;
 import com.shine.shineappback.service.LeaveConfigService;
 import com.shine.shineappback.service.dto.LeaveConfigDTO;
 import com.shine.shineappback.service.mapper.LeaveConfigMapper;
 import com.shine.shineappback.web.rest.errors.ExceptionTranslator;
+import com.shine.shineappback.service.dto.LeaveConfigCriteria;
+import com.shine.shineappback.service.LeaveConfigQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -64,6 +67,9 @@ public class LeaveConfigResourceIntTest {
     private LeaveConfigService leaveConfigService;
 
     @Autowired
+    private LeaveConfigQueryService leaveConfigQueryService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -82,7 +88,7 @@ public class LeaveConfigResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final LeaveConfigResource leaveConfigResource = new LeaveConfigResource(leaveConfigService);
+        final LeaveConfigResource leaveConfigResource = new LeaveConfigResource(leaveConfigService, leaveConfigQueryService);
         this.restLeaveConfigMockMvc = MockMvcBuilders.standaloneSetup(leaveConfigResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -187,6 +193,266 @@ public class LeaveConfigResourceIntTest {
             .andExpect(jsonPath("$.nbAnnualLeaves").value(DEFAULT_NB_ANNUAL_LEAVES))
             .andExpect(jsonPath("$.nbSpecialLeaves").value(DEFAULT_NB_SPECIAL_LEAVES));
     }
+
+    @Test
+    @Transactional
+    public void getAllLeaveConfigsByNbSickLeavesIsEqualToSomething() throws Exception {
+        // Initialize the database
+        leaveConfigRepository.saveAndFlush(leaveConfig);
+
+        // Get all the leaveConfigList where nbSickLeaves equals to DEFAULT_NB_SICK_LEAVES
+        defaultLeaveConfigShouldBeFound("nbSickLeaves.equals=" + DEFAULT_NB_SICK_LEAVES);
+
+        // Get all the leaveConfigList where nbSickLeaves equals to UPDATED_NB_SICK_LEAVES
+        defaultLeaveConfigShouldNotBeFound("nbSickLeaves.equals=" + UPDATED_NB_SICK_LEAVES);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLeaveConfigsByNbSickLeavesIsInShouldWork() throws Exception {
+        // Initialize the database
+        leaveConfigRepository.saveAndFlush(leaveConfig);
+
+        // Get all the leaveConfigList where nbSickLeaves in DEFAULT_NB_SICK_LEAVES or UPDATED_NB_SICK_LEAVES
+        defaultLeaveConfigShouldBeFound("nbSickLeaves.in=" + DEFAULT_NB_SICK_LEAVES + "," + UPDATED_NB_SICK_LEAVES);
+
+        // Get all the leaveConfigList where nbSickLeaves equals to UPDATED_NB_SICK_LEAVES
+        defaultLeaveConfigShouldNotBeFound("nbSickLeaves.in=" + UPDATED_NB_SICK_LEAVES);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLeaveConfigsByNbSickLeavesIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        leaveConfigRepository.saveAndFlush(leaveConfig);
+
+        // Get all the leaveConfigList where nbSickLeaves is not null
+        defaultLeaveConfigShouldBeFound("nbSickLeaves.specified=true");
+
+        // Get all the leaveConfigList where nbSickLeaves is null
+        defaultLeaveConfigShouldNotBeFound("nbSickLeaves.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllLeaveConfigsByNbSickLeavesIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        leaveConfigRepository.saveAndFlush(leaveConfig);
+
+        // Get all the leaveConfigList where nbSickLeaves greater than or equals to DEFAULT_NB_SICK_LEAVES
+        defaultLeaveConfigShouldBeFound("nbSickLeaves.greaterOrEqualThan=" + DEFAULT_NB_SICK_LEAVES);
+
+        // Get all the leaveConfigList where nbSickLeaves greater than or equals to UPDATED_NB_SICK_LEAVES
+        defaultLeaveConfigShouldNotBeFound("nbSickLeaves.greaterOrEqualThan=" + UPDATED_NB_SICK_LEAVES);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLeaveConfigsByNbSickLeavesIsLessThanSomething() throws Exception {
+        // Initialize the database
+        leaveConfigRepository.saveAndFlush(leaveConfig);
+
+        // Get all the leaveConfigList where nbSickLeaves less than or equals to DEFAULT_NB_SICK_LEAVES
+        defaultLeaveConfigShouldNotBeFound("nbSickLeaves.lessThan=" + DEFAULT_NB_SICK_LEAVES);
+
+        // Get all the leaveConfigList where nbSickLeaves less than or equals to UPDATED_NB_SICK_LEAVES
+        defaultLeaveConfigShouldBeFound("nbSickLeaves.lessThan=" + UPDATED_NB_SICK_LEAVES);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllLeaveConfigsByNbAnnualLeavesIsEqualToSomething() throws Exception {
+        // Initialize the database
+        leaveConfigRepository.saveAndFlush(leaveConfig);
+
+        // Get all the leaveConfigList where nbAnnualLeaves equals to DEFAULT_NB_ANNUAL_LEAVES
+        defaultLeaveConfigShouldBeFound("nbAnnualLeaves.equals=" + DEFAULT_NB_ANNUAL_LEAVES);
+
+        // Get all the leaveConfigList where nbAnnualLeaves equals to UPDATED_NB_ANNUAL_LEAVES
+        defaultLeaveConfigShouldNotBeFound("nbAnnualLeaves.equals=" + UPDATED_NB_ANNUAL_LEAVES);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLeaveConfigsByNbAnnualLeavesIsInShouldWork() throws Exception {
+        // Initialize the database
+        leaveConfigRepository.saveAndFlush(leaveConfig);
+
+        // Get all the leaveConfigList where nbAnnualLeaves in DEFAULT_NB_ANNUAL_LEAVES or UPDATED_NB_ANNUAL_LEAVES
+        defaultLeaveConfigShouldBeFound("nbAnnualLeaves.in=" + DEFAULT_NB_ANNUAL_LEAVES + "," + UPDATED_NB_ANNUAL_LEAVES);
+
+        // Get all the leaveConfigList where nbAnnualLeaves equals to UPDATED_NB_ANNUAL_LEAVES
+        defaultLeaveConfigShouldNotBeFound("nbAnnualLeaves.in=" + UPDATED_NB_ANNUAL_LEAVES);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLeaveConfigsByNbAnnualLeavesIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        leaveConfigRepository.saveAndFlush(leaveConfig);
+
+        // Get all the leaveConfigList where nbAnnualLeaves is not null
+        defaultLeaveConfigShouldBeFound("nbAnnualLeaves.specified=true");
+
+        // Get all the leaveConfigList where nbAnnualLeaves is null
+        defaultLeaveConfigShouldNotBeFound("nbAnnualLeaves.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllLeaveConfigsByNbAnnualLeavesIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        leaveConfigRepository.saveAndFlush(leaveConfig);
+
+        // Get all the leaveConfigList where nbAnnualLeaves greater than or equals to DEFAULT_NB_ANNUAL_LEAVES
+        defaultLeaveConfigShouldBeFound("nbAnnualLeaves.greaterOrEqualThan=" + DEFAULT_NB_ANNUAL_LEAVES);
+
+        // Get all the leaveConfigList where nbAnnualLeaves greater than or equals to UPDATED_NB_ANNUAL_LEAVES
+        defaultLeaveConfigShouldNotBeFound("nbAnnualLeaves.greaterOrEqualThan=" + UPDATED_NB_ANNUAL_LEAVES);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLeaveConfigsByNbAnnualLeavesIsLessThanSomething() throws Exception {
+        // Initialize the database
+        leaveConfigRepository.saveAndFlush(leaveConfig);
+
+        // Get all the leaveConfigList where nbAnnualLeaves less than or equals to DEFAULT_NB_ANNUAL_LEAVES
+        defaultLeaveConfigShouldNotBeFound("nbAnnualLeaves.lessThan=" + DEFAULT_NB_ANNUAL_LEAVES);
+
+        // Get all the leaveConfigList where nbAnnualLeaves less than or equals to UPDATED_NB_ANNUAL_LEAVES
+        defaultLeaveConfigShouldBeFound("nbAnnualLeaves.lessThan=" + UPDATED_NB_ANNUAL_LEAVES);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllLeaveConfigsByNbSpecialLeavesIsEqualToSomething() throws Exception {
+        // Initialize the database
+        leaveConfigRepository.saveAndFlush(leaveConfig);
+
+        // Get all the leaveConfigList where nbSpecialLeaves equals to DEFAULT_NB_SPECIAL_LEAVES
+        defaultLeaveConfigShouldBeFound("nbSpecialLeaves.equals=" + DEFAULT_NB_SPECIAL_LEAVES);
+
+        // Get all the leaveConfigList where nbSpecialLeaves equals to UPDATED_NB_SPECIAL_LEAVES
+        defaultLeaveConfigShouldNotBeFound("nbSpecialLeaves.equals=" + UPDATED_NB_SPECIAL_LEAVES);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLeaveConfigsByNbSpecialLeavesIsInShouldWork() throws Exception {
+        // Initialize the database
+        leaveConfigRepository.saveAndFlush(leaveConfig);
+
+        // Get all the leaveConfigList where nbSpecialLeaves in DEFAULT_NB_SPECIAL_LEAVES or UPDATED_NB_SPECIAL_LEAVES
+        defaultLeaveConfigShouldBeFound("nbSpecialLeaves.in=" + DEFAULT_NB_SPECIAL_LEAVES + "," + UPDATED_NB_SPECIAL_LEAVES);
+
+        // Get all the leaveConfigList where nbSpecialLeaves equals to UPDATED_NB_SPECIAL_LEAVES
+        defaultLeaveConfigShouldNotBeFound("nbSpecialLeaves.in=" + UPDATED_NB_SPECIAL_LEAVES);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLeaveConfigsByNbSpecialLeavesIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        leaveConfigRepository.saveAndFlush(leaveConfig);
+
+        // Get all the leaveConfigList where nbSpecialLeaves is not null
+        defaultLeaveConfigShouldBeFound("nbSpecialLeaves.specified=true");
+
+        // Get all the leaveConfigList where nbSpecialLeaves is null
+        defaultLeaveConfigShouldNotBeFound("nbSpecialLeaves.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllLeaveConfigsByNbSpecialLeavesIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        leaveConfigRepository.saveAndFlush(leaveConfig);
+
+        // Get all the leaveConfigList where nbSpecialLeaves greater than or equals to DEFAULT_NB_SPECIAL_LEAVES
+        defaultLeaveConfigShouldBeFound("nbSpecialLeaves.greaterOrEqualThan=" + DEFAULT_NB_SPECIAL_LEAVES);
+
+        // Get all the leaveConfigList where nbSpecialLeaves greater than or equals to UPDATED_NB_SPECIAL_LEAVES
+        defaultLeaveConfigShouldNotBeFound("nbSpecialLeaves.greaterOrEqualThan=" + UPDATED_NB_SPECIAL_LEAVES);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLeaveConfigsByNbSpecialLeavesIsLessThanSomething() throws Exception {
+        // Initialize the database
+        leaveConfigRepository.saveAndFlush(leaveConfig);
+
+        // Get all the leaveConfigList where nbSpecialLeaves less than or equals to DEFAULT_NB_SPECIAL_LEAVES
+        defaultLeaveConfigShouldNotBeFound("nbSpecialLeaves.lessThan=" + DEFAULT_NB_SPECIAL_LEAVES);
+
+        // Get all the leaveConfigList where nbSpecialLeaves less than or equals to UPDATED_NB_SPECIAL_LEAVES
+        defaultLeaveConfigShouldBeFound("nbSpecialLeaves.lessThan=" + UPDATED_NB_SPECIAL_LEAVES);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllLeaveConfigsByUserIsEqualToSomething() throws Exception {
+        // Initialize the database
+        User user = UserResourceIntTest.createEntity(em);
+        em.persist(user);
+        em.flush();
+        leaveConfig.setUser(user);
+        leaveConfigRepository.saveAndFlush(leaveConfig);
+        Long userId = user.getId();
+
+        // Get all the leaveConfigList where user equals to userId
+        defaultLeaveConfigShouldBeFound("userId.equals=" + userId);
+
+        // Get all the leaveConfigList where user equals to userId + 1
+        defaultLeaveConfigShouldNotBeFound("userId.equals=" + (userId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllLeaveConfigsByApproverIsEqualToSomething() throws Exception {
+        // Initialize the database
+        User approver = UserResourceIntTest.createEntity(em);
+        em.persist(approver);
+        em.flush();
+        leaveConfig.setApprover(approver);
+        leaveConfigRepository.saveAndFlush(leaveConfig);
+        Long approverId = approver.getId();
+
+        // Get all the leaveConfigList where approver equals to approverId
+        defaultLeaveConfigShouldBeFound("approverId.equals=" + approverId);
+
+        // Get all the leaveConfigList where approver equals to approverId + 1
+        defaultLeaveConfigShouldNotBeFound("approverId.equals=" + (approverId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultLeaveConfigShouldBeFound(String filter) throws Exception {
+        restLeaveConfigMockMvc.perform(get("/api/leave-configs?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(leaveConfig.getId().intValue())))
+            .andExpect(jsonPath("$.[*].nbSickLeaves").value(hasItem(DEFAULT_NB_SICK_LEAVES)))
+            .andExpect(jsonPath("$.[*].nbAnnualLeaves").value(hasItem(DEFAULT_NB_ANNUAL_LEAVES)))
+            .andExpect(jsonPath("$.[*].nbSpecialLeaves").value(hasItem(DEFAULT_NB_SPECIAL_LEAVES)));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultLeaveConfigShouldNotBeFound(String filter) throws Exception {
+        restLeaveConfigMockMvc.perform(get("/api/leave-configs?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+    }
+
     @Test
     @Transactional
     public void getNonExistingLeaveConfig() throws Exception {

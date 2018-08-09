@@ -34,8 +34,6 @@ public class Leaves implements Serializable {
     private LocalDate leavesTo;
 
     @NotNull
-    @Min(value = 0)
-    @Max(value = 12)
     @Column(name = "nb_of_hours", nullable = false)
     private Integer nbOfHours;
 

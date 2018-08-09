@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * A DTO for the LeaveConfig entity.
  */
-public class LeaveConfigDTO extends AbstractAuditingDTO implements Serializable {
+public class LeaveConfigDTO implements Serializable {
 
     private Long id;
 

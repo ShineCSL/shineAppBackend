@@ -21,8 +21,6 @@ public class LeavesDTO implements Serializable {
     private LocalDate leavesTo;
 
     @NotNull
-    @Min(value = 0)
-    @Max(value = 12)
     private Integer nbOfHours;
 
     private Integer year;

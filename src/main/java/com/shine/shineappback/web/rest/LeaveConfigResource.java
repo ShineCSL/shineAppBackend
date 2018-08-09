@@ -6,6 +6,8 @@ import com.shine.shineappback.web.rest.errors.BadRequestAlertException;
 import com.shine.shineappback.web.rest.util.HeaderUtil;
 import com.shine.shineappback.web.rest.util.PaginationUtil;
 import com.shine.shineappback.service.dto.LeaveConfigDTO;
+import com.shine.shineappback.service.dto.LeaveConfigCriteria;
+import com.shine.shineappback.service.LeaveConfigQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +38,11 @@ public class LeaveConfigResource {
 
     private final LeaveConfigService leaveConfigService;
 
-    public LeaveConfigResource(LeaveConfigService leaveConfigService) {
+    private final LeaveConfigQueryService leaveConfigQueryService;
+
+    public LeaveConfigResource(LeaveConfigService leaveConfigService, LeaveConfigQueryService leaveConfigQueryService) {
         this.leaveConfigService = leaveConfigService;
+        this.leaveConfigQueryService = leaveConfigQueryService;
     }
 
     /**
@@ -86,13 +91,14 @@ public class LeaveConfigResource {
      * GET  /leave-configs : get all the leaveConfigs.
      *
      * @param pageable the pagination information
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of leaveConfigs in body
      */
     @GetMapping("/leave-configs")
     @Timed
-    public ResponseEntity<List<LeaveConfigDTO>> getAllLeaveConfigs(Pageable pageable) {
-        log.debug("REST request to get a page of LeaveConfigs");
-        Page<LeaveConfigDTO> page = leaveConfigService.findAll(pageable);
+    public ResponseEntity<List<LeaveConfigDTO>> getAllLeaveConfigs(LeaveConfigCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get LeaveConfigs by criteria: {}", criteria);
+        Page<LeaveConfigDTO> page = leaveConfigQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/leave-configs");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

@@ -13,7 +13,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "leave_config")
-public class LeaveConfig extends AbstractAuditingEntity implements Serializable {
+public class LeaveConfig implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

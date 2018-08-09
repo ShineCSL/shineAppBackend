@@ -70,12 +70,8 @@
             "fieldName": "nbOfHours",
             "fieldType": "Integer",
             "fieldValidateRules": [
-                "required",
-                "min",
-                "max"
-            ],
-            "fieldValidateRulesMin": "0",
-            "fieldValidateRulesMax": "12"
+                "required"
+            ]
         },
         {
             "fieldName": "year",

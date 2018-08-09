@@ -23,8 +23,8 @@ public interface LeavesRepository extends JpaRepository<Leaves, Long>, JpaSpecif
     
     @Query(value = "SELECT SUM(nbOfHours) FROM Leaves leaves WHERE leaves.year = :year " +
             "AND leaves.user.login = :userLogin " +
-            "AND leaves.task.code = :taskCode" +
-			"AND leaves.leavesValidation.validated = 1")
+            "AND leaves.task.code = :taskCode " +
+			"AND leaves.leavesValidation.validated = true")
     Integer sumHoursByUserYearAndTask(@Param("userLogin") String userLogin,
 									  @Param("year") int year,
                                       @Param("taskCode") String taskCode);

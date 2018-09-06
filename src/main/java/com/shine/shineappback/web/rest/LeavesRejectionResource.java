@@ -1,7 +1,9 @@
 package com.shine.shineappback.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.shine.shineappback.repository.UserRepository;
 import com.shine.shineappback.service.LeavesRejectionService;
+import com.shine.shineappback.service.MailService;
 import com.shine.shineappback.web.rest.errors.BadRequestAlertException;
 import com.shine.shineappback.web.rest.util.HeaderUtil;
 import com.shine.shineappback.web.rest.util.PaginationUtil;
@@ -36,9 +38,13 @@ public class LeavesRejectionResource {
     private static final String ENTITY_NAME = "leavesRejection";
 
     private final LeavesRejectionService leavesRejectionService;
+        
+    private final MailService mailService;
 
-    public LeavesRejectionResource(LeavesRejectionService leavesRejectionService) {
+    public LeavesRejectionResource(LeavesRejectionService leavesRejectionService, 
+    		MailService mailService) {
         this.leavesRejectionService = leavesRejectionService;
+        this.mailService = mailService;
     }
 
     /**
@@ -55,7 +61,8 @@ public class LeavesRejectionResource {
         if (leavesRejectionDTO.getId() != null) {
             throw new BadRequestAlertException("A new leavesRejection cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        LeavesRejectionDTO result = leavesRejectionService.save(leavesRejectionDTO);
+        LeavesRejectionDTO result = leavesRejectionService.save(leavesRejectionDTO);      
+        mailService.sendValidateOrRejectMail("Leave rejected", leavesRejectionDTO.getUserLogin(), leavesRejectionDTO.getLeavesDate());
         return ResponseEntity.created(new URI("/api/leaves-rejections/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);

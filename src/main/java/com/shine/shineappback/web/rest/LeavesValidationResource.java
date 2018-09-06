@@ -2,6 +2,7 @@ package com.shine.shineappback.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.shine.shineappback.service.LeavesValidationService;
+import com.shine.shineappback.service.MailService;
 import com.shine.shineappback.web.rest.errors.BadRequestAlertException;
 import com.shine.shineappback.web.rest.util.HeaderUtil;
 import com.shine.shineappback.web.rest.util.PaginationUtil;
@@ -36,9 +37,13 @@ public class LeavesValidationResource {
     private static final String ENTITY_NAME = "leavesValidation";
 
     private final LeavesValidationService leavesValidationService;
+    
+    private final MailService mailService;
 
-    public LeavesValidationResource(LeavesValidationService leavesValidationService) {
+    public LeavesValidationResource(LeavesValidationService leavesValidationService,
+    		MailService mailService) {
         this.leavesValidationService = leavesValidationService;
+        this.mailService = mailService;
     }
 
     /**
@@ -56,6 +61,7 @@ public class LeavesValidationResource {
             throw new BadRequestAlertException("A new leavesValidation cannot already have an ID", ENTITY_NAME, "idexists");
         }
         LeavesValidationDTO result = leavesValidationService.save(leavesValidationDTO);
+        mailService.sendValidateOrRejectMail("Leave validated", leavesValidationDTO.getUserLogin(), leavesValidationDTO.getLeavesDate());
         return ResponseEntity.created(new URI("/api/leaves-validations/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);

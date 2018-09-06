@@ -2,6 +2,7 @@ package com.shine.shineappback.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.shine.shineappback.service.LeavesSubmissionService;
+import com.shine.shineappback.service.MailService;
 import com.shine.shineappback.web.rest.errors.BadRequestAlertException;
 import com.shine.shineappback.web.rest.util.HeaderUtil;
 import com.shine.shineappback.web.rest.util.PaginationUtil;
@@ -36,9 +37,13 @@ public class LeavesSubmissionResource {
     private static final String ENTITY_NAME = "leavesSubmission";
 
     private final LeavesSubmissionService leavesSubmissionService;
+    
+    private final MailService mailService;
 
-    public LeavesSubmissionResource(LeavesSubmissionService leavesSubmissionService) {
+    public LeavesSubmissionResource(LeavesSubmissionService leavesSubmissionService, 
+    		MailService mailService) {
         this.leavesSubmissionService = leavesSubmissionService;
+        this.mailService = mailService;
     }
 
     /**
@@ -56,6 +61,7 @@ public class LeavesSubmissionResource {
             throw new BadRequestAlertException("A new leavesSubmission cannot already have an ID", ENTITY_NAME, "idexists");
         }
         LeavesSubmissionDTO result = leavesSubmissionService.save(leavesSubmissionDTO);
+        mailService.sendSubmitMail("Leave submitted", leavesSubmissionDTO.getUserLogin(), leavesSubmissionDTO.getLeavesDate());
         return ResponseEntity.created(new URI("/api/leaves-submissions/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);

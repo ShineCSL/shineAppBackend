@@ -1,11 +1,18 @@
 package com.shine.shineappback.service;
 
+import com.shine.shineappback.domain.LeaveConfig;
 import com.shine.shineappback.domain.User;
+import com.shine.shineappback.repository.LeaveConfigRepository;
+import com.shine.shineappback.repository.UserRepository;
 
 import io.github.jhipster.config.JHipsterProperties;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
+
 import javax.mail.internet.MimeMessage;
 
 import org.slf4j.Logger;
@@ -39,14 +46,21 @@ public class MailService {
     private final MessageSource messageSource;
 
     private final SpringTemplateEngine templateEngine;
+    
+    private final UserRepository userRepository;
+    
+    private final LeaveConfigRepository leaveConfigRepository;
 
     public MailService(JHipsterProperties jHipsterProperties, JavaMailSender javaMailSender,
-            MessageSource messageSource, SpringTemplateEngine templateEngine) {
+            MessageSource messageSource, SpringTemplateEngine templateEngine, 
+            UserRepository userRepository, LeaveConfigRepository leaveConfigRepository) {
 
         this.jHipsterProperties = jHipsterProperties;
         this.javaMailSender = javaMailSender;
         this.messageSource = messageSource;
         this.templateEngine = templateEngine;
+        this.userRepository = userRepository;
+        this.leaveConfigRepository = leaveConfigRepository;
     }
 
     @Async
@@ -102,4 +116,22 @@ public class MailService {
         log.debug("Sending password reset email to '{}'", user.getEmail());
         sendEmailFromTemplate(user, "mail/passwordResetEmail", "email.reset.title");
     }
+    
+    @Async
+    public void sendValidateOrRejectMail(String mailType, String userLogin, LocalDate date) {
+    	Optional<User> optional  = userRepository.findOneByLogin(userLogin);
+    	optional.ifPresent(user -> {
+    	   	log.debug("Sending "+ mailType + " email to " + user.getEmail());
+            sendEmail(user.getEmail(), mailType, mailType + " for date " + date + ".\r\nPlease check in your system", false, false);
+    	});
+     } 
+    
+    @Async
+    public void sendSubmitMail(String mailType, String userLogin, LocalDate date) {
+    	Optional<LeaveConfig> optional = leaveConfigRepository.findOneByUserLogin(userLogin);
+    	optional.ifPresent(leaveConfig -> {
+    	   	log.debug("Sending "+ mailType + " email to " + leaveConfig.getApprover().getEmail());
+            sendEmail(leaveConfig.getApprover().getEmail(), mailType, mailType + " for date " + date + " by " + userLogin + ".\r\nPlease check in your system", false, false);
+    	});
+     }  
 }

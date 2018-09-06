@@ -44,7 +44,7 @@ public class ActivityCriteria implements Serializable {
 
     private LongFilter userId;
 
-    private LongFilter missionId;
+    private LongFilter clientId;
 
     private LongFilter activityRejectionId;
 
@@ -127,12 +127,12 @@ public class ActivityCriteria implements Serializable {
         this.userId = userId;
     }
 
-    public LongFilter getMissionId() {
-        return missionId;
+    public LongFilter getClientId() {
+        return clientId;
     }
 
-    public void setMissionId(LongFilter missionId) {
-        this.missionId = missionId;
+    public void setClientId(LongFilter clientId) {
+        this.clientId = clientId;
     }
 
     public LongFilter getActivityRejectionId() {
@@ -171,7 +171,7 @@ public class ActivityCriteria implements Serializable {
                 (month != null ? "month=" + month + ", " : "") +
                 (taskId != null ? "taskId=" + taskId + ", " : "") +
                 (userId != null ? "userId=" + userId + ", " : "") +
-                (missionId != null ? "missionId=" + missionId + ", " : "") +
+                (clientId != null ? "clientId=" + clientId + ", " : "") +
                 (activityRejectionId != null ? "activityRejectionId=" + activityRejectionId + ", " : "") +
                 (activitySubmissionId != null ? "activitySubmissionId=" + activitySubmissionId + ", " : "") +
                 (activityValidationId != null ? "activityValidationId=" + activityValidationId + ", " : "") +

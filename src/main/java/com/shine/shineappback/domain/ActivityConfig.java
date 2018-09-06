@@ -12,7 +12,10 @@ import java.util.Objects;
  * A ActivityConfig.
  */
 @Entity
-@Table(name = "activity_config")
+@Table(
+		name = "activity_config",
+		uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id"})}
+)
 public class ActivityConfig extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

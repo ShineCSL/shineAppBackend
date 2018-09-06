@@ -54,7 +54,7 @@
                 <constraints nullable="false" />
             </column>
 
-            <column name="mission_id" type="bigint">
+            <column name="client_id" type="bigint">
                 <constraints nullable="false" />
             </column>
 
@@ -72,21 +72,11 @@
 
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-        
-    </changeSet>
-    
-    <!-- Added the entity audit columns -->
-    <changeSet id="20180706115338-audit-1" author="jhipster-entity-audit">
-        <addColumn tableName="activity">
-            <column name="created_by" type="varchar(50)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="created_date" type="timestamp" defaultValueDate="${now}">
-                <constraints nullable="false"/>
-            </column>
-            <column name="last_modified_by" type="varchar(50)"/>
-            <column name="last_modified_date" type="timestamp"/>
-        </addColumn>
+		<addUniqueConstraint
+		        columnNames="activity_date, task_id, user_id, client_id"
+		        constraintName="u_activity_date_task_user_client"
+		        tableName="activity"
+		        />           
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

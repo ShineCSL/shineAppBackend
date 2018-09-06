@@ -4,6 +4,7 @@ import com.shine.shineappback.ShineAppBackendApp;
 
 import com.shine.shineappback.domain.Invoice;
 import com.shine.shineappback.domain.Currency;
+import com.shine.shineappback.domain.User;
 import com.shine.shineappback.domain.InvoiceRejection;
 import com.shine.shineappback.domain.InvoiceSubmission;
 import com.shine.shineappback.domain.InvoiceValidation;
@@ -133,6 +134,11 @@ public class InvoiceResourceIntTest {
         em.persist(currency);
         em.flush();
         invoice.setCurrency(currency);
+        // Add required entity
+        User user = UserResourceIntTest.createEntity(em);
+        em.persist(user);
+        em.flush();
+        invoice.setUser(user);
         // Add required entity
         TypeInvoice typeInvoice = TypeInvoiceResourceIntTest.createEntity(em);
         em.persist(typeInvoice);
@@ -527,6 +533,25 @@ public class InvoiceResourceIntTest {
 
         // Get all the invoiceList where currency equals to currencyId + 1
         defaultInvoiceShouldNotBeFound("currencyId.equals=" + (currencyId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllInvoicesByUserIsEqualToSomething() throws Exception {
+        // Initialize the database
+        User user = UserResourceIntTest.createEntity(em);
+        em.persist(user);
+        em.flush();
+        invoice.setUser(user);
+        invoiceRepository.saveAndFlush(invoice);
+        Long userId = user.getId();
+
+        // Get all the invoiceList where user equals to userId
+        defaultInvoiceShouldBeFound("userId.equals=" + userId);
+
+        // Get all the invoiceList where user equals to userId + 1
+        defaultInvoiceShouldNotBeFound("userId.equals=" + (userId + 1));
     }
 
 

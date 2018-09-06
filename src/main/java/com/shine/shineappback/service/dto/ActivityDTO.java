@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * A DTO for the Activity entity.
  */
-public class ActivityDTO extends AbstractAuditingDTO implements Serializable {
+public class ActivityDTO implements Serializable {
 
     private Long id;
 
@@ -38,9 +38,9 @@ public class ActivityDTO extends AbstractAuditingDTO implements Serializable {
 
     private String userLogin;
 
-    private Long missionId;
+    private Long clientId;
 
-    private String missionCode;
+    private String clientCode;
 
     private Long activityRejectionId;
 
@@ -142,20 +142,20 @@ public class ActivityDTO extends AbstractAuditingDTO implements Serializable {
         this.userLogin = userLogin;
     }
 
-    public Long getMissionId() {
-        return missionId;
+    public Long getClientId() {
+        return clientId;
     }
 
-    public void setMissionId(Long missionId) {
-        this.missionId = missionId;
+    public void setClientId(Long clientId) {
+        this.clientId = clientId;
     }
 
-    public String getMissionCode() {
-        return missionCode;
+    public String getClientCode() {
+        return clientCode;
     }
 
-    public void setMissionCode(String missionCode) {
-        this.missionCode = missionCode;
+    public void setClientCode(String clientCode) {
+        this.clientCode = clientCode;
     }
 
     public Long getActivityRejectionId() {
@@ -241,8 +241,8 @@ public class ActivityDTO extends AbstractAuditingDTO implements Serializable {
             ", task='" + getTaskCode() + "'" +
             ", user=" + getUserId() +
             ", user='" + getUserLogin() + "'" +
-            ", mission=" + getMissionId() +
-            ", mission='" + getMissionCode() + "'" +
+            ", client=" + getClientId() +
+            ", client='" + getClientCode() + "'" +
             ", activityRejection=" + getActivityRejectionId() +
             ", activityRejection='" + getActivityRejectionRejected() + "'" +
             ", activitySubmission=" + getActivitySubmissionId() +

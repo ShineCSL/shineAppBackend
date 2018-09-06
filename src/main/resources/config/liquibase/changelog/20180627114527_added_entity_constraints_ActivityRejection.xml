@@ -7,7 +7,11 @@
         Added the constraints for entity ActivityRejection.
     -->
     <changeSet id="20180627114527-2" author="jhipster">
-        
+        <addUniqueConstraint
+		        columnNames="week_number, jhi_year, user_id"
+		        constraintName="u_activity_rejection_week_year_user"
+		        tableName="activity_rejection"
+		        />           
         <addForeignKeyConstraint baseColumnNames="user_id"
                                  baseTableName="activity_rejection"
                                  constraintName="fk_activity_rejection_user_id"

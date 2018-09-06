@@ -9,7 +9,7 @@ import javax.persistence.Lob;
 /**
  * A DTO for the Invoice entity.
  */
-public class InvoiceDTO extends AbstractAuditingDTO implements Serializable {
+public class InvoiceDTO implements Serializable {
 
     private Long id;
 
@@ -33,6 +33,10 @@ public class InvoiceDTO extends AbstractAuditingDTO implements Serializable {
     private Long currencyId;
 
     private String currencyCode;
+
+    private Long userId;
+
+    private String userLogin;
 
     private Long invoiceRejectionId;
 
@@ -128,6 +132,22 @@ public class InvoiceDTO extends AbstractAuditingDTO implements Serializable {
 
     public void setCurrencyCode(String currencyCode) {
         this.currencyCode = currencyCode;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getUserLogin() {
+        return userLogin;
+    }
+
+    public void setUserLogin(String userLogin) {
+        this.userLogin = userLogin;
     }
 
     public Long getInvoiceRejectionId() {
@@ -227,6 +247,8 @@ public class InvoiceDTO extends AbstractAuditingDTO implements Serializable {
             ", rate=" + getRate() +
             ", currency=" + getCurrencyId() +
             ", currency='" + getCurrencyCode() + "'" +
+            ", user=" + getUserId() +
+            ", user='" + getUserLogin() + "'" +
             ", invoiceRejection=" + getInvoiceRejectionId() +
             ", invoiceRejection='" + getInvoiceRejectionRejected() + "'" +
             ", invoiceSubmission=" + getInvoiceSubmissionId() +

@@ -22,7 +22,7 @@ public class Currency extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
     @Pattern(regexp = "^[A-Z0-9()\\[\\]#$€+*%\\-_/\\\\]*$")
-    @Column(name = "code", nullable = false)
+    @Column(name = "code", nullable = false, unique = true)
     private String code;
 
     @Column(name = "label_en")

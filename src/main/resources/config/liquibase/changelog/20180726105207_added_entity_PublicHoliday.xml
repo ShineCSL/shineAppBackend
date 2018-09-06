@@ -48,7 +48,17 @@
 
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-        
+        <addUniqueConstraint
+		        columnNames="jhi_label, date_holiday"
+		        constraintName="u_public_holiday_label_date"
+		        tableName="public_holiday"
+		        />           
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/publicHoliday.csv"
+                  separator=";"
+                  tableName="public_holiday">
+             <column name="date_holiday" type="timestamp"/>
+        </loadData>         
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

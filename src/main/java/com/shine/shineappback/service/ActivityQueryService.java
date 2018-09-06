@@ -100,8 +100,8 @@ public class ActivityQueryService extends QueryService<Activity> {
             if (criteria.getUserId() != null) {
                 specification = specification.and(buildReferringEntitySpecification(criteria.getUserId(), Activity_.user, User_.id));
             }
-            if (criteria.getMissionId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getMissionId(), Activity_.mission, Mission_.id));
+            if (criteria.getClientId() != null) {
+                specification = specification.and(buildReferringEntitySpecification(criteria.getClientId(), Activity_.client, Client_.id));
             }
             if (criteria.getActivityRejectionId() != null) {
                 specification = specification.and(buildReferringEntitySpecification(criteria.getActivityRejectionId(), Activity_.activityRejection, ActivityRejection_.id));

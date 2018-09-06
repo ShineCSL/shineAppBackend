@@ -7,12 +7,22 @@
         Added the constraints for entity Invoice.
     -->
     <changeSet id="20180627105634-2" author="jhipster">
-        
+		<addUniqueConstraint
+		        columnNames="date_invoice, type_invoice_id, user_id"
+		        constraintName="u_invoice_date_type_invoice_user"
+		        tableName="invoice"
+		        />            
         <addForeignKeyConstraint baseColumnNames="currency_id"
                                  baseTableName="invoice"
                                  constraintName="fk_invoice_currency_id"
                                  referencedColumnNames="id"
                                  referencedTableName="currency"/>
+
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="invoice"
+                                 constraintName="fk_invoice_user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="jhi_user"/>
 
         <addForeignKeyConstraint baseColumnNames="invoice_rejection_id"
                                  baseTableName="invoice"

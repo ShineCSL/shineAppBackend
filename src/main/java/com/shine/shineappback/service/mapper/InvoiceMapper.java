@@ -8,11 +8,13 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity Invoice and its DTO InvoiceDTO.
  */
-@Mapper(componentModel = "spring", uses = {CurrencyMapper.class, InvoiceRejectionMapper.class, InvoiceSubmissionMapper.class, InvoiceValidationMapper.class, TypeInvoiceMapper.class})
+@Mapper(componentModel = "spring", uses = {CurrencyMapper.class, UserMapper.class, InvoiceRejectionMapper.class, InvoiceSubmissionMapper.class, InvoiceValidationMapper.class, TypeInvoiceMapper.class})
 public interface InvoiceMapper extends EntityMapper<InvoiceDTO, Invoice> {
 
     @Mapping(source = "currency.id", target = "currencyId")
     @Mapping(source = "currency.code", target = "currencyCode")
+    @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "user.login", target = "userLogin")
     @Mapping(source = "invoiceRejection.id", target = "invoiceRejectionId")
     @Mapping(source = "invoiceRejection.rejected", target = "invoiceRejectionRejected")
     @Mapping(source = "invoiceSubmission.id", target = "invoiceSubmissionId")
@@ -24,6 +26,7 @@ public interface InvoiceMapper extends EntityMapper<InvoiceDTO, Invoice> {
     InvoiceDTO toDto(Invoice invoice);
 
     @Mapping(source = "currencyId", target = "currency")
+    @Mapping(source = "userId", target = "user")
     @Mapping(source = "invoiceRejectionId", target = "invoiceRejection")
     @Mapping(source = "invoiceSubmissionId", target = "invoiceSubmission")
     @Mapping(source = "invoiceValidationId", target = "invoiceValidation")

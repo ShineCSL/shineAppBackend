@@ -13,8 +13,11 @@ import java.util.Objects;
  * A Invoice.
  */
 @Entity
-@Table(name = "invoice")
-public class Invoice extends AbstractAuditingEntity implements Serializable {
+@Table(
+name = "invoice",
+uniqueConstraints = {@UniqueConstraint(columnNames = {"date_invoice", "type_invoice_id", "user_id"})}
+)
+public class Invoice implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -51,6 +54,11 @@ public class Invoice extends AbstractAuditingEntity implements Serializable {
     @NotNull
     @JsonIgnoreProperties("")
     private Currency currency;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    @JsonIgnoreProperties("")
+    private User user;
 
     @OneToOne
     @JoinColumn(unique = true)
@@ -180,6 +188,19 @@ public class Invoice extends AbstractAuditingEntity implements Serializable {
 
     public void setCurrency(Currency currency) {
         this.currency = currency;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public Invoice user(User user) {
+        this.user = user;
+        return this;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public InvoiceRejection getInvoiceRejection() {

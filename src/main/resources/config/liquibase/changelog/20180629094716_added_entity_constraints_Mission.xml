@@ -7,7 +7,11 @@
         Added the constraints for entity Mission.
     -->
     <changeSet id="20180629094716-2" author="jhipster">
-        
+        <addUniqueConstraint
+		        columnNames="code"
+		        constraintName="u_mission_code"
+		        tableName="mission"
+		        />          
         <addForeignKeyConstraint baseColumnNames="client_id"
                                  baseTableName="mission"
                                  constraintName="fk_mission_client_id"

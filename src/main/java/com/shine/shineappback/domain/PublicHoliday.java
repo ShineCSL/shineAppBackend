@@ -12,7 +12,10 @@ import java.util.Objects;
  * A PublicHoliday.
  */
 @Entity
-@Table(name = "public_holiday")
+@Table(
+		name = "public_holiday", 
+		uniqueConstraints = {@UniqueConstraint(columnNames = {"jhi_label", "date_holiday"})}
+)
 public class PublicHoliday implements Serializable {
 
     private static final long serialVersionUID = 1L;

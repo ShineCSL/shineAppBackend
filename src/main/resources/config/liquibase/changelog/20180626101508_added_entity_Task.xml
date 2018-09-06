@@ -41,6 +41,17 @@
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
         
+		<addUniqueConstraint
+		        columnNames="code"
+		        constraintName="u_task_code"
+		        tableName="task"
+		        />        
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/task.csv"
+                  separator=";"
+                  tableName="task">
+            <column name="jhi_leave" type="boolean"/>
+        </loadData>
     </changeSet>
     
     <!-- Added the entity audit columns -->

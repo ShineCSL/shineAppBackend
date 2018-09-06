@@ -13,8 +13,11 @@ import java.util.Objects;
  * A Activity.
  */
 @Entity
-@Table(name = "activity")
-public class Activity extends AbstractAuditingEntity implements Serializable {
+@Table(
+name = "activity",
+uniqueConstraints = {@UniqueConstraint(columnNames = {"activity_date", "task_id", "user_id", "client_id"})}
+)
+public class Activity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -59,7 +62,7 @@ public class Activity extends AbstractAuditingEntity implements Serializable {
     @ManyToOne(optional = false)
     @NotNull
     @JsonIgnoreProperties("")
-    private Mission mission;
+    private Client client;
 
     @ManyToOne
     @JsonIgnoreProperties("")
@@ -186,17 +189,17 @@ public class Activity extends AbstractAuditingEntity implements Serializable {
         this.user = user;
     }
 
-    public Mission getMission() {
-        return mission;
+    public Client getClient() {
+        return client;
     }
 
-    public Activity mission(Mission mission) {
-        this.mission = mission;
+    public Activity client(Client client) {
+        this.client = client;
         return this;
     }
 
-    public void setMission(Mission mission) {
-        this.mission = mission;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     public ActivityRejection getActivityRejection() {

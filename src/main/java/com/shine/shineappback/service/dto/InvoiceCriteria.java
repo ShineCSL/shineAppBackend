@@ -40,6 +40,8 @@ public class InvoiceCriteria implements Serializable {
 
     private LongFilter currencyId;
 
+    private LongFilter userId;
+
     private LongFilter invoiceRejectionId;
 
     private LongFilter invoiceSubmissionId;
@@ -107,6 +109,14 @@ public class InvoiceCriteria implements Serializable {
         this.currencyId = currencyId;
     }
 
+    public LongFilter getUserId() {
+        return userId;
+    }
+
+    public void setUserId(LongFilter userId) {
+        this.userId = userId;
+    }
+
     public LongFilter getInvoiceRejectionId() {
         return invoiceRejectionId;
     }
@@ -149,6 +159,7 @@ public class InvoiceCriteria implements Serializable {
                 (dateInvoice != null ? "dateInvoice=" + dateInvoice + ", " : "") +
                 (rate != null ? "rate=" + rate + ", " : "") +
                 (currencyId != null ? "currencyId=" + currencyId + ", " : "") +
+                (userId != null ? "userId=" + userId + ", " : "") +
                 (invoiceRejectionId != null ? "invoiceRejectionId=" + invoiceRejectionId + ", " : "") +
                 (invoiceSubmissionId != null ? "invoiceSubmissionId=" + invoiceSubmissionId + ", " : "") +
                 (invoiceValidationId != null ? "invoiceValidationId=" + invoiceValidationId + ", " : "") +

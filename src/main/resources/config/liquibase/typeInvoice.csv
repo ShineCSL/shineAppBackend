@@ -1,0 +1,10 @@
+id;code;label_en;label_fr
+1;LUNCH;Lunch;Déjeuner
+2;DINER;Diner;Diner
+3;BREAKFAST;Breakfast;Petit déjeuner
+4;CAR_REPAIRS;Car repairs;Réparation voiture
+5;TAXI;Taxi;Taxi
+6;AIRPLANE_TICKET;Airplane Ticket;Ticket avion
+7;FUEL;Fuel;Carburant
+8;OFFICE_ACCESSORIES;Office accessories;Accessoires bureau
+9;OTHERS;Others;Autres

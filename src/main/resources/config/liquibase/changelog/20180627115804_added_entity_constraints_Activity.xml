@@ -20,11 +20,11 @@
                                  referencedColumnNames="id"
                                  referencedTableName="jhi_user"/>
 
-        <addForeignKeyConstraint baseColumnNames="mission_id"
+        <addForeignKeyConstraint baseColumnNames="client_id"
                                  baseTableName="activity"
-                                 constraintName="fk_activity_mission_id"
+                                 constraintName="fk_activity_client_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="mission"/>
+                                 referencedTableName="client"/>
 
         <addForeignKeyConstraint baseColumnNames="activity_rejection_id"
                                  baseTableName="activity"

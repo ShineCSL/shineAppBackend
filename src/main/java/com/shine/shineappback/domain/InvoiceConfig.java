@@ -12,7 +12,10 @@ import java.util.Objects;
  * A InvoiceConfig.
  */
 @Entity
-@Table(name = "invoice_config")
+@Table(
+		name = "invoice_config",
+		uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id"})}
+)
 public class InvoiceConfig extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

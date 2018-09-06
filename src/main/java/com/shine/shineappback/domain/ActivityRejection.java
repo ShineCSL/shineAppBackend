@@ -12,7 +12,10 @@ import java.util.Objects;
  * A ActivityRejection.
  */
 @Entity
-@Table(name = "activity_rejection")
+@Table(
+name = "activity_rejection",
+uniqueConstraints = {@UniqueConstraint(columnNames = {"week_number", "jhi_year", "user_id"})}
+)
 public class ActivityRejection extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

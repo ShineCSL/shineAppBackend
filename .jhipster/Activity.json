@@ -23,8 +23,8 @@
             "otherEntityRelationshipName": "activity"
         },
         {
-            "relationshipName": "mission",
-            "otherEntityName": "mission",
+            "relationshipName": "client",
+            "otherEntityName": "client",
             "relationshipType": "many-to-one",
             "relationshipValidateRules": [
                 "required"

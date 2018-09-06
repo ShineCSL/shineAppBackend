@@ -32,7 +32,16 @@
 
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-        
+        <addUniqueConstraint
+		        columnNames="user_id"
+		        constraintName="u_activity_user_id"
+		        tableName="activity_config"
+		        />    
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/activityConfig.csv"
+                  separator=";"
+                  tableName="activity_config">
+        </loadData> 
     </changeSet>
     
     <!-- Added the entity audit columns -->

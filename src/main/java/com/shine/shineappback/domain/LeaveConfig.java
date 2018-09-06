@@ -12,7 +12,10 @@ import java.util.Objects;
  * A LeaveConfig.
  */
 @Entity
-@Table(name = "leave_config")
+@Table(
+		name = "leave_config",
+		uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id"})}
+)
 public class LeaveConfig implements Serializable {
 
     private static final long serialVersionUID = 1L;

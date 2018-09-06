@@ -5,7 +5,7 @@ import com.shine.shineappback.ShineAppBackendApp;
 import com.shine.shineappback.domain.Activity;
 import com.shine.shineappback.domain.Task;
 import com.shine.shineappback.domain.User;
-import com.shine.shineappback.domain.Mission;
+import com.shine.shineappback.domain.Client;
 import com.shine.shineappback.domain.ActivityRejection;
 import com.shine.shineappback.domain.ActivitySubmission;
 import com.shine.shineappback.domain.ActivityValidation;
@@ -136,10 +136,10 @@ public class ActivityResourceIntTest {
         em.flush();
         activity.setUser(user);
         // Add required entity
-        Mission mission = MissionResourceIntTest.createEntity(em);
-        em.persist(mission);
+        Client client = ClientResourceIntTest.createEntity(em);
+        em.persist(client);
         em.flush();
-        activity.setMission(mission);
+        activity.setClient(client);
         return activity;
     }
 
@@ -754,20 +754,20 @@ public class ActivityResourceIntTest {
 
     @Test
     @Transactional
-    public void getAllActivitiesByMissionIsEqualToSomething() throws Exception {
+    public void getAllActivitiesByClientIsEqualToSomething() throws Exception {
         // Initialize the database
-        Mission mission = MissionResourceIntTest.createEntity(em);
-        em.persist(mission);
+        Client client = ClientResourceIntTest.createEntity(em);
+        em.persist(client);
         em.flush();
-        activity.setMission(mission);
+        activity.setClient(client);
         activityRepository.saveAndFlush(activity);
-        Long missionId = mission.getId();
+        Long clientId = client.getId();
 
-        // Get all the activityList where mission equals to missionId
-        defaultActivityShouldBeFound("missionId.equals=" + missionId);
+        // Get all the activityList where client equals to clientId
+        defaultActivityShouldBeFound("clientId.equals=" + clientId);
 
-        // Get all the activityList where mission equals to missionId + 1
-        defaultActivityShouldNotBeFound("missionId.equals=" + (missionId + 1));
+        // Get all the activityList where client equals to clientId + 1
+        defaultActivityShouldNotBeFound("clientId.equals=" + (clientId + 1));
     }
 
 

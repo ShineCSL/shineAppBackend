@@ -7,7 +7,11 @@
         Added the constraints for entity InvoiceConfig.
     -->
     <changeSet id="20180706073320-2" author="jhipster">
-        
+        <addUniqueConstraint
+		        columnNames="user_id"
+		        constraintName="u_invoice_config_user_id"
+		        tableName="invoice_config"
+		        />          
         <addForeignKeyConstraint baseColumnNames="user_id"
                                  baseTableName="invoice_config"
                                  constraintName="fk_invoice_config_user_id"

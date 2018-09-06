@@ -8,6 +8,11 @@
     -->
     <changeSet id="20180627113908-2" author="jhipster">
         
+        <addUniqueConstraint
+		        columnNames="week_number, jhi_year, user_id"
+		        constraintName="u_activity_validation_week_year_user"
+		        tableName="activity_validation"
+		        />         
         <addForeignKeyConstraint baseColumnNames="user_id"
                                  baseTableName="activity_validation"
                                  constraintName="fk_activity_validation_user_id"

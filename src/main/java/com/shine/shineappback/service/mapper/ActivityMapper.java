@@ -8,15 +8,15 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity Activity and its DTO ActivityDTO.
  */
-@Mapper(componentModel = "spring", uses = {TaskMapper.class, UserMapper.class, MissionMapper.class, ActivityRejectionMapper.class, ActivitySubmissionMapper.class, ActivityValidationMapper.class})
+@Mapper(componentModel = "spring", uses = {TaskMapper.class, UserMapper.class, ClientMapper.class, ActivityRejectionMapper.class, ActivitySubmissionMapper.class, ActivityValidationMapper.class})
 public interface ActivityMapper extends EntityMapper<ActivityDTO, Activity> {
 
     @Mapping(source = "task.id", target = "taskId")
     @Mapping(source = "task.code", target = "taskCode")
     @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "user.login", target = "userLogin")
-    @Mapping(source = "mission.id", target = "missionId")
-    @Mapping(source = "mission.code", target = "missionCode")
+    @Mapping(source = "client.id", target = "clientId")
+    @Mapping(source = "client.code", target = "clientCode")
     @Mapping(source = "activityRejection.id", target = "activityRejectionId")
     @Mapping(source = "activityRejection.rejected", target = "activityRejectionRejected")
     @Mapping(source = "activitySubmission.id", target = "activitySubmissionId")
@@ -27,7 +27,7 @@ public interface ActivityMapper extends EntityMapper<ActivityDTO, Activity> {
 
     @Mapping(source = "taskId", target = "task")
     @Mapping(source = "userId", target = "user")
-    @Mapping(source = "missionId", target = "mission")
+    @Mapping(source = "clientId", target = "client")
     @Mapping(source = "activityRejectionId", target = "activityRejection")
     @Mapping(source = "activitySubmissionId", target = "activitySubmission")
     @Mapping(source = "activityValidationId", target = "activityValidation")

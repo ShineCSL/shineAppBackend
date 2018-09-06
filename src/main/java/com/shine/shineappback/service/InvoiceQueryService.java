@@ -94,6 +94,9 @@ public class InvoiceQueryService extends QueryService<Invoice> {
             if (criteria.getCurrencyId() != null) {
                 specification = specification.and(buildReferringEntitySpecification(criteria.getCurrencyId(), Invoice_.currency, Currency_.id));
             }
+            if (criteria.getUserId() != null) {
+                specification = specification.and(buildReferringEntitySpecification(criteria.getUserId(), Invoice_.user, User_.id));
+            }
             if (criteria.getInvoiceRejectionId() != null) {
                 specification = specification.and(buildReferringEntitySpecification(criteria.getInvoiceRejectionId(), Invoice_.invoiceRejection, InvoiceRejection_.id));
             }

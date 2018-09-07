@@ -6,6 +6,7 @@ import com.shine.shineappback.domain.LeavesValidation;
 import com.shine.shineappback.domain.User;
 import com.shine.shineappback.repository.LeavesValidationRepository;
 import com.shine.shineappback.service.LeavesValidationService;
+import com.shine.shineappback.service.MailService;
 import com.shine.shineappback.service.dto.LeavesValidationDTO;
 import com.shine.shineappback.service.mapper.LeavesValidationMapper;
 import com.shine.shineappback.web.rest.errors.ExceptionTranslator;
@@ -61,6 +62,9 @@ public class LeavesValidationResourceIntTest {
 
     @Autowired
     private LeavesValidationService leavesValidationService;
+    
+    @Autowired
+    private MailService mailService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -81,7 +85,7 @@ public class LeavesValidationResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final LeavesValidationResource leavesValidationResource = new LeavesValidationResource(leavesValidationService);
+        final LeavesValidationResource leavesValidationResource = new LeavesValidationResource(leavesValidationService, mailService);
         this.restLeavesValidationMockMvc = MockMvcBuilders.standaloneSetup(leavesValidationResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

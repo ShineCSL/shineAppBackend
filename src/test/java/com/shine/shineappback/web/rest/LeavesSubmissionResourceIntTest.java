@@ -6,6 +6,7 @@ import com.shine.shineappback.domain.LeavesSubmission;
 import com.shine.shineappback.domain.User;
 import com.shine.shineappback.repository.LeavesSubmissionRepository;
 import com.shine.shineappback.service.LeavesSubmissionService;
+import com.shine.shineappback.service.MailService;
 import com.shine.shineappback.service.dto.LeavesSubmissionDTO;
 import com.shine.shineappback.service.mapper.LeavesSubmissionMapper;
 import com.shine.shineappback.web.rest.errors.ExceptionTranslator;
@@ -61,6 +62,9 @@ public class LeavesSubmissionResourceIntTest {
 
     @Autowired
     private LeavesSubmissionService leavesSubmissionService;
+    
+    @Autowired
+    private MailService mailService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -81,7 +85,7 @@ public class LeavesSubmissionResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final LeavesSubmissionResource leavesSubmissionResource = new LeavesSubmissionResource(leavesSubmissionService);
+        final LeavesSubmissionResource leavesSubmissionResource = new LeavesSubmissionResource(leavesSubmissionService, mailService);
         this.restLeavesSubmissionMockMvc = MockMvcBuilders.standaloneSetup(leavesSubmissionResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

@@ -3,6 +3,9 @@ import com.shine.shineappback.config.Constants;
 
 import com.shine.shineappback.ShineAppBackendApp;
 import com.shine.shineappback.domain.User;
+import com.shine.shineappback.repository.LeaveConfigRepository;
+import com.shine.shineappback.repository.UserRepository;
+
 import io.github.jhipster.config.JHipsterProperties;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,12 +52,17 @@ public class MailServiceIntTest {
     private ArgumentCaptor<MimeMessage> messageCaptor;
 
     private MailService mailService;
+    
+    private UserRepository userRepository;
+    
+    private LeaveConfigRepository leaveConfigRepository;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
         doNothing().when(javaMailSender).send(any(MimeMessage.class));
-        mailService = new MailService(jHipsterProperties, javaMailSender, messageSource, templateEngine);
+        mailService = new MailService(jHipsterProperties, javaMailSender, messageSource, 
+        		templateEngine, userRepository, leaveConfigRepository);
     }
 
     @Test

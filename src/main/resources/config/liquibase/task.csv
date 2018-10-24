@@ -1,4 +1,4 @@
 id;code;label_en;label_fr;jhi_leave
-1;ANNUAL_LEAVE;Annual leave;Conge annuel;true
-2;SICK_LEAVE;Sick leave;Conge maladie;true
-3;SPECIAL_LEAVE;Special leave;Conge special;true
+1;ANNUAL_LEAVE;Annual leave;Congé annuel;true
+2;SICK_LEAVE;Sick leave;Congé maladie;true
+3;SPECIAL_LEAVE;Special leave;Congé special;true
